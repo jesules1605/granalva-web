@@ -9,8 +9,9 @@ Este repositorio contiene la versión íntegra, funcional y publicada de la web 
 - URL: `https://granalva-propuesta-visual.manueljesus1605.chatgpt.site`
 - Audiencia: pública.
 - Idioma: español de España.
-- Stack: Next.js 16, React 19, TypeScript, Vinext/Vite y CSS propio.
-- Calidad verificada: `npm run lint`, `npm test` y compilación de Sites superados.
+- Stack: Next.js 16.4 estándar (App Router), React 19, TypeScript y CSS propio. Vinext/Vite/Cloudflare se retiraron en la fase 1 (rama `feat/nextjs-payload`).
+- Calidad verificada: `npm run lint` y `npm test` (build de Next + 3 pruebas HTTP) superados.
+- Plan de trabajo vigente y estado de cada fase: `docs/IMPLEMENTATION-PLAN.md`.
 
 ## Objetivo comercial vigente
 
@@ -74,7 +75,7 @@ La tipografía Granaina se usa en titulares y momentos de identidad. No crear di
 - `public/`: logotipo, Granaina Font, vídeos e imágenes.
 - `docs/seo-strategy.md`: mapa de palabras clave y siguientes pasos SEO.
 
-No hay autenticación, base de datos ni variables de entorno necesarias para esta versión.
+No hay todavía autenticación ni base de datos (llegan con Payload en la fase 3). La única variable usada es `NEXT_PUBLIC_SITE_URL` (dominio canónico, con respaldo al de Sites).
 
 Estado local usado en la página:
 
@@ -114,7 +115,7 @@ La mención «Años de experiencia» es deliberadamente cualitativa porque no se
 - `robots.txt` y `sitemap.xml` con las once URLs indexables.
 - Enlaces internos descriptivos desde cabecera, portada, páginas relacionadas y pie.
 - Pruebas automáticas que comprueban código 200, título único, canonical, description, H1, ausencia de `noindex`, sitemap y robots.
-- El dominio/canonical actual es el de Sites. Al migrar al dominio definitivo debe cambiarse `SITE_URL` en `app/lib/services.ts`, desplegarse y enviarse el nuevo sitemap en Search Console.
+- El dominio/canonical por defecto es el de Sites. `SITE_URL` (en `app/lib/services.ts`) lee `NEXT_PUBLIC_SITE_URL`: se define por entorno en el hosting, se redepliega y se envía el nuevo sitemap en Search Console. WordPress usa hoy `https://limpiezasgranalva.com` sin `www`; conservar esa versión salvo decisión expresa.
 
 Páginas actuales:
 
@@ -153,6 +154,12 @@ No usar repeticiones artificiales de palabras clave. La prioridad es contenido �
 6. Añadir aviso legal, privacidad, cookies y datos fiscales definitivos.
 7. Migrar al dominio final, cambiar `SITE_URL`, redirigir el dominio anterior y verificar Search Console.
 8. Crear casos de éxito autorizados y enlazarlos desde las páginas de servicio.
+
+## Verificación de regresiones
+
+- `tests/visual/capture.mjs`: 11 rutas × 5 viewports (1920, 1440, 1024, 390, 360) con movimiento reducido.
+- `tests/visual/seo-snapshot.mjs`: title, description, canonical, OG, H1, JSON-LD y enlaces por ruta.
+- Antes de dar por buena una fase, comparar capturas y SEO con la fase anterior.
 
 ## Criterio de calidad
 

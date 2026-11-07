@@ -12,21 +12,34 @@ Línea base verificada el 7 de noviembre de 2026: `npm ci`, `npm run lint` y `np
 
 ## Fases
 
-### Fase 1 — Migración de vinext a Next.js 16.4, sin cambios visuales ✅ (esta entrega)
+### Fase 1 — Migración de vinext a Next.js 16.4, sin cambios visuales ✅
 
 | Archivo | Cambio |
 |---|---|
 | `package.json`, `package-lock.json` | Scripts `next dev/build/start`. Se retiran vinext, vite, @vitejs/*, @cloudflare/vite-plugin, wrangler, react-server-dom-webpack y drizzle. `next` y `eslint-config-next` pasan a 16.4.5 |
 | `next.config.ts` | Configuración de producción mínima |
-| `app/layout.tsx` | Geist se carga desde ficheros locales. Ningún otro cambio |
+| `app/layout.tsx` | Se retira Geist: el CSS nunca leía sus variables, así que solo añadía 4 precargas de fuente que no se pintaban. Ningún otro cambio |
 | `app/lib/services.ts` | `SITE_URL` sale de `NEXT_PUBLIC_SITE_URL` y conserva el valor actual como respaldo. Ningún otro cambio |
 | `tests/rendered-html.test.mjs` | Prueba la build de Next real mediante HTTP, con las mismas aserciones |
 | `tests/visual/*` | Capturas antes/después, instantánea SEO y comparación de píxeles |
 | Se eliminan | `vite.config.ts`, `worker/`, `build/`, `db/`, `drizzle/`, `drizzle.config.ts`, `examples/`, `.openai/`, `app/chatgpt-auth.ts`, `scripts/*.sh`. La línea de caché de `.npmrc` se quita |
-| `.vinext/fonts` → `app/fonts/geist/` | Mismos ficheros WOFF2, ahora en una ruta independiente de vinext |
+| `.vinext/fonts` | Se elimina, porque Geist no se usaba |
 | `README.md`, `CLAUDE.md` | Stack y comandos actualizados |
 
 Criterio de aceptación: lint y pruebas en verde; las 11 rutas con el mismo título, description, canonical, H1, OG y JSON-LD que antes; capturas equivalentes en los 5 tamaños.
+
+**Resultado (verificado el 7 de noviembre de 2026):**
+- `npm run lint`: correcto. `npm test`: 3/3. Se añadió la prueba de 404, y la de H1 ahora exige exactamente uno.
+- `next build`: 15 páginas estáticas, sin avisos.
+- Instantánea SEO de las 11 rutas, sitemap y robots: idéntica salvo dos diferencias equivalentes:
+  - el canonical de la portada pierde la barra final (`…site/` → `…site`), que en la raíz es la misma URL;
+  - cambia el orden de la línea `Host:` en robots.txt.
+- Capturas: 52 de 55 idénticas, con un umbral del 0,05 % de píxeles. Las 3 restantes (`/servicios` en 1024, 390 y 360 px) solo difieren porque, en la captura de referencia, no estaban cargadas aún las imágenes con `loading="lazy"`. Ya está corregido en `capture.mjs`.
+- Funciona en la build de Next, en ordenador y en móvil:
+  - vídeo del hero, cabecera fija y capítulos;
+  - selector de coladas, selector de servicios y pausa de las reseñas;
+  - validación obligatoria del formulario;
+  - 0 errores en la consola.
 
 ### Fase 2 — Correcciones de diseño auditadas (`docs/AUDIT-HANDOFF.md`)
 

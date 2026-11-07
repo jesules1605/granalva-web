@@ -29,6 +29,15 @@ for (const [w, h] of viewports) {
     await page.goto(base + r, { waitUntil: "networkidle" });
     await page.addStyleTag({ content: "*,*::before,*::after{animation-play-state:paused!important;animation-delay:0s!important;transition:none!important;caret-color:transparent!important}" });
     await page.evaluate(async () => {
+      // Recorre la página para disparar las imágenes con loading="lazy".
+      for (let y = 0, max = document.body.scrollHeight; y < max; y += window.innerHeight) {
+        window.scrollTo(0, y);
+        await new Promise((resolve) => setTimeout(resolve, 60));
+      }
+      window.scrollTo(0, 0);
+      const pending = [...document.images].filter((img) => !img.complete)
+        .map((img) => new Promise((resolve) => { img.addEventListener("load", resolve, { once: true }); img.addEventListener("error", resolve, { once: true }); }));
+      await Promise.race([Promise.all(pending), new Promise((resolve) => setTimeout(resolve, 4000))]);
       document.querySelectorAll("video").forEach((v) => { v.pause(); v.currentTime = 0; });
       await document.fonts.ready;
     });

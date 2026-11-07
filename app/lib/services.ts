@@ -1,4 +1,8 @@
-export const SITE_URL = "https://granalva-propuesta-visual.manueljesus1605.chatgpt.site";
+// Dominio canónico. Se define por entorno (preproducción / producción) con
+// NEXT_PUBLIC_SITE_URL; el valor por defecto conserva el de la versión publicada.
+export const SITE_URL = (
+  process.env.NEXT_PUBLIC_SITE_URL || "https://granalva-propuesta-visual.manueljesus1605.chatgpt.site"
+).replace(/\/+$/, "");
 
 export type ServicePage = {
   slug: string;

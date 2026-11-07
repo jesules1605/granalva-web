@@ -9,11 +9,14 @@ La web abre directamente sobre la portada. No existe introducción, espera inici
 ## Tecnología
 
 - React 19
-- Next.js 16
+- Next.js 16.4 (App Router, compilación con Turbopack)
 - TypeScript
-- Vinext + Vite
-- CSS global propio
-- Cloudflare Workers / ChatGPT Sites
+- CSS global propio (Tailwind 4 solo como base de preflight)
+- Despliegue previsto: Vercel (ver `docs/IMPLEMENTATION-PLAN.md`)
+
+> Hasta la versión 10 el proyecto se compilaba con Vinext/Vite para ChatGPT Sites.
+> En la fase 1 se migró a Next.js estándar sin cambios visuales ni de SEO
+> (verificado con 55 capturas y una instantánea SEO de las 11 rutas).
 
 ## Requisitos y puesta en marcha
 
@@ -29,9 +32,21 @@ Comprobaciones:
 
 ```bash
 npm run lint
-npm test
+npm test          # compila con next build y prueba las 11 rutas por HTTP
 npm run build
+npm start         # sirve la build de producción en http://localhost:3000
 ```
+
+Regresión visual (requiere Playwright y un servidor en marcha):
+
+```bash
+npm run test:visual -- http://localhost:3000 tests/visual/out
+node tests/visual/seo-snapshot.mjs http://localhost:3000 > seo.json
+```
+
+Variables de entorno: copia `.env.example` a `.env.local`. En esta fase solo se
+usa `NEXT_PUBLIC_SITE_URL` (dominio canónico); si no se define se mantiene el de
+la versión publicada en Sites.
 
 ## Estructura
 
@@ -51,7 +66,11 @@ public/
   *.mp4               Recursos audiovisuales
 docs/
   seo-strategy.md     Estrategia y mapa SEO
-.openai/hosting.json  Identidad de despliegue en Sites
+  IMPLEMENTATION-PLAN.md  Plan por fases y archivos afectados
+  auditoria-2026-11/      Auditoría previa, capturas y mapa 301 de WordPress
+tests/
+  rendered-html.test.mjs  SEO de las 11 rutas, robots, sitemap y 404
+  visual/                 Capturas en 5 viewports e instantánea SEO
 CLAUDE.md              Contexto completo para continuar con Claude
 ```
 
