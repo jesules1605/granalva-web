@@ -1,19 +1,30 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ServicePageView } from "../../components/service-page";
-import { serviceBySlug, servicePages, SITE_URL } from "../../lib/services";
+import { jsonLdString, servicePageJsonLd, type Crumb } from "../../lib/seo";
+import { serviceBySlug, servicePages } from "../../lib/services";
+import { absoluteUrl } from "../../lib/site";
 
 type PageProps = { params: Promise<{ slug: string }> };
+
+/** Solo existen los slugs definidos: cualquier otro devuelve 404 real. */
+export const dynamicParams = false;
 
 export function generateStaticParams() {
   return servicePages.map(({ slug }) => ({ slug }));
 }
 
+const crumbsFor = (slug: string): Crumb[] => [
+  { name: "Inicio", path: "/" },
+  { name: "Servicios", path: "/servicios" },
+  { name: serviceBySlug[slug].navLabel, path: `/servicios/${slug}` },
+];
+
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
   const service = serviceBySlug[slug];
   if (!service) return {};
-  const url = `${SITE_URL}/servicios/${service.slug}`;
+  const url = absoluteUrl(`/servicios/${service.slug}`);
 
   return {
     title: { absolute: service.metaTitle },
@@ -23,6 +34,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
       type: "website",
       locale: "es_ES",
       url,
+      siteName: "Limpiezas Granalva",
       title: service.metaTitle,
       description: service.metaDescription,
       images: [{ url: service.image, alt: service.imageAlt }],
@@ -35,44 +47,12 @@ export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
   const service = serviceBySlug[slug];
   if (!service) notFound();
-
-  const url = `${SITE_URL}/servicios/${service.slug}`;
-  const structuredData = {
-    "@context": "https://schema.org",
-    "@graph": [
-      {
-        "@type": "Service",
-        "@id": `${url}#service`,
-        name: service.title,
-        description: service.metaDescription,
-        url,
-        provider: { "@id": `${SITE_URL}/#organization` },
-        areaServed: [{ "@type": "City", name: "Granada" }, { "@type": "AdministrativeArea", name: "Área metropolitana de Granada" }],
-        audience: service.audiences.map((name) => ({ "@type": "Audience", name })),
-      },
-      {
-        "@type": "BreadcrumbList",
-        itemListElement: [
-          { "@type": "ListItem", position: 1, name: "Inicio", item: SITE_URL },
-          { "@type": "ListItem", position: 2, name: "Servicios", item: `${SITE_URL}/servicios` },
-          { "@type": "ListItem", position: 3, name: service.navLabel, item: url },
-        ],
-      },
-      {
-        "@type": "FAQPage",
-        mainEntity: service.faqs.map((faq) => ({
-          "@type": "Question",
-          name: faq.question,
-          acceptedAnswer: { "@type": "Answer", text: faq.answer },
-        })),
-      },
-    ],
-  };
+  const crumbs = crumbsFor(slug);
 
   return (
     <>
-      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }} />
-      <ServicePageView service={service} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(servicePageJsonLd(service, crumbs)) }} />
+      <ServicePageView service={service} crumbs={crumbs} />
     </>
   );
 }

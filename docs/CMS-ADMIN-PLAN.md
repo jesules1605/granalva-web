@@ -160,6 +160,15 @@ Los datos personales no deben aparecer en logs públicos ni analítica. Definir 
 
 Limitar los campos a contenido; no exponer controles libres de CSS que permitan romper el diseño.
 
+## SEO editable y validaciones (obligatorio)
+
+Los campos y las reglas están definidos en `docs/seo-strategy.md`, en la sección «Requisitos SEO del CMS». El modelo de `services` debe reproducir exactamente el tipo `ServicePage` de `app/lib/services.ts`:
+
+- `h1`, `metaTitle`, `metaDescription`, `intent`, `primaryKeyword` y `secondaryKeywords`;
+- `introTitle`, `needs`, `coverage`, `related` (slug + texto de anclaje), `ctaTitle`, `ctaText` y `updatedAt`.
+
+Los datos NAP de `app/lib/site.ts` pasan a `site-settings`. Las redirecciones de `app/lib/redirects.ts` se importan a `redirects`, y `proxy.ts` las aplicará leyendo esa colección. Las pruebas de `tests/rendered-html.test.mjs` deben seguir pasando cuando el contenido proceda de Payload.
+
 ## Formulario de contacto
 
 Al enviar:

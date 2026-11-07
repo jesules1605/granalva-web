@@ -32,7 +32,7 @@ Comprobaciones:
 
 ```bash
 npm run lint
-npm test          # compila con next build y prueba las 11 rutas por HTTP
+npm test          # next build + 10 pruebas SEO por HTTP (title, H1, JSON-LD, enlaces, 301, 404…)
 npm run build
 npm start         # sirve la build de producción en http://localhost:3000
 ```

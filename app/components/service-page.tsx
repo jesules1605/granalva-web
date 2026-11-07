@@ -1,11 +1,19 @@
 import Image from "next/image";
 import Link from "next/link";
+import { Breadcrumbs } from "./breadcrumbs";
 import { LogoSeal } from "./logo-seal";
 import { SiteFooter, SiteHeader } from "./site-chrome";
+import type { Crumb } from "../lib/seo";
 import { serviceBySlug, type ServicePage } from "../lib/services";
+import { BUSINESS } from "../lib/site";
 
-export function ServicePageView({ service }: { service: ServicePage }) {
-  const related = service.related.map((slug) => serviceBySlug[slug]).filter(Boolean);
+const formatDate = (iso: string) =>
+  new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Madrid" }).format(new Date(iso));
+
+export function ServicePageView({ service, crumbs }: { service: ServicePage; crumbs: Crumb[] }) {
+  const related = service.related
+    .map((link) => ({ ...link, service: serviceBySlug[link.slug] }))
+    .filter((link) => link.service);
 
   return (
     <main className="site-shell service-site">
@@ -13,16 +21,17 @@ export function ServicePageView({ service }: { service: ServicePage }) {
 
       <section className="service-hero">
         <div className="service-hero__media">
-          <Image src={service.image} alt={service.imageAlt} fill priority sizes="100vw" unoptimized />
+          <Image src={service.image} alt={service.imageAlt} fill priority sizes="100vw" quality={70} />
           <div className="service-hero__scrim" />
         </div>
         <div className="service-hero__copy">
+          <Breadcrumbs crumbs={crumbs} />
           <p className="eyebrow"><LogoSeal small />{service.eyebrow}</p>
-          <h1>{service.title}</h1>
+          <h1>{service.h1}</h1>
           <p>{service.summary}</p>
           <div className="hero-actions">
             <Link className="button button--yellow" href="/#contacto">Solicitar presupuesto <span>→</span></Link>
-            <a className="button button--glass" href="tel:+34744488964">Llamar al 744 488 964</a>
+            <a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>
           </div>
         </div>
         <div className="service-hero__seal"><LogoSeal /></div>
@@ -46,9 +55,24 @@ export function ServicePageView({ service }: { service: ServicePage }) {
         </div>
       </section>
 
+      <section className="service-needs" aria-labelledby={`${service.slug}-needs`}>
+        <div className="service-section-heading service-section-heading--dark">
+          <span className="section-number">02 / QUÉ RESUELVE</span>
+          <h2 id={`${service.slug}-needs`}>{service.needsTitle}</h2>
+        </div>
+        <div className="service-needs__grid">
+          {service.needs.map((need) => (
+            <article key={need.title}>
+              <h3>{need.title}</h3>
+              <p>{need.text}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
       <section className="service-includes">
         <div className="service-section-heading">
-          <span className="section-number section-number--light">02 / QUÉ INCLUYE</span>
+          <span className="section-number section-number--light">03 / QUÉ INCLUYE</span>
           <h2>Todo lo necesario.<br /><em>Bien coordinado.</em></h2>
         </div>
         <div className="service-includes__grid">
@@ -64,7 +88,7 @@ export function ServicePageView({ service }: { service: ServicePage }) {
 
       <section className="service-process">
         <div className="service-section-heading service-section-heading--dark">
-          <span className="section-number">03 / CÓMO TRABAJAMOS</span>
+          <span className="section-number">04 / CÓMO TRABAJAMOS</span>
           <h2>Una operativa clara,<br /><em>de principio a fin.</em></h2>
         </div>
         <ol>
@@ -79,8 +103,9 @@ export function ServicePageView({ service }: { service: ServicePage }) {
 
       <section className="service-audiences">
         <div>
-          <span className="section-number">04 / PARA QUIÉN</span>
+          <span className="section-number">05 / PARA QUIÉN Y DÓNDE</span>
           <h2>Diseñado para necesidades reales de Granada.</h2>
+          <p className="service-coverage"><strong>Zona de servicio.</strong> {service.coverage}</p>
         </div>
         <ul>
           {service.audiences.map((audience) => <li key={audience}><LogoSeal small />{audience}</li>)}
@@ -89,7 +114,7 @@ export function ServicePageView({ service }: { service: ServicePage }) {
 
       <section className="service-faq">
         <div className="service-section-heading service-section-heading--dark">
-          <span className="section-number">05 / PREGUNTAS FRECUENTES</span>
+          <span className="section-number">06 / PREGUNTAS FRECUENTES</span>
           <h2>Antes de empezar,<br /><em>todo claro.</em></h2>
         </div>
         <div className="faq-list">
@@ -102,18 +127,18 @@ export function ServicePageView({ service }: { service: ServicePage }) {
         </div>
       </section>
 
-      <section className="related-services">
+      <section className="related-services" aria-labelledby={`${service.slug}-related`}>
         <div className="service-section-heading service-section-heading--dark">
           <span className="section-number">SERVICIOS RELACIONADOS</span>
-          <h2>Una solución puede<br /><em>conectar con la siguiente.</em></h2>
+          <h2 id={`${service.slug}-related`}>Una solución puede<br /><em>conectar con la siguiente.</em></h2>
         </div>
         <div className="related-services__grid">
-          {related.map((item, index) => (
-            <Link href={`/servicios/${item.slug}`} key={item.slug}>
+          {related.map((link, index) => (
+            <Link href={`/servicios/${link.slug}`} key={link.slug}>
               <span>{String(index + 1).padStart(2, "0")}</span>
-              <h3>{item.navLabel}</h3>
-              <p>{item.summary}</p>
-              <b>Conocer el servicio →</b>
+              <h3>{link.service.navLabel}</h3>
+              <p>{link.service.summary}</p>
+              <b>{link.anchor.charAt(0).toUpperCase() + link.anchor.slice(1)} →</b>
             </Link>
           ))}
         </div>
@@ -121,9 +146,21 @@ export function ServicePageView({ service }: { service: ServicePage }) {
 
       <section className="service-final-cta">
         <LogoSeal />
-        <div><span>GRANALVA · GRANADA</span><h2>Cuéntanos qué necesita tu empresa.</h2><p>Estudiaremos la operativa, la frecuencia y el servicio adecuado para preparar una propuesta clara.</p></div>
+        <div>
+          <span>GRANALVA · {BUSINESS.areaServedLabel.toUpperCase()}</span>
+          <h2>{service.ctaTitle}</h2>
+          <p>{service.ctaText}</p>
+          <p className="service-final-cta__contact">
+            <a href={`tel:${BUSINESS.phoneE164}`}>{BUSINESS.phoneDisplay}</a>
+            <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
+          </p>
+        </div>
         <Link className="button button--yellow" href="/#contacto">Solicitar presupuesto <span>→</span></Link>
       </section>
+
+      <p className="content-updated">
+        Contenido revisado el <time dateTime={service.updatedAt}>{formatDate(service.updatedAt)}</time>.
+      </p>
 
       <SiteFooter />
     </main>

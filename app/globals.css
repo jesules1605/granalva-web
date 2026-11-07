@@ -27,7 +27,7 @@
 
 /* Granalva motion-led edition */
 .site-header{position:sticky;top:0}.brand strong,.footer-brand b{font-family:var(--display);font-weight:400;letter-spacing:.08em}.brand strong{font-size:27px}
-.hero{min-height:calc(100svh - 126px);height:790px;max-height:920px;display:grid;grid-template-columns:1fr;align-items:center;color:white;position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(90deg,rgba(6,30,65,.98),rgba(6,30,65,.28)),url("/hero-laundry.png") center/cover;border-bottom:8px solid var(--yellow)}
+.hero{min-height:calc(100svh - 126px);height:790px;max-height:920px;display:grid;grid-template-columns:1fr;align-items:center;color:white;position:relative;isolation:isolate;overflow:hidden;background:linear-gradient(90deg,rgba(6,30,65,.98),rgba(6,30,65,.28)),url("/textiles-lavanderia-profesional-granada-poster.webp") center/cover;border-bottom:8px solid var(--yellow)}
 .hero:before{display:none}.hero-video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;object-position:center;z-index:0}.hero-scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(4,25,58,.95) 0%,rgba(4,25,58,.74) 38%,rgba(4,25,58,.22) 67%,rgba(4,25,58,.12) 100%),linear-gradient(0deg,rgba(4,25,58,.75),transparent 42%)}.hero-grid{position:absolute;inset:0;z-index:2;opacity:.19;background-image:linear-gradient(rgba(255,255,255,.2) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.2) 1px,transparent 1px);background-size:64px 64px;mask-image:linear-gradient(90deg,#000,transparent 74%)}
 .hero-copy{grid-area:1/1;align-self:center;padding:45px 6vw 140px;position:relative;z-index:3;max-width:920px}.hero .eyebrow{color:var(--white);text-shadow:0 1px 20px rgba(0,0,0,.35)}.hero .eyebrow .mosaic-mark{color:var(--yellow)}
 .hero h1,.picker-heading h2,.section-heading h2,.story-copy h2,.process h2,.team h2,.reviews h2,.final-cta h2{font-family:var(--display);font-weight:400;letter-spacing:.012em}.hero h1{font-size:clamp(78px,8vw,124px);line-height:.78;margin:38px 0 30px;max-width:850px;text-shadow:0 5px 30px rgba(0,0,0,.28)}.hero h1 em,.section-heading em,.story-copy em,.process em,.team em,.reviews em,.final-cta em{font-style:normal}.hero h1 em{color:var(--yellow)}.hero-lead{font-family:var(--sans);font-size:17px;line-height:1.6;max-width:620px;color:#f8f2e8;text-shadow:0 2px 18px rgba(0,0,0,.45)}.hero-actions{margin-top:32px}.button--glass{color:white;border-color:rgba(255,255,255,.78);background:rgba(6,30,65,.26);box-shadow:4px 4px 0 rgba(255,255,255,.78);backdrop-filter:blur(8px)}
@@ -535,3 +535,108 @@ body{background:var(--cream)}
   .related-services__grid{grid-template-columns:1fr;box-shadow:9px 9px 0 var(--sky)}.related-services__grid>a{min-height:260px;border-right:0;border-bottom:1px solid rgba(21,54,111,.35)}.related-services__grid>a:last-child{border-bottom:0}
   .service-final-cta{padding:62px 20px;grid-template-columns:1fr;gap:26px}.service-final-cta>.brand-logo-seal{width:82px;height:82px}.service-final-cta h2{font-size:43px}.service-final-cta .button{width:100%}
 }
+
+/* ==========================================================================
+   Fase SEO + correcciones auditadas (docs/AUDIT-HANDOFF.md)
+   ========================================================================== */
+
+/* Cabecera fija completa (cinta + cabecera): las anclas no quedan tapadas */
+html{scroll-padding-top:140px}
+@media(max-width:760px){html{scroll-padding-top:118px}}
+html.nav-open,html.nav-open body{overflow:hidden}
+
+/* Titular principal: H1 descriptivo más largo, sin solapamientos en móvil */
+.hero--business h1{max-width:1180px;font-size:clamp(62px,6vw,100px);line-height:.86;text-wrap:balance}
+@media(max-width:760px){.hero--business h1{font-size:clamp(44px,12.4vw,60px);line-height:.95}}
+
+/* «Tu empresa no puede parar…»: dos líneas equilibradas y centradas */
+.audience-heading h2{max-width:none;font-size:clamp(56px,5.6vw,100px);text-wrap:balance}
+@media(min-width:761px){.audience-heading h2 em{white-space:nowrap}}
+
+/* «Preparados para espacios…»: ocupa el ancho útil con un salto intencionado */
+.sector-authority__heading{grid-template-columns:1fr minmax(260px,420px);row-gap:28px}
+.sector-authority__heading .section-number{grid-column:1/-1}
+.sector-authority__heading h2{grid-column:1/-1;font-size:clamp(56px,6.6vw,124px);line-height:.86}
+.sector-authority__heading p{grid-column:2}
+@media(max-width:760px){.sector-authority__heading{grid-template-columns:1fr}.sector-authority__heading p{grid-column:auto}.sector-authority__heading h2{font-size:clamp(44px,12vw,60px);line-height:.92}}
+
+/* Acciones de cabecera y menú móvil accesible */
+.header-actions{display:flex;align-items:center;gap:12px}
+.mobile-nav__toggle{display:none;width:46px;height:46px;border:1px solid var(--navy);background:var(--paper);box-shadow:3px 3px 0 var(--sky);cursor:pointer;flex-direction:column;justify-content:center;align-items:center;gap:5px;padding:0}
+.mobile-nav__toggle span{display:block;width:20px;height:2px;background:var(--navy);transition:transform .2s,opacity .2s}
+.mobile-nav__toggle[aria-expanded=true] span:nth-child(1){transform:translateY(7px) rotate(45deg)}
+.mobile-nav__toggle[aria-expanded=true] span:nth-child(2){opacity:0}
+.mobile-nav__toggle[aria-expanded=true] span:nth-child(3){transform:translateY(-7px) rotate(-45deg)}
+.mobile-nav__toggle:focus-visible,.mobile-nav__panel a:focus-visible,.breadcrumbs a:focus-visible,.services-index a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+.mobile-nav__panel{position:fixed;left:0;right:0;top:126px;bottom:0;z-index:999;overflow-y:auto;overscroll-behavior:contain;background:var(--paper);border-top:1px solid rgba(21,54,111,.16);padding:26px 20px 40px;display:flex;flex-direction:column;gap:26px}
+.mobile-nav__panel[hidden]{display:none}
+.mobile-nav__panel ul{list-style:none;margin:0;padding:0}
+.mobile-nav__main a{display:block;padding:13px 0;border-bottom:1px solid rgba(21,54,111,.18);font-family:var(--display);font-size:32px;line-height:1;color:var(--navy)}
+.mobile-nav__label{margin:22px 0 6px;font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--blue)}
+.mobile-nav__services{display:grid;grid-template-columns:1fr 1fr;gap:0 18px}
+.mobile-nav__services a{display:block;padding:10px 0;font-size:14px;font-weight:700;color:var(--navy);border-bottom:1px solid rgba(21,54,111,.12)}
+.mobile-nav__actions{display:grid;gap:14px}
+.mobile-nav__actions .button{justify-content:space-between;font-size:12px}
+.mobile-nav__phone{font-weight:800;color:var(--navy);text-align:center;padding:10px}
+@media(max-width:1160px){.mobile-nav__toggle{display:flex}}
+@media(max-width:760px){.mobile-nav__panel{top:105px}.mobile-nav__toggle{width:42px;height:42px}}
+@media(max-width:420px){.mobile-nav__services{grid-template-columns:1fr}}
+
+/* Breadcrumbs visibles */
+.breadcrumbs ol{list-style:none;display:flex;flex-wrap:wrap;align-items:center;gap:6px 0;margin:0 0 22px;padding:0;font-size:12px;font-weight:700;letter-spacing:.04em}
+.breadcrumbs li{display:flex;align-items:center}
+.breadcrumbs li+li:before{content:"/";margin:0 10px;opacity:.55}
+.breadcrumbs a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+.breadcrumbs--light{color:#dce8f5}
+.breadcrumbs--light [aria-current]{color:var(--white)}
+.breadcrumbs--dark{color:var(--navy)}
+
+/* Página de servicio: qué resuelve, cobertura, contacto y fecha de revisión */
+.service-needs{padding:100px 6vw;background:var(--cream)}
+.service-needs .service-section-heading h2{max-width:1100px}
+.service-needs__grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;margin-top:46px}
+.service-needs__grid article{background:var(--paper);border:1px solid var(--navy);box-shadow:5px 5px 0 var(--sky);padding:30px 28px}
+.service-needs__grid h3{font-family:var(--display);font-weight:400;font-size:30px;line-height:1;margin:0 0 12px;color:var(--navy)}
+.service-needs__grid p{margin:0;font-family:var(--serif);font-size:16px;line-height:1.55;color:var(--ink)}
+@media(max-width:900px){.service-needs__grid{grid-template-columns:1fr}}
+@media(max-width:760px){.service-needs{padding:78px 20px}}
+.service-coverage{margin:28px 0 0;max-width:520px;font-family:var(--serif);font-size:16px;line-height:1.6;color:var(--ink)}
+.service-coverage strong{font-family:var(--sans);font-size:12px;letter-spacing:.08em;text-transform:uppercase;color:var(--navy)}
+.service-final-cta p.service-final-cta__contact{display:flex;flex-wrap:wrap;gap:8px 26px;margin-top:16px;font-family:var(--sans);font-weight:800;font-size:15px}
+.service-final-cta__contact a{color:var(--white);border-bottom:1px solid var(--sky)}
+.content-updated{margin:0;padding:18px 6vw;background:var(--paper);font-size:12px;color:var(--ink);text-align:right}
+
+/* Portada: índice de servicios renderizado en servidor */
+.services-index{margin-top:56px;padding-top:28px;border-top:1px solid rgba(21,54,111,.24);display:grid;grid-template-columns:200px 1fr;gap:24px;align-items:start}
+.services-index>span{font-size:10px;font-weight:900;letter-spacing:.16em;text-transform:uppercase;color:var(--blue);padding-top:10px}
+.services-index ul{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:10px}
+.services-index a{display:inline-block;padding:9px 14px;border:1px solid rgba(21,54,111,.4);background:var(--paper);font-size:13px;font-weight:700;color:var(--navy);transition:background .2s,color .2s}
+.services-index a:hover{background:var(--navy);color:var(--white)}
+@media(max-width:760px){.services-index{grid-template-columns:1fr;gap:12px;margin-top:40px}}
+.audience-card li a{text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px}
+
+/* Equipo: emblema real en lugar de iniciales (pendiente de fotografías reales) */
+.team-member>span.team-member__mark{background:var(--paper);padding:0}
+.team-member__mark .brand-logo-seal--small{width:100%;height:100%;box-shadow:none}
+
+/* 404 */
+.not-found__links{padding:80px 7vw 100px;background:var(--paper)}
+.not-found__links ul{list-style:none;margin:0 0 44px;padding:0;display:grid;grid-template-columns:repeat(3,1fr);border-top:1px solid var(--navy)}
+.not-found__links li a{display:block;padding:20px 18px 20px 0;border-bottom:1px solid rgba(21,54,111,.3);font-family:var(--display);font-size:24px;line-height:1.05;color:var(--navy)}
+.not-found__actions{display:flex;flex-wrap:wrap;gap:18px;align-items:center}
+@media(max-width:900px){.not-found__links ul{grid-template-columns:1fr}}
+@media(max-width:760px){.not-found__links{padding:60px 20px 80px}}
+
+/* Contraste WCAG AA: las etiquetas pequeñas en azul claro (#729fd6, 2-2,7:1) pasan al
+   azul medio de la paleta (#2c5aae, ≥4,7:1) solo sobre fondos claros. En fondos
+   oscuros se mantiene el azul claro, que allí sí cumple. */
+.audience-heading .section-number,.section-heading .section-number,.picker-heading .section-number,
+.process-intro .section-number,.team-copy .section-number,.faq-heading .section-number,
+.service-introduction .section-number,.service-needs .section-number,.service-process .section-number,
+.service-audiences .section-number,.service-faq .section-number,.related-services .section-number,
+.service-row span,.services-index>span,.load-label small,.route-steps button:not(.active) span,
+.team-member small,.faq-list summary span,.service-process li>span,.related-services__grid a>span,
+.mobile-nav__label{color:var(--cobalt)}
+.route-steps button.active span{color:var(--sky)}
+.route-steps button small{opacity:1}
+.route-steps span{transition:color .3s}

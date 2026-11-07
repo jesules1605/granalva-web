@@ -1,123 +1,62 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
+import { preload } from "react-dom";
 import "./globals.css";
-import { SITE_URL, servicePages } from "./lib/services";
+import { jsonLdString, organizationJsonLd, websiteJsonLd } from "./lib/seo";
+import { servicePages, SITE_URL } from "./lib/services";
+import { BUSINESS, INDEXABLE } from "./lib/site";
 
+const OG_IMAGE = {
+  url: "/og-granalva-limpieza-lavanderia-granada.jpg",
+  width: 1200,
+  height: 630,
+  alt: "Limpieza y lavandería profesional de Granalva en Granada",
+};
+
+// Valores por defecto. Cada página define su propio title, description y canonical.
 export const metadata: Metadata = {
   metadataBase: new URL(SITE_URL),
+  applicationName: BUSINESS.name,
   title: {
     default: "Empresa de limpieza y lavandería en Granada | Granalva",
     template: "%s | Granalva",
   },
   description:
-    "Limpieza profesional y lavandería en Granada para empresas, apartamentos turísticos, oficinas y particulares. Recogida, entrega y renting textil.",
-  alternates: {
-    canonical: "/",
-    languages: { "es-ES": "/" },
-  },
+    "Empresa de limpieza y lavandería profesional en Granada para empresas, alojamientos turísticos y particulares.",
   openGraph: {
     type: "website",
     locale: "es_ES",
-    url: SITE_URL,
-    siteName: "Granalva",
-    title: "Limpieza y lavandería profesional en Granada | Granalva",
-    description:
-      "Un mismo equipo para la limpieza, la lavandería y la gestión textil de empresas, alojamientos y particulares en Granada.",
-    images: [
-      {
-        url: "/service-cleaning.png",
-        width: 1200,
-        height: 630,
-        alt: "Servicio profesional de limpieza y lavandería de Granalva en Granada",
-      },
-    ],
+    siteName: BUSINESS.name,
+    images: [OG_IMAGE],
   },
-  twitter: {
-    card: "summary_large_image",
-    title: "Limpieza y lavandería profesional en Granada | Granalva",
-    description:
-      "Limpieza de empresas y alojamientos, lavandería profesional, recogida, entrega y renting textil en Granada.",
-    images: ["/service-cleaning.png"],
-  },
-  robots: {
-    index: true,
-    follow: true,
-    googleBot: {
-      index: true,
-      follow: true,
-      "max-image-preview": "large",
-      "max-snippet": -1,
-      "max-video-preview": -1,
-    },
-  },
-  icons: {
-    icon: "/favicon.svg",
-    shortcut: "/favicon.svg",
-  },
+  twitter: { card: "summary_large_image", images: [OG_IMAGE.url] },
+  robots: INDEXABLE
+    ? {
+        index: true,
+        follow: true,
+        googleBot: { index: true, follow: true, "max-image-preview": "large", "max-snippet": -1, "max-video-preview": -1 },
+      }
+    : { index: false, follow: false, googleBot: { index: false, follow: false } },
+  icons: { icon: "/favicon.svg", shortcut: "/favicon.svg", apple: "/granalva-logo.jpg" },
+  ...(process.env.GOOGLE_SITE_VERIFICATION ? { verification: { google: process.env.GOOGLE_SITE_VERIFICATION } } : {}),
+};
+
+export const viewport: Viewport = {
+  themeColor: "#123d92",
 };
 
 const structuredData = {
   "@context": "https://schema.org",
-  "@graph": [
-    {
-      "@type": ["Organization", "ProfessionalService"],
-      "@id": `${SITE_URL}/#organization`,
-      name: "Granalva",
-      legalName: "Limpiezas Granalva",
-      url: SITE_URL,
-      logo: `${SITE_URL}/granalva-logo.jpg`,
-      email: "info@limpiezasgranalva.com",
-      telephone: "+34744488964",
-      description:
-        "Empresa granadina de limpieza profesional, lavandería, recogida y entrega, y renting textil para empresas, alojamientos y particulares.",
-      areaServed: [
-        { "@type": "City", name: "Granada" },
-        { "@type": "AdministrativeArea", name: "Área metropolitana de Granada" },
-      ],
-      contactPoint: {
-        "@type": "ContactPoint",
-        telephone: "+34744488964",
-        email: "info@limpiezasgranalva.com",
-        contactType: "customer service",
-        areaServed: "ES-GR",
-        availableLanguage: "Spanish",
-      },
-      hasOfferCatalog: {
-        "@type": "OfferCatalog",
-        name: "Servicios de limpieza y lavandería en Granada",
-        itemListElement: servicePages.map((service) => ({
-          "@type": "Offer",
-          itemOffered: {
-            "@type": "Service",
-            name: service.navLabel,
-            url: `${SITE_URL}/servicios/${service.slug}`,
-            areaServed: "Granada",
-          },
-        })),
-      },
-    },
-    {
-      "@type": "WebSite",
-      "@id": `${SITE_URL}/#website`,
-      url: SITE_URL,
-      name: "Granalva",
-      inLanguage: "es-ES",
-      publisher: { "@id": `${SITE_URL}/#organization` },
-    },
-  ],
+  "@graph": [organizationJsonLd(servicePages), websiteJsonLd()],
 };
 
-export default function RootLayout({
-  children,
-}: Readonly<{
-  children: React.ReactNode;
-}>) {
+export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // Granaina se usa en todos los titulares: se precarga para evitar saltos de fuente.
+  preload("/fonts/granaina-limpia.otf", { as: "font", type: "font/otf", crossOrigin: "anonymous" });
+
   return (
     <html lang="es">
       <body className="antialiased">
-        <script
-          type="application/ld+json"
-          dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
-        />
+        <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(structuredData) }} />
         {children}
       </body>
     </html>

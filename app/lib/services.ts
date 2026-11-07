@@ -1,46 +1,89 @@
-// Dominio canónico. Se define por entorno (preproducción / producción) con
-// NEXT_PUBLIC_SITE_URL; el valor por defecto conserva el de la versión publicada.
-export const SITE_URL = (
-  process.env.NEXT_PUBLIC_SITE_URL || "https://granalva-propuesta-visual.manueljesus1605.chatgpt.site"
-).replace(/\/+$/, "");
+// Fuente única del contenido de las nueve páginas de servicio.
+// Cada campo de este modelo se trasladará a la colección `services` de Payload
+// (fase 4) con el mismo nombre, para que el propietario pueda editarlo en /admin.
+// Mapa de intenciones y palabras clave: docs/seo-strategy.md.
+
+/** Dominio canónico, sin barra final. Se define por entorno con NEXT_PUBLIC_SITE_URL. */
+export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://limpiezasgranalva.com").replace(/\/+$/, "");
+
+/** Imágenes de servicio. Pendiente de sustituir por fotografías reales de Granalva. */
+export const IMAGES = {
+  laundry: "/textiles-lavanderia-profesional-granada.png",
+  cleaning: "/limpieza-profesional-alojamiento-granada.png",
+  renting: "/ropa-cama-bano-renting-textil-granada.png",
+} as const;
 
 export type ServicePage = {
   slug: string;
+  /** Etiqueta corta para menús, breadcrumbs y tarjetas. */
   navLabel: string;
-  title: string;
+  /** H1 único de la página. */
+  h1: string;
   eyebrow: string;
+  /** Title SEO (≈ 50-65 caracteres). */
   metaTitle: string;
+  /** Meta description (≈ 120-160 caracteres). */
   metaDescription: string;
+  /** Intención de búsqueda principal que atiende la página (uso interno). */
+  intent: string;
+  primaryKeyword: string;
+  secondaryKeywords: string[];
   summary: string;
   image: string;
   imageAlt: string;
+  /** H2 de la introducción: contiene la palabra principal de forma natural. */
   introTitle: string;
   intro: string[];
   promise: string;
+  /** Necesidades que resuelve el servicio. */
+  needsTitle: string;
+  needs: { title: string; text: string }[];
   includes: { title: string; text: string }[];
   process: { title: string; text: string }[];
   audiences: string[];
+  /** Cobertura geográfica real. No añadir zonas sin confirmación del propietario. */
+  coverage: string;
   faqs: { question: string; answer: string }[];
-  related: string[];
+  /** Entre dos y cuatro servicios relacionados con texto de enlace descriptivo. */
+  related: { slug: string; anchor: string }[];
+  ctaTitle: string;
+  ctaText: string;
+  /** Fecha de la última revisión del contenido (ISO 8601). */
+  updatedAt: string;
 };
+
+const CONTENT_REVIEWED = "2026-11-07";
+const STANDARD_COVERAGE =
+  "Trabajamos en Granada capital y en el área metropolitana con rutas acordadas. Para otras ubicaciones de la provincia valoramos el volumen, la frecuencia y la viabilidad logística antes de confirmar el servicio.";
 
 export const servicePages: ServicePage[] = [
   {
     slug: "empresa-limpieza-granada",
     navLabel: "Empresa de limpieza",
-    title: "Empresa de limpieza en Granada para negocios que no pueden parar",
+    h1: "Empresa de limpieza profesional en Granada",
     eyebrow: "LIMPIEZA PROFESIONAL · GRANADA",
-    metaTitle: "Empresa de limpieza en Granada | Granalva",
-    metaDescription: "Limpieza profesional en Granada para empresas, oficinas, locales, alojamientos y centros. Equipo propio, planificación y presupuesto a medida.",
+    metaTitle: "Empresa de limpieza profesional en Granada | Granalva",
+    metaDescription:
+      "Empresa de limpieza en Granada para negocios, oficinas, locales y alojamientos. Servicios de limpieza profesional con equipo propio y presupuesto a medida.",
+    intent: "Contratar una empresa de limpieza profesional en Granada para un negocio o espacio profesional.",
+    primaryKeyword: "empresa de limpieza Granada",
+    secondaryKeywords: ["limpieza Granada", "limpieza profesional Granada", "servicios de limpieza Granada"],
     summary: "Un servicio de limpieza profesional organizado alrededor de tus horarios, tus espacios y el nivel de exigencia de tu actividad.",
-    image: "/service-cleaning.png",
-    imageAlt: "Equipo de Granalva realizando una limpieza profesional en Granada",
-    introTitle: "Limpieza profesional que se integra en tu operativa",
+    image: IMAGES.cleaning,
+    imageAlt: "Preparación de un dormitorio durante una limpieza profesional de alojamiento",
+    introTitle: "Una empresa de limpieza en Granada que se integra en tu operativa",
     intro: [
       "Una empresa necesita continuidad, discreción y una planificación que se cumpla. En Granalva estudiamos el espacio, la frecuencia, los horarios disponibles y las tareas críticas antes de definir el servicio.",
       "Coordinamos al equipo y mantenemos una comunicación directa para que la limpieza no dependa de soluciones improvisadas. El objetivo es sencillo: que cada jornada comience con el espacio preparado.",
+      "Nuestros servicios de limpieza en Granada abarcan mantenimiento periódico, limpiezas puntuales y profundas, apartamentos turísticos, oficinas, locales comerciales y espacios después de obras. Si tu negocio también necesita lavandería o renting textil, lo coordinamos dentro de la misma operativa.",
     ],
     promise: "Una propuesta ajustada al servicio real, no una tarifa genérica desconectada de tu negocio.",
+    needsTitle: "Qué resuelve una limpieza profesional bien planificada",
+    needs: [
+      { title: "Proveedores dispersos", text: "Un único interlocutor para limpieza, lavandería y textiles evita coordinar varias empresas a la vez." },
+      { title: "Limpieza que interrumpe", text: "Organizamos el servicio en las franjas que menos afectan a tu equipo y a tus clientes." },
+      { title: "Calidad irregular", text: "Las tareas y los puntos críticos quedan definidos y se revisan, en lugar de depender de cada jornada." },
+    ],
     includes: [
       { title: "Planificación", text: "Frecuencias, franjas horarias y tareas definidas según la actividad del espacio." },
       { title: "Equipo coordinado", text: "Profesionales organizados por Granalva y un interlocutor directo para el seguimiento." },
@@ -54,30 +97,50 @@ export const servicePages: ServicePage[] = [
       { title: "Revisamos y ajustamos", text: "Seguimos el servicio y adaptamos la planificación cuando sea necesario." },
     ],
     audiences: ["Oficinas y despachos", "Comercios y locales", "Centros deportivos", "Comunidades", "Alojamientos", "Espacios profesionales"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Cómo se calcula un presupuesto de limpieza para empresas?", answer: "Valoramos superficie, tipo de actividad, frecuencia, horario, ubicación, accesos y tareas necesarias. Con esa información preparamos una propuesta adaptada." },
       { question: "¿Podéis trabajar fuera del horario comercial?", answer: "Estudiamos las horas libres y la operativa de cada centro para proponer franjas que reduzcan las interferencias con clientes y trabajadores." },
       { question: "¿Trabajáis con varios centros de una misma empresa?", answer: "Sí. Podemos estudiar ubicaciones, tiempos de desplazamiento y frecuencia de cada centro para coordinar una operativa conjunta." },
       { question: "¿La limpieza puede ser periódica o puntual?", answer: "Preparamos servicios recurrentes y también limpiezas puntuales, profundas o asociadas a una necesidad concreta." },
     ],
-    related: ["limpieza-oficinas-locales-granada", "limpieza-apartamentos-turisticos-granada", "limpieza-fin-de-obra-granada"],
+    related: [
+      { slug: "limpieza-oficinas-locales-granada", anchor: "limpieza de oficinas y locales comerciales" },
+      { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos" },
+      { slug: "limpieza-fin-de-obra-granada", anchor: "limpieza fin de obra en Granada" },
+      { slug: "lavanderia-profesional-granada", anchor: "lavandería profesional para empresas" },
+    ],
+    ctaTitle: "Cuéntanos qué necesita tu empresa.",
+    ctaText: "Estudiaremos el espacio, la frecuencia y los horarios para preparar una propuesta de limpieza clara y ajustada.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "lavanderia-profesional-granada",
     navLabel: "Lavandería profesional",
-    title: "Lavandería profesional en Granada con recogida y entrega",
+    h1: "Lavandería profesional para empresas en Granada",
     eyebrow: "LAVANDERÍA PARA EMPRESAS",
-    metaTitle: "Lavandería profesional en Granada | Granalva",
-    metaDescription: "Lavandería profesional en Granada para empresas y alojamientos: desmanchado, lavado, secado, planchado, doblado, recogida y entrega.",
+    metaTitle: "Lavandería profesional en Granada para empresas | Granalva",
+    metaDescription:
+      "Lavandería en Granada para empresas y alojamientos: desmanchado, lavado, secado, planchado y doblado, con recogida y entrega coordinadas. Pide propuesta.",
+    intent: "Externalizar la lavandería de un negocio en Granada con un servicio profesional.",
+    primaryKeyword: "lavandería Granada",
+    secondaryKeywords: ["lavandería profesional Granada", "lavandería para empresas Granada", "lavandería con recogida y entrega Granada"],
     summary: "Externaliza el cuidado de tus textiles con una ruta coordinada, un proceso completo y atención directa.",
-    image: "/hero-laundry.png",
-    imageAlt: "Textiles limpios preparados por la lavandería profesional de Granalva",
-    introTitle: "Tus textiles preparados cuando tu negocio los necesita",
+    image: IMAGES.laundry,
+    imageAlt: "Ropa de cama, toallas y prendas limpias, dobladas y apiladas tras el servicio de lavandería",
+    introTitle: "Lavandería profesional en Granada: tus textiles listos cuando los necesitas",
     intro: [
       "La lavandería profesional no consiste solo en lavar. Requiere coordinar volúmenes, recogidas, entregas y acabados para que la ropa vuelva lista para entrar de nuevo en servicio.",
       "Granalva estudia el tipo de textil, la frecuencia y la operativa del cliente. Nuestro servicio puede incluir desmanchado previo, lavado, secado, planchado, doblado y transporte acordado.",
+      "Somos una lavandería para empresas en Granada con recogida y entrega: organizamos una ruta compatible con tu actividad para que no tengas que desplazarte ni dedicar personal a llevar y recoger la ropa.",
     ],
     promise: "Una ruta de lavandería pensada para dar continuidad a tu empresa, no para añadir otra preocupación.",
+    needsTitle: "Qué resuelve externalizar la lavandería",
+    needs: [
+      { title: "Falta de espacio y maquinaria", text: "No necesitas reservar espacio, equipos ni personal para lavar, secar y planchar dentro del negocio." },
+      { title: "Desplazamientos", text: "La recogida y la entrega se integran en una ruta acordada, sin viajes a la lavandería." },
+      { title: "Acabados irregulares", text: "Cada tipo de textil sigue el proceso acordado y se revisa antes de volver a tu operativa." },
+    ],
     includes: [
       { title: "Recogida coordinada", text: "Acordamos ubicación, días y franjas en función del volumen y la ruta." },
       { title: "Proceso completo", text: "Desmanchado, lavado, secado, planchado y doblado según el servicio contratado." },
@@ -91,30 +154,49 @@ export const servicePages: ServicePage[] = [
       { title: "Entregamos preparado", text: "La ropa vuelve doblada y organizada para volver a utilizarse." },
     ],
     audiences: ["Hoteles", "Apartamentos turísticos", "Residencias", "Centros deportivos", "Salones y clínicas", "Empresas con uniformidad"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿La lavandería incluye transporte?", answer: "Podemos incluir recogida y entrega dentro de una ruta acordada. La ubicación, frecuencia y volumen se estudian en cada propuesta." },
       { question: "¿Qué tipos de textiles gestionáis?", answer: "Estudiamos ropa de cama y baño, uniformidad, toallas y otros textiles profesionales según composición, estado y necesidades de acabado." },
       { question: "¿Existe un volumen mínimo?", answer: "Necesitamos conocer el volumen y la frecuencia para valorar la viabilidad de la ruta. Preparamos cada propuesta según la operativa real." },
       { question: "¿Podemos hacer una prueba de servicio?", answer: "Cuando la operativa lo permite, podemos valorar una prueba para comprobar acabados, tiempos y coordinación antes de consolidar la ruta." },
     ],
-    related: ["lavanderia-hoteles-granada", "lavanderia-apartamentos-turisticos-granada", "renting-textil-granada"],
+    related: [
+      { slug: "lavanderia-hoteles-granada", anchor: "lavandería para hoteles en Granada" },
+      { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
+      { slug: "renting-textil-granada", anchor: "renting textil para alojamientos" },
+    ],
+    ctaTitle: "Cuéntanos el volumen y la frecuencia de tu lavandería.",
+    ctaText: "Con los kilos aproximados, los tipos de textil y la ubicación preparamos una ruta y una propuesta adaptadas.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "lavanderia-hoteles-granada",
     navLabel: "Lavandería para hoteles",
-    title: "Lavandería para hoteles y alojamientos en Granada",
+    h1: "Lavandería para hoteles y alojamientos en Granada",
     eyebrow: "HOSTELERÍA · ROPA DE CAMA Y BAÑO",
     metaTitle: "Lavandería para hoteles en Granada | Granalva",
-    metaDescription: "Lavandería para hoteles y alojamientos en Granada. Gestión de sábanas y toallas, recogidas periódicas, entrega coordinada y renting textil.",
+    metaDescription:
+      "Lavandería para hoteles en Granada: lavado de sábanas y toallas, recogida y entrega de ropa hotelera coordinada con la ocupación y renting textil opcional.",
+    intent: "Externalizar el lavado de la ropa de un hotel o alojamiento en Granada.",
+    primaryKeyword: "lavandería para hoteles Granada",
+    secondaryKeywords: ["lavado de ropa de hotel", "lavandería hostelería Granada", "recogida y entrega de ropa hotelera"],
     summary: "Una operativa textil estable para habitaciones que deben estar listas, incluso en semanas de máxima ocupación.",
-    image: "/service-renting.png",
-    imageAlt: "Ropa de cama y baño preparada para hoteles en Granada",
-    introTitle: "Continuidad textil para ocupaciones exigentes",
+    image: IMAGES.renting,
+    imageAlt: "Sábanas y toallas blancas dobladas junto a una bolsa de lavandería",
+    introTitle: "Lavandería para hoteles en Granada pensada para la ocupación real",
     intro: [
       "En un hotel o alojamiento, una entrega tardía afecta directamente a la preparación de habitaciones. Por eso planteamos la lavandería como una parte de la operativa, no como un servicio aislado.",
       "Estudiamos ocupación, rotación, stock disponible, volumen semanal y puntos de recogida para definir una ruta que ayude a mantener la continuidad del establecimiento.",
+      "El lavado de ropa de hotel exige separar categorías, mantener los acabados y respetar plazos. Organizamos la recogida y entrega de ropa hotelera por tipología para que el equipo de pisos la reciba preparada para su distribución.",
     ],
     promise: "Ropa de cama y baño preparada para que el equipo pueda concentrarse en recibir al huésped.",
+    needsTitle: "Qué resuelve una lavandería coordinada con el hotel",
+    needs: [
+      { title: "Picos de ocupación", text: "La frecuencia de recogidas se ajusta a la temporada y a los fines de semana de mayor actividad." },
+      { title: "Stock insuficiente", text: "Calculamos la rotación necesaria y, si hace falta, estudiamos renting textil para reforzar el stock." },
+      { title: "Tiempo del equipo de pisos", text: "Los textiles llegan clasificados y doblados, listos para almacenarse y subir a planta." },
+    ],
     includes: [
       { title: "Plan de recogidas", text: "Frecuencia adaptada al volumen, temporada y capacidad de almacenamiento." },
       { title: "Ropa de cama", text: "Lavado, secado, acabado y doblado de sábanas, fundas y otros textiles." },
@@ -128,30 +210,49 @@ export const servicePages: ServicePage[] = [
       { title: "Entregamos para planta", text: "Preparamos los textiles para facilitar su almacenamiento y distribución." },
     ],
     audiences: ["Hoteles urbanos", "Alojamientos rurales", "Hostales", "Apartahoteles", "Residencias", "Complejos turísticos"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Podéis adaptar la frecuencia a la temporada alta?", answer: "Sí. La propuesta parte del volumen y de la estacionalidad; revisamos con el alojamiento las necesidades de los periodos de mayor ocupación." },
       { question: "¿Gestionáis sábanas y toallas?", answer: "Son las categorías principales del servicio hotelero. Confirmamos formatos, composición, acabados y cantidades antes de iniciar la operativa." },
       { question: "¿Ofrecéis renting textil para hoteles?", answer: "Podemos estudiar un modelo de renting de ropa de cama y baño vinculado a la lavandería y a la rotación necesaria." },
       { question: "¿Trabajáis fuera de Granada capital?", answer: "Trabajamos Granada y rutas acordadas en el área metropolitana. Para otras ubicaciones valoramos volumen, frecuencia y viabilidad logística." },
     ],
-    related: ["lavanderia-profesional-granada", "renting-textil-granada", "limpieza-apartamentos-turisticos-granada"],
+    related: [
+      { slug: "renting-textil-granada", anchor: "renting textil para hoteles y apartamentos" },
+      { slug: "lavanderia-profesional-granada", anchor: "lavandería profesional en Granada" },
+      { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
+    ],
+    ctaTitle: "Planifiquemos la lavandería de tu alojamiento.",
+    ctaText: "Indícanos plazas, ocupación aproximada y stock actual para dimensionar las recogidas y entregas.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "lavanderia-apartamentos-turisticos-granada",
     navLabel: "Lavandería para apartamentos",
-    title: "Lavandería para apartamentos turísticos en Granada",
+    h1: "Lavandería para apartamentos turísticos en Granada",
     eyebrow: "GESTORES Y ALOJAMIENTOS TURÍSTICOS",
-    metaTitle: "Lavandería apartamentos turísticos Granada | Granalva",
-    metaDescription: "Lavandería para apartamentos turísticos en Granada: recogida, lavado y entrega de sábanas y toallas coordinada con la rotación de huéspedes.",
+    metaTitle: "Lavandería para apartamentos turísticos en Granada | Granalva",
+    metaDescription:
+      "Lavandería para apartamentos turísticos en Granada: recogida, lavado de sábanas y toallas y entrega coordinada con la rotación de huéspedes.",
+    intent: "Resolver el lavado de sábanas y toallas de uno o varios apartamentos turísticos en Granada.",
+    primaryKeyword: "lavandería apartamentos turísticos Granada",
+    secondaryKeywords: ["lavado de sábanas y toallas", "lavandería para apartamentos", "recogida y entrega"],
     summary: "Textiles limpios y preparados para acompañar el ritmo real de entradas, salidas y cambios de última hora.",
-    image: "/hero-laundry.png",
-    imageAlt: "Sábanas y toallas para apartamentos turísticos en Granada",
-    introTitle: "La lavandería que entiende una entrada de huéspedes",
+    image: IMAGES.laundry,
+    imageAlt: "Sábanas y toallas limpias y dobladas para la rotación de un apartamento turístico",
+    introTitle: "Una lavandería para apartamentos turísticos que entiende una entrada de huéspedes",
     intro: [
       "Los apartamentos turísticos no funcionan con una semana idéntica a la anterior. Cambian las ocupaciones, los horarios de salida y el número de juegos textiles que entran en rotación.",
       "Granalva combina experiencia en limpieza turística y lavandería para coordinar recogidas, entregas y preparación de ropa de cama y baño con las necesidades del gestor.",
+      "El lavado de sábanas y toallas se organiza por juegos, con recogida y entrega en cada apartamento o en un punto centralizado, para que la ropa limpia esté disponible antes de la siguiente entrada.",
     ],
     promise: "Menos tiempo persiguiendo textiles y más control sobre la preparación de cada alojamiento.",
+    needsTitle: "Qué resuelve una lavandería coordinada con las reservas",
+    needs: [
+      { title: "Juegos que no llegan a tiempo", text: "La ruta se diseña a partir de las entradas y salidas, no de un calendario fijo." },
+      { title: "Varias ubicaciones", text: "Agrupamos recogidas por zonas o en un punto centralizado para simplificar la logística del gestor." },
+      { title: "Dos proveedores sin coordinar", text: "Lavandería y limpieza pueden contratarse juntas y organizarse con una sola planificación." },
+    ],
     includes: [
       { title: "Recogida por ruta", text: "Puntos y horarios acordados con el gestor o el equipo de limpieza." },
       { title: "Sábanas y fundas", text: "Proceso profesional y doblado para facilitar la preparación de camas." },
@@ -165,30 +266,49 @@ export const servicePages: ServicePage[] = [
       { title: "Ajustamos la ruta", text: "Revisamos la frecuencia cuando cambia el volumen o la temporada." },
     ],
     audiences: ["Gestores de apartamentos", "Propietarios profesionales", "Empresas de gestión vacacional", "Apartahoteles", "Viviendas turísticas", "Alojamientos rurales"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Recogéis directamente en los apartamentos?", answer: "Podemos estudiar recogida por ubicaciones o un punto centralizado. La opción adecuada depende de la dispersión, el volumen y la frecuencia." },
       { question: "¿Podéis coordinar lavandería y limpieza?", answer: "Sí. Granalva presta ambos servicios y puede estudiar una operativa conjunta para simplificar la preparación de los alojamientos." },
       { question: "¿Cómo se calcula el volumen?", answer: "Partimos del número de camas, juegos por alojamiento, ocupación estimada y rotación semanal. Una prueba o histórico ayuda a ajustar la propuesta." },
       { question: "¿Tenéis renting de sábanas y toallas?", answer: "Podemos valorar renting textil para reducir inversión y reforzar la disponibilidad de juegos en rotación." },
     ],
-    related: ["limpieza-apartamentos-turisticos-granada", "renting-textil-granada", "lavanderia-profesional-granada"],
+    related: [
+      { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos en Granada" },
+      { slug: "renting-textil-granada", anchor: "alquiler de sábanas y toallas (renting textil)" },
+      { slug: "lavanderia-hoteles-granada", anchor: "lavandería para hoteles y alojamientos" },
+    ],
+    ctaTitle: "Organicemos la lavandería de tus apartamentos.",
+    ctaText: "Cuéntanos cuántos alojamientos gestionas, sus plazas y dónde están para proponer una ruta de recogida y entrega.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "limpieza-apartamentos-turisticos-granada",
     navLabel: "Limpieza de apartamentos",
-    title: "Limpieza de apartamentos turísticos en Granada",
+    h1: "Limpieza de apartamentos turísticos en Granada",
     eyebrow: "ESPECIALIDAD GRANALVA",
-    metaTitle: "Limpieza de apartamentos turísticos Granada | Granalva",
-    metaDescription: "Limpieza de apartamentos turísticos en Granada coordinada con entradas y salidas, revisión, lavandería y gestión textil para alojamientos.",
+    metaTitle: "Limpieza de apartamentos turísticos en Granada | Granalva",
+    metaDescription:
+      "Limpieza de apartamentos turísticos en Granada entre huéspedes, coordinada con entradas y salidas, con revisión final y lavandería opcional.",
+    intent: "Contratar la limpieza entre estancias de apartamentos turísticos o viviendas vacacionales en Granada.",
+    primaryKeyword: "limpieza apartamentos turísticos Granada",
+    secondaryKeywords: ["limpieza alquiler vacacional", "limpieza entre huéspedes", "limpieza de alojamientos"],
     summary: "Apartamentos preparados para la siguiente entrada con un proceso pensado para la rotación turística.",
-    image: "/service-cleaning.png",
-    imageAlt: "Limpieza de un apartamento turístico en Granada por Granalva",
-    introTitle: "No es limpiar una vivienda: es preparar una experiencia",
+    image: IMAGES.cleaning,
+    imageAlt: "Preparación de la cama de un apartamento turístico entre dos estancias",
+    introTitle: "Limpieza de apartamentos turísticos: no es limpiar una vivienda, es preparar una experiencia",
     intro: [
       "Una limpieza turística tiene un tiempo concreto, una entrada prevista y una lista de detalles que afectan directamente a la percepción del huésped. Por eso trabajamos con una planificación específica para alojamientos.",
       "Coordinamos limpieza, revisión del espacio, presentación y, cuando se contrata, lavandería o renting textil. El gestor mantiene un interlocutor directo para organizar la operativa.",
+      "La limpieza entre huéspedes de un alquiler vacacional se organiza a partir de las horas de salida y de entrada. Cada alojamiento tiene su ficha con accesos, capacidad y detalles de presentación para que el resultado sea constante.",
     ],
     promise: "Cada salida se convierte en una entrada preparada, no en una carrera de última hora.",
+    needsTitle: "Qué resuelve una limpieza turística profesional",
+    needs: [
+      { title: "Franjas muy ajustadas", text: "Planificamos el servicio entre la salida y la siguiente entrada acordadas con el gestor." },
+      { title: "Detalles que se olvidan", text: "Un protocolo por alojamiento fija los puntos que se revisan antes de cerrar el servicio." },
+      { title: "Ropa de cama sin coordinar", text: "La limpieza puede ir unida a la lavandería y al renting textil para que los juegos estén disponibles." },
+    ],
     includes: [
       { title: "Limpieza entre estancias", text: "Proceso adaptado a salidas, entradas y características de cada alojamiento." },
       { title: "Revisión de detalles", text: "Comprobación de los puntos acordados antes de considerar finalizado el servicio." },
@@ -202,30 +322,49 @@ export const servicePages: ServicePage[] = [
       { title: "Seguimiento", text: "Registramos incidencias operativas y ajustamos el proceso cuando procede." },
     ],
     audiences: ["Apartamentos turísticos", "Viviendas de uso turístico", "Gestores profesionales", "Apartahoteles", "Alojamientos rurales", "Propietarios con varias unidades"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Trabajáis coordinados con el calendario de reservas?", answer: "Organizamos la planificación a partir de entradas, salidas y franjas disponibles que facilita el gestor." },
       { question: "¿Incluye lavandería?", answer: "La lavandería puede contratarse y coordinarse con la limpieza. Se presupuesta según volumen, frecuencia y ruta." },
       { question: "¿Podéis atender varios apartamentos?", answer: "Sí. Estudiamos ubicación, tiempos, características y rotación de cada unidad para diseñar una planificación conjunta." },
       { question: "¿Cómo preparáis el presupuesto?", answer: "Valoramos superficie, capacidad, distribución, frecuencia, ubicación, accesos y tareas acordadas. El presupuesto se plantea por la operativa necesaria." },
     ],
-    related: ["lavanderia-apartamentos-turisticos-granada", "renting-textil-granada", "empresa-limpieza-granada"],
+    related: [
+      { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
+      { slug: "renting-textil-granada", anchor: "renting textil para alojamientos" },
+      { slug: "empresa-limpieza-granada", anchor: "empresa de limpieza profesional en Granada" },
+    ],
+    ctaTitle: "Prepara cada entrada sin carreras de última hora.",
+    ctaText: "Indícanos cuántos apartamentos gestionas, su capacidad y la rotación habitual para proponerte una planificación.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "limpieza-oficinas-locales-granada",
     navLabel: "Oficinas y locales",
-    title: "Limpieza de oficinas y locales en Granada",
+    h1: "Limpieza de oficinas y locales comerciales en Granada",
     eyebrow: "ESPACIOS DE TRABAJO Y ATENCIÓN AL PÚBLICO",
-    metaTitle: "Limpieza de oficinas y locales Granada | Granalva",
-    metaDescription: "Limpieza de oficinas, despachos, comercios y locales en Granada. Horarios adaptados, planificación periódica y equipo profesional coordinado.",
+    metaTitle: "Limpieza de oficinas y locales comerciales en Granada | Granalva",
+    metaDescription:
+      "Limpieza de oficinas, despachos y locales comerciales en Granada. Horarios adaptados a tu actividad, planificación periódica y equipo coordinado.",
+    intent: "Contratar la limpieza periódica de una oficina, despacho o local comercial en Granada.",
+    primaryKeyword: "limpieza oficinas Granada",
+    secondaryKeywords: ["limpieza locales comerciales Granada", "limpieza de despachos", "limpieza de comercios"],
     summary: "Un plan de limpieza compatible con tus horarios para que el equipo y los clientes encuentren siempre el espacio preparado.",
-    image: "/service-cleaning.png",
-    imageAlt: "Servicio de limpieza de oficinas y locales comerciales en Granada",
-    introTitle: "Limpieza que respeta el ritmo de tu actividad",
+    image: IMAGES.cleaning,
+    imageAlt: "Profesional de limpieza preparando un espacio interior",
+    introTitle: "Limpieza de oficinas en Granada que respeta el ritmo de tu actividad",
     intro: [
       "Cada oficina o local tiene horas de apertura, zonas de uso intensivo y requisitos diferentes. Antes de presupuestar, conocemos el espacio y las franjas en las que podemos trabajar sin interrumpir la actividad.",
       "Definimos tareas periódicas, puntos críticos y frecuencia. También podemos estudiar varios centros de una misma empresa para organizar desplazamientos y mantener un estándar común.",
+      "En la limpieza de locales comerciales cuidamos especialmente los accesos, el escaparate, la zona de atención y los aseos, que son lo primero que ve el cliente al entrar.",
     ],
     promise: "Tu espacio listo para abrir, recibir al equipo o atender al siguiente cliente.",
+    needsTitle: "Qué resuelve una limpieza periódica bien organizada",
+    needs: [
+      { title: "Interrupciones en horario laboral", text: "Trabajamos en horas libres o en franjas compatibles con la actividad del centro." },
+      { title: "Zonas de uso intensivo", text: "Aseos, cocinas y zonas comunes tienen la frecuencia que necesitan, no la misma que el resto." },
+      { title: "Imagen ante el cliente", text: "Recepción, accesos y zonas visibles se mantienen como parte prioritaria del protocolo." },
+    ],
     includes: [
       { title: "Zonas de trabajo", text: "Mesas, despachos, salas y áreas compartidas según el protocolo acordado." },
       { title: "Atención al público", text: "Cuidado de accesos, recepción y zonas visibles para clientes." },
@@ -239,30 +378,49 @@ export const servicePages: ServicePage[] = [
       { title: "Mantenemos el estándar", text: "Revisamos la operativa y ajustamos los puntos necesarios." },
     ],
     audiences: ["Oficinas", "Despachos profesionales", "Comercios", "Centros deportivos", "Clínicas y centros", "Locales con atención al público"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Os adaptáis a las horas libres del centro?", answer: "Sí. Necesitamos conocer horarios de apertura, actividad y accesos para proponer franjas compatibles." },
       { question: "¿Podéis limpiar varios locales?", answer: "Estudiamos cada ubicación y los desplazamientos para preparar una propuesta conjunta y operativamente viable." },
       { question: "¿Aportáis productos y materiales?", answer: "Definimos en la propuesta qué productos, consumibles y medios forman parte del servicio según las necesidades del espacio." },
       { question: "¿El servicio se calcula por horas?", answer: "Analizamos las horas estimadas, pero la propuesta puede plantearse por servicio y frecuencia, con tareas y condiciones claramente definidas." },
     ],
-    related: ["empresa-limpieza-granada", "limpieza-fin-de-obra-granada", "lavanderia-profesional-granada"],
+    related: [
+      { slug: "empresa-limpieza-granada", anchor: "empresa de limpieza profesional en Granada" },
+      { slug: "limpieza-fin-de-obra-granada", anchor: "limpieza fin de obra antes de abrir un local" },
+      { slug: "lavanderia-profesional-granada", anchor: "lavandería para empresas con uniformidad" },
+    ],
+    ctaTitle: "Mantén tu oficina o local siempre preparado.",
+    ctaText: "Cuéntanos la superficie, los horarios y la frecuencia que necesitas para preparar una propuesta de limpieza periódica.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "limpieza-fin-de-obra-granada",
     navLabel: "Limpieza fin de obra",
-    title: "Limpieza de fin de obra y reforma en Granada",
+    h1: "Limpieza fin de obra y después de reformas en Granada",
     eyebrow: "ESPACIOS LISTOS PARA ESTRENAR",
-    metaTitle: "Limpieza fin de obra en Granada | Granalva",
-    metaDescription: "Limpieza fin de obra y reforma en Granada para viviendas, locales, oficinas y promociones. Valoración previa y servicio profesional detallado.",
+    metaTitle: "Limpieza fin de obra y reformas en Granada | Granalva",
+    metaDescription:
+      "Limpieza fin de obra en Granada para viviendas, locales y oficinas. Limpieza después de reforma con valoración previa y revisión final.",
+    intent: "Dejar un espacio listo para su uso después de una obra o reforma en Granada.",
+    primaryKeyword: "limpieza fin de obra Granada",
+    secondaryKeywords: ["limpieza después de reforma", "limpieza de obra", "limpieza final de obra"],
     summary: "Retiramos la suciedad propia de una obra o reforma para que el espacio pueda entregarse, abrir o volver a utilizarse.",
-    image: "/service-cleaning.png",
-    imageAlt: "Limpieza profesional de fin de obra en Granada",
-    introTitle: "El último trabajo antes de abrir la puerta",
+    image: IMAGES.cleaning,
+    imageAlt: "Espacio interior preparado y limpio, listo para volver a utilizarse",
+    introTitle: "Limpieza fin de obra en Granada: el último trabajo antes de abrir la puerta",
     intro: [
       "El polvo fino, los restos adheridos y la suciedad de una reforma requieren una planificación distinta al mantenimiento habitual. Evaluamos el estado del espacio y los materiales antes de definir tareas y medios.",
       "Trabajamos en viviendas, locales, oficinas y otros espacios después de obras o reformas, con una propuesta ajustada a superficie, accesos, nivel de suciedad y fecha de entrega.",
+      "Una limpieza después de reforma avanza por fases: primero la retirada general de polvo y restos, después superficies, cristales y detalles, y por último una revisión de los puntos acordados.",
     ],
     promise: "Un espacio preparado para su entrega o apertura, sin trasladar la limpieza final al cliente.",
+    needsTitle: "Qué resuelve una limpieza de obra profesional",
+    needs: [
+      { title: "Polvo que vuelve a aparecer", text: "La limpieza por fases evita repartir el polvo fino de una zona a otra." },
+      { title: "Materiales delicados", text: "Valoramos cada superficie antes de elegir productos y métodos." },
+      { title: "Fechas de entrega", text: "Organizamos el servicio en función del día en que el espacio debe estar disponible." },
+    ],
     includes: [
       { title: "Polvo de obra", text: "Retirada progresiva de polvo fino en superficies y zonas acordadas." },
       { title: "Superficies", text: "Tratamiento adaptado al material y al estado observado en la valoración." },
@@ -276,30 +434,49 @@ export const servicePages: ServicePage[] = [
       { title: "Revisión final", text: "Comprobamos los puntos acordados antes de cerrar el servicio." },
     ],
     audiences: ["Viviendas reformadas", "Locales comerciales", "Oficinas", "Promociones", "Alojamientos renovados", "Profesionales y particulares"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Necesitáis visitar la obra antes?", answer: "Una valoración o información visual detallada permite definir mejor el alcance, los medios y el tiempo necesario." },
       { question: "¿Retiráis escombros?", answer: "La retirada de escombros no debe darse por incluida. Confirmamos qué residuos existen y qué tareas forman parte del presupuesto." },
       { question: "¿Podéis trabajar antes de una apertura?", answer: "Sí. Necesitamos conocer la fecha objetivo y el estado real para comprobar disponibilidad y organizar el servicio." },
       { question: "¿Trabajáis para empresas y particulares?", answer: "Sí. Valoramos viviendas, locales, oficinas y otros espacios tanto para clientes profesionales como particulares." },
     ],
-    related: ["empresa-limpieza-granada", "limpieza-oficinas-locales-granada", "limpieza-apartamentos-turisticos-granada"],
+    related: [
+      { slug: "limpieza-oficinas-locales-granada", anchor: "limpieza periódica de oficinas y locales" },
+      { slug: "empresa-limpieza-granada", anchor: "empresa de limpieza profesional en Granada" },
+      { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos reformados" },
+    ],
+    ctaTitle: "¿Cuándo tiene que estar listo el espacio?",
+    ctaText: "Envíanos la superficie, el tipo de obra y la fecha objetivo. Si es posible, añade fotografías para valorar el alcance.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "renting-textil-granada",
     navLabel: "Renting textil",
-    title: "Renting textil en Granada para alojamientos y empresas",
+    h1: "Renting textil para alojamientos y empresas en Granada",
     eyebrow: "SÁBANAS · TOALLAS · ROTACIÓN",
-    metaTitle: "Renting textil en Granada | Granalva",
-    metaDescription: "Renting textil en Granada para hoteles y apartamentos turísticos. Sábanas y toallas vinculadas a lavandería, rotación y entregas acordadas.",
+    metaTitle: "Renting textil en Granada para alojamientos | Granalva",
+    metaDescription:
+      "Renting textil en Granada: alquiler de sábanas y toallas para hoteles y apartamentos turísticos, con lavandería, rotación y entregas acordadas.",
+    intent: "Disponer de ropa de cama y baño para un alojamiento sin comprar todo el stock.",
+    primaryKeyword: "renting textil Granada",
+    secondaryKeywords: ["alquiler de sábanas y toallas", "textiles para hoteles", "textiles para apartamentos"],
     summary: "Disponibilidad de ropa de cama y baño sin asumir toda la compra, reposición y rotación del stock.",
-    image: "/service-renting.png",
-    imageAlt: "Sábanas y toallas del servicio de renting textil de Granalva",
-    introTitle: "Textiles disponibles sin inmovilizar más stock del necesario",
+    image: IMAGES.renting,
+    imageAlt: "Juego de sábanas y toallas blancas preparado para un alojamiento",
+    introTitle: "Renting textil en Granada: textiles disponibles sin inmovilizar más stock del necesario",
     intro: [
       "El renting textil ayuda a reducir la inversión inicial y simplifica la reposición de ropa de cama y baño. Para que funcione, debe estar coordinado con la lavandería y con el ritmo de entradas del alojamiento.",
       "Analizamos plazas, juegos en rotación, frecuencia y necesidades de almacenamiento antes de preparar una propuesta. El objetivo es dimensionar el servicio, no acumular textiles sin control.",
+      "En la práctica funciona como un alquiler de sábanas y toallas vinculado al lavado: los textiles para hoteles y apartamentos entran en un ciclo de uso, recogida, lavandería y entrega acordado en la propuesta.",
     ],
     promise: "Un sistema textil dimensionado para la operativa real del alojamiento.",
+    needsTitle: "Qué resuelve el renting textil",
+    needs: [
+      { title: "Inversión inicial", text: "Evitas comprar de una vez todos los juegos necesarios para abrir o ampliar un alojamiento." },
+      { title: "Reposición y desgaste", text: "Las condiciones de reposición quedan definidas desde el principio." },
+      { title: "Almacenamiento", text: "La rotación se calcula para no acumular más textiles de los que necesitas." },
+    ],
     includes: [
       { title: "Ropa de cama", text: "Estudio de sábanas y piezas necesarias según tipología de cama y rotación." },
       { title: "Ropa de baño", text: "Toallas y categorías acordadas para cada tipo de alojamiento." },
@@ -313,30 +490,49 @@ export const servicePages: ServicePage[] = [
       { title: "Integramos la lavandería", text: "Coordinamos el cuidado de los textiles con la ruta del cliente." },
     ],
     audiences: ["Hoteles", "Apartamentos turísticos", "Apartahoteles", "Alojamientos rurales", "Residencias", "Gestores profesionales"],
+    coverage: STANDARD_COVERAGE,
     faqs: [
       { question: "¿Qué incluye el renting textil?", answer: "La propuesta define las categorías y cantidades de textiles, su lavandería, rotación, entregas y condiciones de reposición." },
       { question: "¿Puedo combinar stock propio y renting?", answer: "Podemos estudiar una solución que complemente el stock existente cuando resulte operativamente viable." },
       { question: "¿Cómo calculáis los juegos necesarios?", answer: "Partimos de plazas, ocupación, frecuencia de recogida y entrega, margen operativo y capacidad de almacenamiento." },
       { question: "¿El renting está disponible sin lavandería?", answer: "Se estudia como una solución vinculada a la gestión y cuidado de los textiles; confirmamos el modelo adecuado en la propuesta." },
     ],
-    related: ["lavanderia-hoteles-granada", "lavanderia-apartamentos-turisticos-granada", "lavanderia-profesional-granada"],
+    related: [
+      { slug: "lavanderia-hoteles-granada", anchor: "lavandería para hoteles en Granada" },
+      { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
+      { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos" },
+    ],
+    ctaTitle: "Calculemos los textiles que necesita tu alojamiento.",
+    ctaText: "Indícanos plazas, tipos de cama, ocupación y stock actual para dimensionar una propuesta de renting textil.",
+    updatedAt: CONTENT_REVIEWED,
   },
   {
     slug: "lavanderia-domicilio-granada",
     navLabel: "Lavandería a domicilio",
-    title: "Lavandería a domicilio en Granada: recogemos tu colada",
+    h1: "Lavandería a domicilio con recogida y entrega en Granada",
     eyebrow: "PARA PARTICULARES",
-    metaTitle: "Lavandería a domicilio en Granada | Granalva",
-    metaDescription: "Lavandería a domicilio en Granada para particulares. Recogemos tu ropa, la lavamos, secamos y doblamos, y la devolvemos preparada.",
+    metaTitle: "Lavandería a domicilio en Granada con recogida | Granalva",
+    metaDescription:
+      "Lavandería a domicilio en Granada: recogemos tu ropa, la lavamos, secamos y doblamos, y te la devolvemos en casa. Colada de 4, 8 o 12 kg.",
+    intent: "Que un particular delegue su colada con recogida y entrega en casa en Granada.",
+    primaryKeyword: "lavandería a domicilio Granada",
+    secondaryKeywords: ["recogida y entrega de ropa", "colada a domicilio", "lavado y doblado"],
     summary: "Tu colada sale de casa y vuelve limpia, seca y doblada para que recuperes tiempo sin desplazarte.",
-    image: "/hero-laundry.png",
-    imageAlt: "Colada limpia y doblada del servicio de lavandería a domicilio en Granada",
-    introTitle: "La semana ya tiene suficientes tareas",
+    image: IMAGES.laundry,
+    imageAlt: "Colada limpia, seca y doblada lista para devolverse a domicilio",
+    introTitle: "Lavandería a domicilio en Granada: la semana ya tiene suficientes tareas",
     intro: [
       "La lavandería a domicilio está pensada para personas que quieren ahorrar tiempo, resolver una acumulación de ropa o delegar la colada habitual sin desplazarse.",
       "Acordamos la recogida, cuidamos la ropa según el servicio contratado y la devolvemos limpia, seca y doblada. También puedes consultarnos por textiles del hogar y necesidades puntuales.",
+      "La colada a domicilio funciona con tres tamaños de referencia —hasta 4, 8 o 12 kg— para que puedas indicarnos el volumen aproximado. La recogida y entrega de ropa se confirman contigo antes del servicio.",
     ],
     promise: "Menos bolsas, menos lavadoras y más tiempo para lo que sí quieres hacer.",
+    needsTitle: "Qué resuelve la lavandería a domicilio",
+    needs: [
+      { title: "Falta de tiempo", text: "Delegas el lavado y doblado de la ropa de la semana sin cambiar tu rutina." },
+      { title: "Ropa acumulada", text: "Resolvemos de una vez una colada grande o textiles del hogar que se han ido acumulando." },
+      { title: "Sin desplazamientos", text: "Recogemos y devolvemos la ropa en la dirección y franja acordadas." },
+    ],
     includes: [
       { title: "Recogida", text: "Acordamos dirección, día y franja según disponibilidad de ruta." },
       { title: "Lavado", text: "Clasificación básica y proceso de lavado conforme al servicio contratado." },
@@ -350,13 +546,21 @@ export const servicePages: ServicePage[] = [
       { title: "La devolvemos", text: "Recibes la ropa preparada para volver al armario." },
     ],
     audiences: ["Colada semanal", "Familias", "Profesionales con poco tiempo", "Estudiantes", "Textiles del hogar", "Necesidades puntuales"],
+    coverage:
+      "Recogemos y entregamos en Granada y en el área metropolitana según la disponibilidad de ruta. Al solicitar el servicio te confirmamos si tu dirección está incluida y la franja disponible.",
     faqs: [
       { question: "¿Cómo solicito la recogida?", answer: "Puedes contactar por teléfono, correo o el formulario indicando dirección, volumen aproximado y disponibilidad." },
       { question: "¿Qué tamaño de colada puedo enviar?", answer: "La web muestra referencias de 4, 8 y 12 kg. Confirmamos contigo el volumen y las condiciones antes de la recogida." },
       { question: "¿La ropa vuelve doblada?", answer: "El servicio de colada contempla lavado, secado y doblado, salvo que se acuerde otro tratamiento o acabado." },
       { question: "¿Recogéis edredones o textiles grandes?", answer: "Consúltanos el tipo, tamaño y composición para confirmar si podemos tratarlo y preparar una propuesta." },
     ],
-    related: ["lavanderia-profesional-granada", "empresa-limpieza-granada", "renting-textil-granada"],
+    related: [
+      { slug: "lavanderia-profesional-granada", anchor: "lavandería profesional para empresas" },
+      { slug: "empresa-limpieza-granada", anchor: "servicios de limpieza en Granada" },
+    ],
+    ctaTitle: "Solicita la recogida de tu colada.",
+    ctaText: "Indícanos tu dirección, el tamaño aproximado de la colada y tu disponibilidad. Te confirmamos la franja de recogida.",
+    updatedAt: CONTENT_REVIEWED,
   },
 ];
 

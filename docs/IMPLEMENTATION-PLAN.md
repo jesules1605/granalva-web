@@ -41,7 +41,31 @@ Criterio de aceptación: lint y pruebas en verde; las 11 rutas con el mismo tít
   - validación obligatoria del formulario;
   - 0 errores en la consola.
 
+### Fase SEO — Arquitectura SEO, contenido y correcciones auditadas ✅ (7 nov 2026)
+
+Encargo del propietario: SEO orgánico y local como prioridad transversal. Detalle en `docs/seo-strategy.md`.
+
+| Archivo | Cambio |
+|---|---|
+| `app/lib/services.ts` | Modelo SEO por servicio (H1, title, description, intención, palabras clave, «qué resuelve», cobertura, relacionados con texto de anclaje, CTA, `updatedAt`) y contenido ampliado. `SITE_URL` por defecto pasa a `https://limpiezasgranalva.com` |
+| `app/lib/site.ts`, `app/lib/seo.ts`, `app/lib/redirects.ts`, `app/lib/home-content.ts` | NAP único, reglas de indexación, generadores JSON-LD, mapa 301 de WordPress y contenido de la portada |
+| `app/page.tsx` + `app/components/home/*` | Portada como componente de servidor con H1, introducción y CTA acordados. Las zonas interactivas pasan a componentes de cliente aislados |
+| `app/components/service-page.tsx`, `app/servicios/**` | Breadcrumbs visibles, secciones «Qué resuelve» y «Zona de servicio», relacionados con anclaje descriptivo, CTA por intención, fecha de revisión y JSON-LD `WebPage`/`Service`/`BreadcrumbList`/`FAQPage`/`CollectionPage` |
+| `app/components/mobile-nav.tsx`, `site-chrome.tsx` | Menú móvil accesible (portal, foco atrapado, Escape) y pie con los 9 servicios |
+| `app/not-found.tsx` | 404 diseñada con `noindex` |
+| `app/robots.ts`, `app/sitemap.ts`, `app/layout.tsx`, `proxy.ts`, `next.config.ts` | Robots con exclusiones, `lastmod` real, `noindex` en preproducción, un solo 301 para www, WordPress y barra final, y cabeceras de seguridad y caché |
+| `public/` | Imágenes con nombres descriptivos, imagen OG de 1200×630 y póster WebP del vídeo (100 KB en lugar de un PNG de 2 MB) |
+| `app/globals.css` | Titulares auditados, compensación de anclas, menú, breadcrumbs, secciones nuevas y contraste AA |
+| `tests/rendered-html.test.mjs` | 10 pruebas: mapa title/H1, contenido inicial, breadcrumbs, JSON-LD veraz, alt, enlaces y páginas huérfanas, sitemap y robots, 404, 301 sin cadenas y www |
+| `docs/` | `seo-strategy.md`, `SEO-LOCAL-Y-AUTORIDAD.md`, `CALENDARIO-EDITORIAL.md`, `MEDICION-SEO.md` y `scripts/seo-map.mjs` |
+
 ### Fase 2 — Correcciones de diseño auditadas (`docs/AUDIT-HANDOFF.md`)
+
+**Estado tras la fase SEO:** resueltos los puntos 1 (menú móvil), 2 y 3 (titulares), 4 (solapamiento del H1), 5 (iniciales sustituidas por el emblema real hasta tener fotografías), 6 (404) y 9 (anclas bajo la cabecera fija). Quedan pendientes:
+
+- el 7 (formulario real, fase 6);
+- el 8 (textos legales, fase 7);
+- el 10: revisión de las imágenes provisionales; la de renting muestra un tejido con formas geométricas, y conviene sustituirla por una fotografía real.
 
 | Defecto | Archivos |
 |---|---|

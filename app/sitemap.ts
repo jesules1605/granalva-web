@@ -1,28 +1,21 @@
 import type { MetadataRoute } from "next";
-import { servicePages, SITE_URL } from "./lib/services";
+import { servicePages } from "./lib/services";
+import { absoluteUrl } from "./lib/site";
 
+// Solo URLs publicadas, indexables y canónicas. Con Payload (fase 4) se generará
+// a partir del contenido publicado, excluyendo borradores y páginas noindex.
 export default function sitemap(): MetadataRoute.Sitemap {
-  const lastModified = new Date("2026-11-05T00:00:00.000Z");
-  const serviceUrls: MetadataRoute.Sitemap = servicePages.map((service) => ({
-    url: `${SITE_URL}/servicios/${service.slug}`,
-    lastModified,
-    changeFrequency: "monthly",
-    priority: service.slug === "empresa-limpieza-granada" || service.slug === "lavanderia-profesional-granada" ? 0.9 : 0.8,
-  }));
+  const latest = servicePages.map((service) => service.updatedAt).sort().at(-1)!;
+  const priorityServices = new Set(["empresa-limpieza-granada", "lavanderia-profesional-granada"]);
 
   return [
-    {
-      url: SITE_URL,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 1,
-    },
-    {
-      url: `${SITE_URL}/servicios`,
-      lastModified,
-      changeFrequency: "monthly",
-      priority: 0.9,
-    },
-    ...serviceUrls,
+    { url: absoluteUrl("/"), lastModified: latest, changeFrequency: "monthly", priority: 1 },
+    { url: absoluteUrl("/servicios"), lastModified: latest, changeFrequency: "monthly", priority: 0.9 },
+    ...servicePages.map((service) => ({
+      url: absoluteUrl(`/servicios/${service.slug}`),
+      lastModified: service.updatedAt,
+      changeFrequency: "monthly" as const,
+      priority: priorityServices.has(service.slug) ? 0.9 : 0.8,
+    })),
   ];
 }
