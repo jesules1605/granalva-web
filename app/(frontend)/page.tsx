@@ -57,7 +57,7 @@ const structuredData = {
 
 export default function Home() {
   // Imagen de fondo del hero (elemento LCP): se solicita con prioridad alta.
-  preload("/textiles-lavanderia-profesional-granada-poster.webp", { as: "image", fetchPriority: "high" });
+  preload("/video/granalva-hero-poster-1280.webp", { as: "image", fetchPriority: "high" });
 
   return (
     <main className="site-shell home">
@@ -168,25 +168,18 @@ export default function Home() {
       </section>
 
       {/* 8. Sectores atendidos */}
-      <section className="sector-authority" id="clientes">
-        <div className="sector-authority__heading">
-          <span className="section-number">EXPERIENCIA MULTISECTORIAL</span>
-          <h2>Preparados para espacios<br /><em>que tienen que estar siempre listos.</em></h2>
-          <p>Trabajamos con negocios que dependen de una operación impecable, puntual y discreta, incluso en los días de mayor actividad.</p>
-        </div>
-        <div className="sector-marquee" aria-label="Sectores atendidos por Granalva">
-          {[0, 1].map((copy) => (
-            <div className="sector-track" key={copy} aria-hidden={copy === 1}>
-              {sectors.map((sector, index) => (
-                <div className="sector-logo" key={`${copy}-${sector}`}>
-                  <span>{String(index + 1).padStart(2, "0")}</span>
-                  <strong>{sector}</strong>
-                  <LogoSeal small />
-                </div>
-              ))}
-            </div>
+      <section className="sectors" id="clientes" aria-labelledby="sectores-title">
+        <span className="section-number section-number--light">EXPERIENCIA MULTISECTORIAL</span>
+        <h2 id="sectores-title" className="sectors__title">Preparados para espacios{" "}<br /><em>que tienen que estar siempre listos.</em></h2>
+        <ul className="sectors__grid" aria-label="Sectores atendidos por Granalva">
+          {sectors.map((sector, index) => (
+            <li className="sector-card" key={sector}>
+              <span className="sector-card__number">{String(index + 1).padStart(2, "0")}</span>
+              <strong>{sector}</strong>
+              <LogoSeal small />
+            </li>
           ))}
-        </div>
+        </ul>
       </section>
 
       {/* 9. Reseñas (logotipos de clientes y casos de éxito, cuando haya autorización) */}

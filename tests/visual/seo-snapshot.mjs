@@ -1,6 +1,6 @@
 // Instantánea SEO por ruta: node tests/visual/seo-snapshot.mjs <baseUrl> > snapshot.json
 const base = process.argv[2] ?? "http://localhost:3000";
-const routes = ["/", "/servicios", "/servicios/empresa-limpieza-granada", "/servicios/lavanderia-profesional-granada", "/servicios/lavanderia-hoteles-granada", "/servicios/lavanderia-apartamentos-turisticos-granada", "/servicios/limpieza-apartamentos-turisticos-granada", "/servicios/limpieza-oficinas-locales-granada", "/servicios/limpieza-fin-de-obra-granada", "/servicios/renting-textil-granada", "/servicios/lavanderia-domicilio-granada"];
+const routes = ["/", "/servicios", "/servicios/empresa-limpieza-granada", "/servicios/lavanderia-profesional-granada", "/servicios/lavanderia-hoteles-granada", "/servicios/lavanderia-apartamentos-turisticos-granada", "/servicios/limpieza-apartamentos-turisticos-granada", "/servicios/limpieza-oficinas-locales-granada", "/servicios/limpieza-fin-de-obra-granada", "/servicios/renting-textil-granada", "/servicios/lavanderia-domicilio-granada", "/servicios/lavanderia-sierra-nevada", "/contacto", "/sobre-nosotros"];
 const pick = (html, re) => [...html.matchAll(re)].map((m) => m[1]);
 const out = {};
 for (const r of routes) {

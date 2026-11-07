@@ -6,3 +6,4 @@ node_modules
 vista-previa
 tests/visual/out
 *.tsbuildinfo
+media/originales

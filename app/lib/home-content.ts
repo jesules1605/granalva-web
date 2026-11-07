@@ -68,12 +68,12 @@ export const team = [
 ];
 
 export const sectors = [
-  "APARTAMENTOS TURÍSTICOS",
-  "OFICINAS Y DESPACHOS",
-  "CENTROS DEPORTIVOS",
-  "HOTELES Y ALOJAMIENTOS",
-  "COMERCIOS Y LOCALES",
-  "COMUNIDADES",
+  "Apartamentos turísticos",
+  "Oficinas y despachos",
+  "Centros deportivos",
+  "Hoteles y alojamientos",
+  "Comercios y locales",
+  "Comunidades",
 ];
 
 export const faqs = [

@@ -58,6 +58,12 @@ export type ServicePage = {
   embeddedForm?: "sierra-nevada";
   /** Muestra el selector de tamaño de colada (ancla #colada). */
   showLoadPicker?: boolean;
+  /** Plantilla compacta: presentación, beneficios, funcionamiento, detalle en acordeones, relacionados y formulario. */
+  layout?: "compact";
+  /** Frase editorial secundaria (no sustituye al H1). */
+  tagline?: string;
+  /** Tres beneficios breves y escaneables (plantilla compacta). */
+  highlights?: { title: string; text: string }[];
   /** Fecha de la última revisión del contenido (ISO 8601). */
   updatedAt: string;
 };
@@ -301,8 +307,8 @@ export const servicePages: ServicePage[] = [
   {
     slug: "lavanderia-sierra-nevada",
     navLabel: "Lavandería en Sierra Nevada",
-    h1: "Lavandería profesional con recogida y entrega en Sierra Nevada",
-    eyebrow: "TEMPORADA 2026/27 · SIERRA NEVADA",
+    h1: "Lavandería profesional en Sierra Nevada para hoteles y apartamentos",
+    eyebrow: "SERVICIO DE TEMPORADA · SIERRA NEVADA",
     metaTitle: "Lavandería en Sierra Nevada para hoteles y apartamentos | Granalva",
     metaDescription:
       "Lavandería profesional para hoteles, apartamentos turísticos y alojamientos de Sierra Nevada. Recogida, entrega, cuidado textil y rutas adaptadas a la temporada.",
@@ -317,7 +323,7 @@ export const servicePages: ServicePage[] = [
       "lavado de sábanas y toallas Sierra Nevada",
     ],
     summary:
-      "Organizamos la lavandería profesional, la recogida y entrega y el suministro textil de hoteles, apartamentos turísticos y alojamientos para que cada entrada llegue a tiempo, incluso en los momentos de mayor ocupación.",
+      "Coordinamos la recogida, el cuidado y la entrega de sábanas y toallas para hoteles, apartamentos turísticos y alojamientos de Sierra Nevada. Planificamos las rutas según la ocupación para que cada entrada tenga el textil preparado a tiempo.",
     image: IMAGES.renting,
     imageAlt: "Sábanas y toallas blancas preparadas para un alojamiento de temporada",
     introTitle: "Lavandería en Sierra Nevada: la temporada se prepara antes de que empiece",
@@ -361,7 +367,7 @@ export const servicePages: ServicePage[] = [
       { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
       { slug: "renting-textil-granada", anchor: "renting textil para la temporada" },
     ],
-    ctaLabel: "Reservar ruta de temporada",
+    ctaLabel: "Preparar mi temporada",
     ctaTitle: "Reserva tu ruta para la temporada 2026/27.",
     ctaText: "Cuéntanos qué alojamiento gestionas, cuántas plazas tiene y cuándo empiezas. Te proponemos una ruta de recogida y entrega.",
     extraSections: [
@@ -419,6 +425,13 @@ export const servicePages: ServicePage[] = [
       },
     ],
     embeddedForm: "sierra-nevada",
+    layout: "compact",
+    tagline: "La temporada se prepara antes de que empiece.",
+    highlights: [
+      { title: "Rutas programadas de recogida y entrega", text: "Acordamos puntos, días y franjas antes de la temporada y los ajustamos cuando cambia la ocupación." },
+      { title: "Textil preparado y organizado por tipología", text: "Sábanas y toallas lavadas, revisadas y dobladas por tipología, listas para el almacén o las plantas." },
+      { title: "Renting textil para picos de ocupación", text: "Si el stock propio no alcanza en fines de semana y puentes, lo reforzamos dentro de la misma ruta." },
+    ],
     updatedAt: CONTENT_REVIEWED,
   },
   {

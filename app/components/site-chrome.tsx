@@ -1,6 +1,7 @@
 import Image from "next/image";
 import Link from "next/link";
 import { MobileNav, type NavLink } from "./mobile-nav";
+import { RibbonLoop } from "./ribbon-loop";
 import { servicePages } from "../lib/services";
 import { BUSINESS } from "../lib/site";
 
@@ -15,17 +16,20 @@ const mainLinks: NavLink[] = [
   { href: "/contacto", label: "Contacto" },
 ];
 
+const ribbonItems = [
+  "Limpieza profesional en Granada",
+  "Lavandería para empresas",
+  "Recogida y entrega",
+  "Hoteles y apartamentos turísticos",
+  "Servicio profesional Granalva",
+];
+
 const serviceLinks: NavLink[] = servicePages.map((service) => ({ href: `/servicios/${service.slug}`, label: service.navLabel }));
 
 export function SiteHeader() {
   return (
     <div className="fixed-navigation">
-      <div className="top-ribbon" aria-label="Servicios profesionales en Granada">
-        <div className="ribbon-track">
-          <span>LIMPIEZA PROFESIONAL EN GRANADA</span><b>•</b><span>LAVANDERÍA PARA EMPRESAS</span><b>•</b><span>RECOGIDA Y ENTREGA</span><b>•</b>
-          <span>LIMPIEZA PROFESIONAL EN GRANADA</span><b>•</b><span>LAVANDERÍA PARA EMPRESAS</span><b>•</b><span>RECOGIDA Y ENTREGA</span><b>•</b>
-        </div>
-      </div>
+      <RibbonLoop items={ribbonItems} />
       <header className="site-header">
         <Link className="brand" href="/">
           <Image src="/granalva-logo.jpg" alt="" width={800} height={800} sizes="64px" priority />

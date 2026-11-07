@@ -77,12 +77,13 @@ export default function ServicesPage() {
       <section className="services-hub__grid" aria-label="Servicios de Granalva">
         {servicePages.map((service, index) => (
           <article key={service.slug}>
-            <Link className="services-hub__image" href={`/servicios/${service.slug}`} tabIndex={-1} aria-hidden="true">
+            <div className="services-hub__image">
               <Image src={service.image} alt="" fill sizes="(max-width: 760px) 100vw, 33vw" quality={65} />
-            </Link>
+            </div>
             <div>
               <span>{String(index + 1).padStart(2, "0")} · {service.eyebrow}</span>
-              <h2><Link href={`/servicios/${service.slug}`}>{service.navLabel}</Link></h2>
+              {/* El enlace del título cubre toda la tarjeta (sin enlaces duplicados ni vacíos). */}
+              <h2><Link className="card-link" href={`/servicios/${service.slug}`}>{service.navLabel}</Link></h2>
               <p>{service.summary}</p>
               <Link className="text-link" href={`/servicios/${service.slug}`}>{service.h1} <span>→</span></Link>
             </div>

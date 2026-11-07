@@ -1,5 +1,5 @@
 // Captura de regresión visual: node tests/visual/capture.mjs <baseUrl> <outDir>
-// Recorre las 11 rutas SEO en los 5 tamaños exigidos por docs/AUDIT-HANDOFF.md.
+// Recorre las rutas indexables en los 8 tamaños de la revisión de calidad.
 // Usa movimiento reducido y congela vídeos/animaciones para obtener capturas estables.
 import { createRequire } from "node:module";
 const require = createRequire(import.meta.url);
@@ -17,7 +17,7 @@ export const routes = [
   "/servicios/lavanderia-domicilio-granada", "/servicios/lavanderia-sierra-nevada",
   "/contacto", "/sobre-nosotros",
 ];
-export const viewports = [[1920, 1080], [1440, 900], [1024, 768], [390, 844], [360, 800]];
+export const viewports = [[1920, 1080], [1440, 900], [1366, 768], [1024, 768], [768, 1024], [430, 932], [390, 844], [360, 800]];
 const slug = (r) => (r === "/" ? "home" : r.replace(/^\//, "").replaceAll("/", "_"));
 
 mkdirSync(out, { recursive: true });

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
+import { CompactServicePage } from "../../../components/compact-service-page";
 import { ServicePageView } from "../../../components/service-page";
 import { jsonLdString, servicePageJsonLd, type Crumb } from "../../../lib/seo";
 import { serviceBySlug, servicePages } from "../../../lib/services";
@@ -52,7 +53,7 @@ export default async function ServicePage({ params }: PageProps) {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(servicePageJsonLd(service, crumbs)) }} />
-      <ServicePageView service={service} crumbs={crumbs} />
+      {service.layout === "compact" ? <CompactServicePage service={service} crumbs={crumbs} /> : <ServicePageView service={service} crumbs={crumbs} />}
     </>
   );
 }

@@ -18,7 +18,7 @@ const pages = [
   ["/servicios/lavanderia-profesional-granada", "Lavandería profesional en Granada para empresas | Granalva", "Lavandería profesional para empresas en Granada"],
   ["/servicios/lavanderia-hoteles-granada", "Lavandería para hoteles en Granada | Granalva", "Lavandería para hoteles y alojamientos en Granada"],
   ["/servicios/lavanderia-apartamentos-turisticos-granada", "Lavandería para apartamentos turísticos en Granada | Granalva", "Lavandería para apartamentos turísticos en Granada"],
-  ["/servicios/lavanderia-sierra-nevada", "Lavandería en Sierra Nevada para hoteles y apartamentos | Granalva", "Lavandería profesional con recogida y entrega en Sierra Nevada"],
+  ["/servicios/lavanderia-sierra-nevada", "Lavandería en Sierra Nevada para hoteles y apartamentos | Granalva", "Lavandería profesional en Sierra Nevada para hoteles y apartamentos"],
   ["/servicios/limpieza-apartamentos-turisticos-granada", "Limpieza de apartamentos turísticos en Granada | Granalva", "Limpieza de apartamentos turísticos en Granada"],
   ["/servicios/limpieza-oficinas-locales-granada", "Limpieza de oficinas y locales comerciales en Granada | Granalva", "Limpieza de oficinas y locales comerciales en Granada"],
   ["/servicios/limpieza-fin-de-obra-granada", "Limpieza fin de obra y reformas en Granada | Granalva", "Limpieza fin de obra y después de reformas en Granada"],
@@ -268,9 +268,20 @@ test("el host con www redirige con 301 al dominio canónico sin www", async () =
 test("Sierra Nevada: landing completa, formulario propio y área de servicio específica", () => {
   const page = html.get("/servicios/lavanderia-sierra-nevada");
   const body = text(page);
-  for (const id of ["hoteles", "apartamentos", "rutas", "textiles", "picos", "reservar-ruta"]) {
-    assert.match(page, new RegExp(`id="${id}"`), `sección ${id}`);
+  assert.match(page, /id="reservar-ruta"/, "formulario de reserva");
+  assert.ok(body.includes("Preparar mi temporada"), "CTA principal");
+  assert.ok(body.includes("La temporada se prepara antes de que empiece."), "frase editorial");
+  // Detalle en acordeones accesibles: botones reales, aria-expanded/aria-controls y texto en el HTML.
+  const buttons = all(page, /(<button[^>]*class="accordion__button"[^>]*>)/g);
+  assert.ok(buttons.length >= 8, `acordeones: ${buttons.length}`);
+  for (const button of buttons) {
+    assert.match(button, /aria-expanded="(true|false)"/);
+    assert.match(button, /aria-controls="[^"]+"/);
   }
+  for (const heading of ["Lavandería para hoteles en Sierra Nevada", "Lavandería para apartamentos turísticos en Sierra Nevada", "Rutas de recogida y entrega programadas", "Sábanas, toallas y textiles de alojamiento", "Preparados para los momentos de mayor ocupación"]) {
+    assert.ok(body.includes(heading), `apartado: ${heading}`);
+  }
+  assert.doesNotMatch(page, /hidden=""[^>]*class="accordion__panel"|class="accordion__panel"[^>]*hidden=""/, "los paneles no usan hidden simple (texto oculto)");
   assert.match(page, /<input type="hidden" name="formulario" value="sierra-nevada"/, "formulario B2B de Sierra Nevada");
   assert.ok(body.includes("Zona de servicio."), "cobertura");
   assert.doesNotMatch(body, /limpieza de alojamientos en Sierra Nevada/i, "la limpieza en Sierra Nevada no está confirmada");
@@ -344,4 +355,14 @@ test("los formularios están en el HTML inicial (funcionan sin JavaScript)", () 
     assert.match(main, /name="consentimiento"/, `${path}: consentimiento`);
     assert.match(main, /name="website"/, `${path}: campo trampa antispam`);
   }
+});
+
+test("la marquesina es un bucle de dos grupos idénticos y la sección de sectores es compacta", () => {
+  const home = html.get("/");
+  const groups = all(home, /(<ul class="ribbon-group"[^>]*>[\s\S]*?<\/ul>)/g);
+  assert.equal(groups.length, 2, "dos grupos");
+  assert.equal(text(groups[0]), text(groups[1]), "grupos idénticos");
+  assert.match(groups[1], /aria-hidden="true"/, "el segundo grupo no se lee dos veces");
+  assert.doesNotMatch(text(home), /Trabajamos con negocios que dependen de una operación impecable/, "párrafo eliminado");
+  assert.equal((home.match(/class="sector-card"/g) ?? []).length, 6, "seis sectores, sin duplicados de marquesina");
 });
