@@ -1,0 +1,8 @@
+# No se suben a Vercel: dependencias, compilaciones, secretos locales y artefactos.
+node_modules
+.next
+.env*
+!.env.example
+vista-previa
+tests/visual/out
+*.tsbuildinfo
