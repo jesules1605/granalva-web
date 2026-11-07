@@ -9,8 +9,9 @@ Este repositorio contiene la versión íntegra, funcional y publicada de la web 
 - URL: `https://granalva-propuesta-visual.manueljesus1605.chatgpt.site`
 - Audiencia: pública.
 - Idioma: español de España.
-- Stack: Next.js 16.4 estándar (App Router), React 19, TypeScript y CSS propio. Vinext/Vite/Cloudflare se retiraron en la fase 1 (rama `feat/nextjs-payload`).
-- Calidad verificada: `npm run lint` y `npm test` (build de Next + 10 pruebas SEO por HTTP) superados.
+- Stack: Next.js 16.4 estándar (App Router), React 19, TypeScript, CSS propio y **Payload CMS 3.93 + PostgreSQL** (panel en `/admin`). Vinext/Vite/Cloudflare se retiraron en la fase 1 (rama `feat/nextjs-payload`).
+- Calidad verificada: `npm run lint`, `npm test` (build + 15 pruebas SEO por HTTP) y `npm run test:e2e` (formulario de extremo a extremo con base de datos) superados.
+- Estructura: sitio público en `app/(frontend)/`, panel en `app/(payload)/` y 404 global en `app/global-not-found.tsx`.
 - Plan de trabajo vigente y estado de cada fase: `docs/IMPLEMENTATION-PLAN.md`.
 
 ## Prioridad transversal: SEO orgánico y local
@@ -22,7 +23,9 @@ Desde el 7 de noviembre de 2026 el objetivo prioritario es el máximo posicionam
   - Title: `Empresa de limpieza y lavandería en Granada | Granalva`.
   - H1: `Empresa de limpieza y lavandería profesional en Granada`.
   - Frase comercial: `Tu empresa no puede parar. Tu hogar tampoco debería esperar.`
-  - CTA: `Solicitar presupuesto` y `Hacer un pedido`. Este último lleva a `NEXT_PUBLIC_ORDER_URL` o, mientras no exista un sistema de pedidos, al selector de colada.
+  - Portada **compacta** de 10 bloques; cada bloque tiene una finalidad comercial. El peso es de 70/30 entre empresas y particulares. El contenido SEO completo vive en cada página de servicio.
+  - CTA por prioridad: `Solicitar presupuesto empresarial` → `Contratar lavandería profesional` → limpieza → Sierra Nevada → `Hacer un pedido particular`.
+  - En las páginas B2B no se usa «Hacer un pedido». Cada servicio tiene su `ctaLabel` («Planificar recogidas y entregas», «Reservar ruta de temporada»…).
 - **Fuentes únicas de datos:**
   - `app/lib/services.ts`: contenido SEO de los servicios;
   - `app/lib/site.ts`: NAP e indexación;
@@ -31,11 +34,21 @@ Desde el 7 de noviembre de 2026 el objetivo prioritario es el máximo posicionam
 - **Pruebas:** `tests/rendered-html.test.mjs` es el criterio de aceptación SEO. Si cambias un title o un H1, actualiza a la vez la prueba y `docs/seo-strategy.md`.
 - **Prohibido:**
   - «lavandería industrial» sin confirmar instalaciones;
-  - Sierra Nevada sin confirmar servicio;
+  - **limpieza** en Sierra Nevada mientras no se confirme (la lavandería, la recogida y entrega y el renting en Sierra Nevada **sí están confirmados**: landing `/servicios/lavanderia-sierra-nevada`, publicada todo el año);
+  - precios, plazos garantizados, frecuencias o zonas concretas no confirmados;
   - reseñas o valoraciones en JSON-LD;
   - `legalName` sin la razón social real;
   - listas de municipios o texto oculto.
 - **Acciones fuera de la web:** `docs/SEO-LOCAL-Y-AUTORIDAD.md`, `docs/CALENDARIO-EDITORIAL.md` y `docs/MEDICION-SEO.md`.
+- **Matriz y competencia:** `docs/SEO-MATRIX.md` (regenerar con `npm run seo:matrix -- http://localhost:3000 > docs/SEO-MATRIX.md`) y `docs/COMPETITOR-SEO-AUDIT.md`.
+
+## Formulario y Payload
+
+- `app/components/contact-form.tsx`, en sus variantes `general` y `sierra-nevada`, envía por server action (`app/actions/contact.ts`). Valida en el servidor y aplica tres protecciones: campo trampa, tiempo mínimo y límite por IP; Turnstile es opcional.
+- Cada solicitud se guarda en Payload (`contact-submissions`) con estado, responsable, notas, versión del consentimiento y atribución (página, entrada, referrer y UTM).
+- Aviso por SMTP solo si existe `SMTP_HOST`. **Nunca se envían respuestas comerciales automáticas al cliente.**
+- Las solicitudes solo las ven el propietario y los administradores. La API pública no permite crearlas ni leerlas.
+- Cambios de esquema: `npm run db:migrate:create <nombre>` y después `npm run db:migrate`. En desarrollo, `docker compose up -d` levanta PostgreSQL y `.env.local` (que no se sube a git) contiene `DATABASE_URL` y `PAYLOAD_SECRET`.
 
 ## Objetivo comercial vigente
 
@@ -88,7 +101,7 @@ La tipografía Granaina se usa en titulares y momentos de identidad. No crear di
 
 ## Arquitectura y comportamiento
 
-- `app/page.tsx`: portada como **componente de servidor** (metadatos, H1, contenido y JSON-LD).
+- `app/(frontend)/page.tsx`: portada como **componente de servidor** (metadatos, H1, contenido y JSON-LD). El resto de páginas públicas también está en `app/(frontend)/`: `servicios`, `contacto`, `sobre-nosotros` y `not-found`.
 - `app/components/home/*`: zonas interactivas de la portada como componentes de cliente aislados (vídeo y capítulos, selector de servicios, selector de colada, recorrido, reseñas y formulario).
 - `app/lib/home-content.ts`: datos de la portada (colada, reseñas, equipo, sectores y FAQ).
 - `app/lib/services.ts`: única fuente de datos para las nueve páginas indexables de servicio, incluidos los campos SEO.

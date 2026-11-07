@@ -1,18 +1,17 @@
-import type { Metadata } from "next";
 import Link from "next/link";
-import { LogoSeal } from "./components/logo-seal";
-import { SiteFooter, SiteHeader } from "./components/site-chrome";
-import { servicePages } from "./lib/services";
-import { BUSINESS } from "./lib/site";
+import { LogoSeal } from "./logo-seal";
+import { SiteFooter, SiteHeader } from "./site-chrome";
+import { servicePages } from "../lib/services";
+import { BUSINESS } from "../lib/site";
 
-export const metadata: Metadata = {
+export const notFoundMetadata = {
   title: { absolute: "Página no encontrada | Granalva" },
   description: "La dirección solicitada no existe en la web de Limpiezas Granalva.",
   robots: { index: false, follow: true },
 };
 
-/** 404 real (código HTTP 404) con navegación hacia todos los servicios. */
-export default function NotFound() {
+/** Contenido de la 404 diseñada (se usa en not-found.tsx y en global-not-found.tsx). */
+export function NotFoundView() {
   return (
     <main className="site-shell services-hub not-found">
       <SiteHeader />
@@ -32,7 +31,7 @@ export default function NotFound() {
         </ul>
         <div className="not-found__actions">
           <Link className="button button--dark" href="/">Volver al inicio <span>→</span></Link>
-          <Link className="button button--outline-dark" href="/#contacto">Solicitar presupuesto <span>→</span></Link>
+          <Link className="button button--outline-dark" href="/contacto#formulario">Solicitar presupuesto <span>→</span></Link>
           <a className="text-link" href={`tel:${BUSINESS.phoneE164}`}>O llámanos al {BUSINESS.phoneDisplay}</a>
         </div>
       </section>

@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { Breadcrumbs } from "../components/breadcrumbs";
-import { LogoSeal } from "../components/logo-seal";
-import { SiteFooter, SiteHeader } from "../components/site-chrome";
-import { breadcrumbJsonLd, jsonLdString, WEBSITE_ID, type Crumb } from "../lib/seo";
-import { servicePages } from "../lib/services";
-import { absoluteUrl } from "../lib/site";
+import { Breadcrumbs } from "../../components/breadcrumbs";
+import { LogoSeal } from "../../components/logo-seal";
+import { SiteFooter, SiteHeader } from "../../components/site-chrome";
+import { breadcrumbJsonLd, jsonLdString, WEBSITE_ID, type Crumb } from "../../lib/seo";
+import { servicePages } from "../../lib/services";
+import { absoluteUrl } from "../../lib/site";
 
 const TITLE = "Servicios de limpieza y lavandería en Granada | Granalva";
 const DESCRIPTION =
@@ -93,7 +93,7 @@ export default function ServicesPage() {
       <section className="service-final-cta">
         <LogoSeal />
         <div><span>UNA SOLA COORDINACIÓN</span><h2>¿Necesitas combinar varios servicios?</h2><p>Podemos estudiar limpieza, lavandería, transporte y renting textil como una misma operativa.</p></div>
-        <Link className="button button--yellow" href="/#contacto">Solicitar presupuesto <span>→</span></Link>
+        <Link className="button button--yellow" href="/contacto#formulario">Solicitar presupuesto empresarial <span>→</span></Link>
       </section>
       <SiteFooter />
     </main>

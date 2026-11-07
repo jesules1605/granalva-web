@@ -1,0 +1,15 @@
+# Solo para desarrollo local: PostgreSQL para Payload.
+# Uso: docker compose up -d  →  DATABASE_URL=postgres://granalva:granalva_local@127.0.0.1:5432/granalva_dev
+services:
+  postgres:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: granalva
+      POSTGRES_PASSWORD: granalva_local
+      POSTGRES_DB: granalva_dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - granalva-pg:/var/lib/postgresql/data
+volumes:
+  granalva-pg:

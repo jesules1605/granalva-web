@@ -9,9 +9,9 @@ export function LoadPicker() {
   const currentLoad = loads.find((item) => item.id === load) ?? loads[1];
 
   return (
-    <section className="load-picker" id="lavanderia" aria-labelledby="load-title">
+    <section className="load-picker" id="colada" aria-labelledby="load-title">
       <div className="picker-heading">
-        <span className="section-number">03 / LAVANDERÍA A DOMICILIO</span>
+        <span className="section-number">HAZ TU PEDIDO</span>
         <div><h2 id="load-title">¿Cuánta ropa tienes?</h2><p>Elige el tamaño aproximado de tu colada. Nosotros hacemos el resto.</p></div>
       </div>
       <div className="load-options" role="radiogroup" aria-label="Tamaño aproximado de la colada">
@@ -25,7 +25,7 @@ export function LoadPicker() {
       </div>
       <div className="picker-result" aria-live="polite">
         <div><LogoSeal small /><span>Has elegido</span><strong>{currentLoad.label} · {currentLoad.detail}</strong></div>
-        <a href="#contacto">Solicitar recogida <span>→</span></a>
+        <a href={`/contacto?servicio=lavanderia-domicilio-granada&colada=${currentLoad.id}#formulario`}>Solicitar recogida <span>→</span></a>
       </div>
     </section>
   );

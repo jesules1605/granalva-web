@@ -48,7 +48,8 @@ No hay acceso a Search Console, Google Analytics ni Google Business Profile desd
 | Búsquedas de marca («granalva», «limpiezas granalva») | Search Console (filtro de consulta) | Mensual | Notoriedad |
 | Cobertura e indexación | Search Console → Páginas | Semanal el primer mes | 404, redirecciones y páginas excluidas |
 | Core Web Vitals reales (LCP, INP, CLS) | Search Console + PageSpeed Insights | Mensual | Rendimiento real de usuarios |
-| Formularios enviados | Colección `contact-submissions` del CMS (fase 6), por servicio y origen | Mensual | Conversiones atribuibles |
+| Formularios enviados | Colección `contact-submissions` en `/admin` (ya operativa): servicio, formulario (general o Sierra Nevada), página de envío, página de entrada, referrer y UTM | Mensual | Conversiones atribuibles por página y campaña |
+| Reservas de ruta de Sierra Nevada | `contact-submissions` filtrado por `formulario = sierra-nevada` | Semanal en temporada | Rendimiento de la campaña estacional |
 | Llamadas | Google Business Profile + clics en `tel:` (evento de analítica con consentimiento) | Mensual | Conversiones telefónicas |
 | Pedidos de lavandería | Sistema de pedidos, cuando exista | Mensual | Conversión del particular |
 | Rendimiento local | Estadísticas de Google Business Profile | Mensual | Visibilidad en el mapa |

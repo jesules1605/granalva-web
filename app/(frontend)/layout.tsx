@@ -1,9 +1,9 @@
 import type { Metadata, Viewport } from "next";
 import { preload } from "react-dom";
-import "./globals.css";
-import { jsonLdString, organizationJsonLd, websiteJsonLd } from "./lib/seo";
-import { servicePages, SITE_URL } from "./lib/services";
-import { BUSINESS, INDEXABLE } from "./lib/site";
+import "../globals.css";
+import { jsonLdString, organizationJsonLd, websiteJsonLd } from "../lib/seo";
+import { servicePages, SITE_URL } from "../lib/services";
+import { BUSINESS, INDEXABLE } from "../lib/site";
 
 const OG_IMAGE = {
   url: "/og-granalva-limpieza-lavanderia-granada.jpg",

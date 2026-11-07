@@ -14,7 +14,8 @@ export const routes = [
   "/servicios/lavanderia-hoteles-granada", "/servicios/lavanderia-apartamentos-turisticos-granada",
   "/servicios/limpieza-apartamentos-turisticos-granada", "/servicios/limpieza-oficinas-locales-granada",
   "/servicios/limpieza-fin-de-obra-granada", "/servicios/renting-textil-granada",
-  "/servicios/lavanderia-domicilio-granada",
+  "/servicios/lavanderia-domicilio-granada", "/servicios/lavanderia-sierra-nevada",
+  "/contacto", "/sobre-nosotros",
 ];
 export const viewports = [[1920, 1080], [1440, 900], [1024, 768], [390, 844], [360, 800]];
 const slug = (r) => (r === "/" ? "home" : r.replace(/^\//, "").replaceAll("/", "_"));

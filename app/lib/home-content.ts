@@ -98,3 +98,114 @@ export const faqs = [
     answer: "Valoramos el tipo y tamaño del espacio, la frecuencia, los horarios disponibles, la ubicación y las tareas necesarias. Así proponemos un servicio ajustado a la operativa real.",
   },
 ];
+
+/**
+ * Selector dinámico de la portada: cuatro líneas de servicio. Cada panel se
+ * renderiza en el HTML del servidor (también los no activos) y enlaza con
+ * enlaces normales a las páginas indexables de su línea.
+ */
+export type ServiceCategory = {
+  id: string;
+  tab: string;
+  audience: "empresas" | "particulares";
+  title: string;
+  description: string;
+  advantages: string[];
+  image: string;
+  imageAlt: string;
+  cta: { label: string; href: string };
+  links: { label: string; href: string }[];
+};
+
+export const serviceCategories: ServiceCategory[] = [
+  {
+    id: "lavanderia",
+    tab: "Lavandería profesional",
+    audience: "empresas",
+    title: "Lavandería profesional con recogida y entrega",
+    description:
+      "Externaliza la ropa de cama, baño y uniformidad de tu negocio. Recogemos, tratamos y entregamos los textiles preparados para volver a la operativa.",
+    advantages: [
+      "Rutas de recogida y entrega acordadas",
+      "Desmanchado, lavado, secado, planchado y doblado",
+      "Textiles organizados por tipología",
+    ],
+    image: "/textiles-lavanderia-profesional-granada.png",
+    imageAlt: "Ropa de cama, toallas y prendas limpias y dobladas",
+    cta: { label: "Contratar lavandería profesional", href: "/contacto?servicio=lavanderia-profesional-granada" },
+    links: [
+      { label: "Lavandería profesional para empresas", href: "/servicios/lavanderia-profesional-granada" },
+      { label: "Lavandería para hoteles", href: "/servicios/lavanderia-hoteles-granada" },
+      { label: "Lavandería para apartamentos turísticos", href: "/servicios/lavanderia-apartamentos-turisticos-granada" },
+      { label: "Lavandería en Sierra Nevada", href: "/servicios/lavanderia-sierra-nevada" },
+    ],
+  },
+  {
+    id: "limpieza",
+    tab: "Limpieza profesional",
+    audience: "empresas",
+    title: "Limpieza profesional para empresas y alojamientos",
+    description:
+      "Un servicio planificado según tus horarios, tus espacios y el nivel de exigencia de tu actividad, con un interlocutor directo.",
+    advantages: [
+      "Frecuencia y franjas adaptadas a la actividad",
+      "Protocolo por espacio y revisión de puntos críticos",
+      "Oficinas, locales, apartamentos turísticos y fin de obra",
+    ],
+    image: "/limpieza-profesional-alojamiento-granada.png",
+    imageAlt: "Preparación de un dormitorio durante una limpieza profesional",
+    cta: { label: "Contactar para limpieza", href: "/contacto?servicio=empresa-limpieza-granada" },
+    links: [
+      { label: "Empresa de limpieza profesional", href: "/servicios/empresa-limpieza-granada" },
+      { label: "Limpieza de oficinas y locales comerciales", href: "/servicios/limpieza-oficinas-locales-granada" },
+      { label: "Limpieza de apartamentos turísticos", href: "/servicios/limpieza-apartamentos-turisticos-granada" },
+      { label: "Limpieza fin de obra", href: "/servicios/limpieza-fin-de-obra-granada" },
+    ],
+  },
+  {
+    id: "renting",
+    tab: "Renting textil",
+    audience: "empresas",
+    title: "Renting textil para hoteles y apartamentos",
+    description:
+      "Sábanas y toallas disponibles sin comprar todo el stock, con la lavandería integrada en el mismo ciclo de uso, recogida y entrega.",
+    advantages: [
+      "Menos inversión inicial en textiles",
+      "Rotación calculada según plazas y ocupación",
+      "Condiciones de reposición definidas desde el principio",
+    ],
+    image: "/ropa-cama-bano-renting-textil-granada.png",
+    imageAlt: "Juego de sábanas y toallas blancas preparado para un alojamiento",
+    cta: { label: "Solicitar propuesta de renting", href: "/contacto?servicio=renting-textil-granada" },
+    links: [{ label: "Renting textil para alojamientos y empresas", href: "/servicios/renting-textil-granada" }],
+  },
+  {
+    id: "particulares",
+    tab: "Para particulares",
+    audience: "particulares",
+    title: "Tu colada, recogida y entregada en casa",
+    description: "Recogemos la ropa en tu puerta, la lavamos, secamos y doblamos, y te la devolvemos preparada para guardar.",
+    advantages: ["Tres tamaños de referencia: 4, 8 y 12 kg", "Lavado, secado y doblado", "Recogida y entrega en Granada y área metropolitana"],
+    image: "/textiles-lavanderia-profesional-granada.png",
+    imageAlt: "Colada limpia, seca y doblada lista para su entrega",
+    cta: { label: "Hacer un pedido particular", href: "/servicios/lavanderia-domicilio-granada#colada" },
+    links: [{ label: "Lavandería a domicilio con recogida y entrega", href: "/servicios/lavanderia-domicilio-granada" }],
+  },
+];
+
+/** Bloque estacional de Sierra Nevada en la portada. Solo compromisos de proceso, sin plazos ni precios. */
+export const sierraNevadaBlock = {
+  label: "TEMPORADA 2026/27 · SIERRA NEVADA",
+  title: "¿Estás preparando la temporada en Sierra Nevada?",
+  text: "Organizamos la lavandería profesional, la recogida y entrega y el suministro textil de hoteles, apartamentos turísticos y alojamientos para que cada entrada llegue a tiempo, incluso en los momentos de mayor ocupación.",
+  points: [
+    { title: "Previsión", text: "Planificamos volumen, stock y rutas antes de la temporada." },
+    { title: "Rutas programadas", text: "Recogida y entrega acordadas con cada alojamiento." },
+    { title: "Temporada alta", text: "Coordinación directa en fines de semana y puentes." },
+    { title: "Sábanas y toallas", text: "Tratadas y preparadas por tipología." },
+    { title: "Renting textil", text: "Refuerzo del stock cuando la ocupación lo exige." },
+    { title: "Atención directa", text: "Un interlocutor de Granalva para cada cambio." },
+  ],
+  primary: { label: "Reservar ruta de temporada", href: "/servicios/lavanderia-sierra-nevada#reservar-ruta" },
+  secondary: { label: "Conocer el servicio en Sierra Nevada", href: "/servicios/lavanderia-sierra-nevada" },
+};

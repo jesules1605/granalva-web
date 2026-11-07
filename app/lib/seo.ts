@@ -104,7 +104,7 @@ export function servicePageJsonLd(service: ServicePage, crumbs: Crumb[]) {
         url,
         image: absoluteUrl(service.image),
         provider: { "@id": ORGANIZATION_ID },
-        areaServed: BUSINESS.areaServed,
+        areaServed: service.areaServed ?? BUSINESS.areaServed,
         audience: service.audiences.map((name) => ({ "@type": "Audience", audienceType: name })),
       },
       { ...breadcrumbJsonLd(crumbs), "@id": `${url}#breadcrumb` },

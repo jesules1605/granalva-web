@@ -42,6 +42,22 @@ Nombre, dirección (o área de servicio) y teléfono deben ser **idénticos** en
 12. **Preguntas y respuestas:** revisarlas cada mes y contestar con la misma información de la web.
 13. **Medición:** consultar cada mes en las estadísticas del perfil las llamadas, visitas a la web, solicitudes de ruta y búsquedas.
 
+### Sierra Nevada (temporada 2026/27)
+
+- Añadir en Google Business Profile el servicio «Lavandería en Sierra Nevada», enlazado con `https://limpiezasgranalva.com/servicios/lavanderia-sierra-nevada?utm_source=google&utm_medium=organic&utm_campaign=gbp-sierra`.
+- Añadir Sierra Nevada al área de servicio del perfil **solo** para los servicios que realmente se prestan allí.
+- Publicar en el perfil, antes y durante la temporada, novedades reales (rutas abiertas, preparación de temporada) con fotos propias.
+- Contactar con gestores de apartamentos y alojamientos de la estación, asociaciones de empresarios turísticos de la zona y entidades locales que publiquen directorios de proveedores. Pedir una mención o un enlace solo cuando haya relación comercial real.
+
+## 2 bis. Search Console y Bing Webmaster Tools
+
+1. **Search Console:**
+   - verificar la **propiedad de dominio** por DNS (cubre http/https y www);
+   - enviar `https://limpiezasgranalva.com/sitemap.xml`;
+   - activar los avisos por correo.
+2. **Bing Webmaster Tools:** importar el sitio desde Search Console y enviar el mismo sitemap. Bing alimenta también otros buscadores y asistentes.
+3. **Revisiones del primer mes:** semanalmente, Páginas, Rendimiento y Core Web Vitals; después, mensualmente.
+
 ## 3. Autoridad y confianza dentro de la web (preparado para el CMS)
 
 | Elemento | Estado | Cuando el propietario lo facilite |

@@ -1,16 +1,20 @@
 import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "./breadcrumbs";
+import { ContactForm } from "./contact-form";
+import { LoadPicker } from "./home/load-picker";
 import { LogoSeal } from "./logo-seal";
 import { SiteFooter, SiteHeader } from "./site-chrome";
 import type { Crumb } from "../lib/seo";
 import { serviceBySlug, type ServicePage } from "../lib/services";
-import { BUSINESS } from "../lib/site";
+import { BUSINESS, WHATSAPP_URL } from "../lib/site";
 
 const formatDate = (iso: string) =>
   new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Madrid" }).format(new Date(iso));
 
 export function ServicePageView({ service, crumbs }: { service: ServicePage; crumbs: Crumb[] }) {
+  // CTA principal: la propia página si incluye formulario; si no, /contacto con el servicio preseleccionado.
+  const ctaHref = service.embeddedForm ? "#reservar-ruta" : `/contacto?servicio=${service.slug}#formulario`;
   const related = service.related
     .map((link) => ({ ...link, service: serviceBySlug[link.slug] }))
     .filter((link) => link.service);
@@ -30,7 +34,7 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
           <h1>{service.h1}</h1>
           <p>{service.summary}</p>
           <div className="hero-actions">
-            <Link className="button button--yellow" href="/#contacto">Solicitar presupuesto <span>→</span></Link>
+            <Link className="button button--yellow" href={ctaHref}>{service.ctaLabel} <span>→</span></Link>
             <a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>
           </div>
         </div>
@@ -101,6 +105,23 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
         </ol>
       </section>
 
+      {service.showLoadPicker ? <LoadPicker /> : null}
+
+      {service.extraSections?.map((section, sectionIndex) => (
+        <section key={section.id} id={section.id} className={`service-extra ${sectionIndex % 2 ? "service-extra--alt" : ""}`} aria-labelledby={`${section.id}-title`}>
+          <div className="service-extra__head">
+            <span className="section-number">{section.eyebrow}</span>
+            <h2 id={`${section.id}-title`}>{section.title}</h2>
+            {section.intro ? <p>{section.intro}</p> : null}
+          </div>
+          <div className="service-extra__grid">
+            {section.items.map((item) => (
+              <article key={item.title}><h3>{item.title}</h3><p>{item.text}</p></article>
+            ))}
+          </div>
+        </section>
+      ))}
+
       <section className="service-audiences">
         <div>
           <span className="section-number">05 / PARA QUIÉN Y DÓNDE</span>
@@ -144,6 +165,22 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
         </div>
       </section>
 
+      {service.embeddedForm ? (
+        <section className="contact-section contact-section--embedded" id="reservar-ruta" aria-labelledby="reservar-ruta-title">
+          <div className="contact-copy">
+            <span className="section-number section-number--light">{service.eyebrow}</span>
+            <h2 id="reservar-ruta-title">{service.ctaTitle}</h2>
+            <p>{service.ctaText}</p>
+            <div className="contact-direct">
+              <a href={`tel:${BUSINESS.phoneE164}`}><small>Teléfono</small><strong>{BUSINESS.phoneDisplay}</strong></a>
+              <a href={`mailto:${BUSINESS.email}`}><small>Correo</small><strong>{BUSINESS.email}</strong></a>
+              {WHATSAPP_URL ? <a href={WHATSAPP_URL} target="_blank" rel="noopener"><small>WhatsApp</small><strong>Escríbenos</strong></a> : null}
+            </div>
+          </div>
+          <ContactForm variant={service.embeddedForm} defaultService={service.slug} />
+        </section>
+      ) : null}
+
       <section className="service-final-cta">
         <LogoSeal />
         <div>
@@ -155,7 +192,7 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
             <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
           </p>
         </div>
-        <Link className="button button--yellow" href="/#contacto">Solicitar presupuesto <span>→</span></Link>
+        <Link className="button button--yellow" href={ctaHref}>{service.ctaLabel} <span>→</span></Link>
       </section>
 
       <p className="content-updated">

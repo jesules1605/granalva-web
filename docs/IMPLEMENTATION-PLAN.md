@@ -59,6 +59,36 @@ Encargo del propietario: SEO orgánico y local como prioridad transversal. Detal
 | `tests/rendered-html.test.mjs` | 10 pruebas: mapa title/H1, contenido inicial, breadcrumbs, JSON-LD veraz, alt, enlaces y páginas huérfanas, sitemap y robots, 404, 301 sin cadenas y www |
 | `docs/` | `seo-strategy.md`, `SEO-LOCAL-Y-AUTORIDAD.md`, `CALENDARIO-EDITORIAL.md`, `MEDICION-SEO.md` y `scripts/seo-map.mjs` |
 
+### Fase B2B — Captación B2B, Sierra Nevada, formulario real y base de Payload ✅ (7 nov 2026)
+
+Encargo del propietario: convertir la web en una herramienta de captación B2B con portada compacta, selector dinámico, campaña y landing de Sierra Nevada, formularios segmentados registrados en Payload, auditoría de competencia y matriz SEO.
+
+| Área | Archivos |
+|---|---|
+| Portada compacta (10 bloques, 70/30 empresas/particulares) | `app/(frontend)/page.tsx`, `app/lib/home-content.ts` (`serviceCategories`, `sierraNevadaBlock`), `app/components/home/service-selector.tsx` |
+| Landing de Sierra Nevada | `app/lib/services.ts` (`lavanderia-sierra-nevada`, `extraSections`, `embeddedForm`, `areaServed`), `app/components/service-page.tsx` |
+| Páginas heredadas de WordPress | `app/(frontend)/contacto/page.tsx`, `app/(frontend)/sobre-nosotros/page.tsx` |
+| Formulario B2B | `app/components/contact-form.tsx`, `app/actions/contact.ts` (server action, campo trampa, tiempo mínimo, límite por IP, Turnstile opcional), `app/lib/contact-schema.ts`, `app/lib/submissions.ts` |
+| Payload CMS + PostgreSQL | `payload.config.ts`, `cms/access.ts`, `cms/collections/Users.ts` y `ContactSubmissions.ts`, `cms/components/AdminBrand.tsx`, `app/(payload)/**`, `migrations/`, `payload-types.ts` |
+| Reorganización | Sitio público en `app/(frontend)/`; 404 global en `app/global-not-found.tsx` (dos layouts raíz) |
+| Navegación y CTA | `app/components/site-chrome.tsx` (Sierra Nevada, Sobre nosotros, Contacto); CTA adaptado a cada página (`ctaLabel`) |
+| Pruebas | `tests/rendered-html.test.mjs` (15 pruebas), `tests/e2e/contact-form.e2e.mjs` |
+| Documentación | `docs/COMPETITOR-SEO-AUDIT.md`, `docs/SEO-MATRIX.md` (`scripts/seo-matrix.mjs`) y `docs/seo-strategy.md` actualizado |
+
+**Comprobado en local:**
+- Las 14 URLs indexables cumplen todos los requisitos de indexación.
+- La 404 se renderiza en el servidor.
+- `/contacto/` y `/sobre-nosotros/` redirigen con un 301 a su versión sin barra.
+- Formulario de extremo a extremo: error con los datos conservados, envío correcto, registro en PostgreSQL con atribución UTM y consulta en `/admin`.
+- La primera cuenta del panel queda como propietario.
+- El panel y la API no son indexables y las solicitudes no son públicas.
+
+**Pendiente:**
+- SMTP y destinatario de los avisos; mientras no exista, las solicitudes se registran con el aviso «pendiente».
+- Claves de Turnstile.
+- Exportación CSV restringida.
+- Política de retención aplicada con una tarea programada.
+
 ### Fase 2 — Correcciones de diseño auditadas (`docs/AUDIT-HANDOFF.md`)
 
 **Estado tras la fase SEO:** resueltos los puntos 1 (menú móvil), 2 y 3 (titulares), 4 (solapamiento del H1), 5 (iniciales sustituidas por el emblema real hasta tener fotografías), 6 (404) y 9 (anclas bajo la cabecera fija). Quedan pendientes:
@@ -80,7 +110,20 @@ Encargo del propietario: SEO orgánico y local como prioridad transversal. Detal
 
 Nota sobre el texto: `CLAUDE.md` y `AUDIT-HANDOFF.md` citan el titular como «…Tu hogar tampoco debería **esperar**.», mientras que el código publicado dice «…tampoco debería **tener que esperar**.». No se cambia el texto sin confirmación del propietario.
 
-### Fase 3 — Payload CMS base, PostgreSQL y `/admin`
+### Fase 3 — Payload CMS base, PostgreSQL y `/admin` (en parte completada en la fase B2B)
+
+Hecho:
+- integración de Payload 3.93 con PostgreSQL;
+- `/admin` en español con la identidad Granalva y sin Gravatar;
+- roles de propietario, administrador y editor;
+- bloqueo tras 5 intentos de acceso;
+- migraciones versionadas.
+
+Pendiente:
+- colección `media` con almacenamiento persistente (Vercel Blob o R2);
+- recuperación de contraseña por correo, que requiere SMTP;
+- 2FA.
+
 
 - `payload.config.ts`, `payload-types.ts` (generado), `migrations/`.
 - `app/(frontend)/…`: se mueve aquí el sitio público con su layout. `app/(payload)/admin/[[...segments]]/`, `app/(payload)/api/[...slug]/route.ts` y `app/(payload)/layout.tsx` son los archivos estándar de Payload.
@@ -101,7 +144,7 @@ Nota sobre el texto: `CLAUDE.md` y `AUDIT-HANDOFF.md` citan el titular como «�
 - Rutas `app/(frontend)/blog/page.tsx` y `blog/[slug]/page.tsx`, con JSON-LD `Article` y `BreadcrumbList`.
 - El sitemap se genera a partir del contenido publicado.
 
-### Fase 6 — Formulario real
+### Fase 6 — Formulario real (en parte completada en la fase B2B: ver arriba)
 
 - Colección `contact-submissions` con estados, notas y exportación CSV restringida por rol.
 - Server action o ruta API con validación en el servidor, honeypot, límite de frecuencia y Turnstile.

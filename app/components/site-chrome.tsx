@@ -9,9 +9,10 @@ import { BUSINESS } from "../lib/site";
 const mainLinks: NavLink[] = [
   { href: "/servicios/empresa-limpieza-granada", label: "Empresas" },
   { href: "/servicios", label: "Servicios" },
+  { href: "/servicios/lavanderia-sierra-nevada", label: "Sierra Nevada" },
   { href: "/servicios/lavanderia-domicilio-granada", label: "Particulares" },
-  { href: "/#experiencia", label: "Experiencia" },
-  { href: "/#contacto", label: "Contacto" },
+  { href: "/sobre-nosotros", label: "Sobre nosotros" },
+  { href: "/contacto", label: "Contacto" },
 ];
 
 const serviceLinks: NavLink[] = servicePages.map((service) => ({ href: `/servicios/${service.slug}`, label: service.navLabel }));
@@ -37,7 +38,7 @@ export function SiteHeader() {
           {mainLinks.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
         </nav>
         <div className="header-actions">
-          <Link className="button button--dark header-cta" href="/#contacto">Solicitar presupuesto <span>↗</span></Link>
+          <Link className="button button--dark header-cta" href="/contacto#formulario">Solicitar presupuesto <span>↗</span></Link>
           <MobileNav links={mainLinks} services={serviceLinks} phone={{ href: `tel:${BUSINESS.phoneE164}`, label: BUSINESS.phoneDisplay }} />
         </div>
       </header>
@@ -59,6 +60,7 @@ export function SiteFooter() {
         <Link href="/servicios/lavanderia-hoteles-granada">Lavandería para hoteles</Link>
         <Link href="/servicios/limpieza-oficinas-locales-granada">Limpieza de oficinas y locales</Link>
         <Link href="/servicios/limpieza-fin-de-obra-granada">Limpieza fin de obra</Link>
+        <Link href="/servicios/lavanderia-sierra-nevada">Lavandería en Sierra Nevada</Link>
       </div>
       <div>
         <b>Alojamientos y hogar</b>
@@ -72,7 +74,8 @@ export function SiteFooter() {
         <a href={`tel:${BUSINESS.phoneE164}`}>{BUSINESS.phoneDisplay}</a>
         <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
         <span>{BUSINESS.areaServedLabel}</span>
-        <Link href="/#contacto">Solicitar presupuesto</Link>
+        <Link href="/contacto">Contacto y presupuestos</Link>
+        <Link href="/sobre-nosotros">Sobre nosotros</Link>
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} {BUSINESS.name}</span>

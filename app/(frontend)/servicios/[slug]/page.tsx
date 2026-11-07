@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { ServicePageView } from "../../components/service-page";
-import { jsonLdString, servicePageJsonLd, type Crumb } from "../../lib/seo";
-import { serviceBySlug, servicePages } from "../../lib/services";
-import { absoluteUrl } from "../../lib/site";
+import { ServicePageView } from "../../../components/service-page";
+import { jsonLdString, servicePageJsonLd, type Crumb } from "../../../lib/seo";
+import { serviceBySlug, servicePages } from "../../../lib/services";
+import { absoluteUrl } from "../../../lib/site";
 
 type PageProps = { params: Promise<{ slug: string }> };
 

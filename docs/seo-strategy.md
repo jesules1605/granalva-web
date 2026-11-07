@@ -11,7 +11,7 @@
 
 ## Mapa de URLs, intenciones y metadatos
 
-La tabla se genera desde el código con `node scripts/seo-map.mjs` (fuente: `app/lib/services.ts`). Las pruebas `tests/rendered-html.test.mjs` comprueban que title y H1 coinciden exactamente en el HTML publicado.
+La tabla se genera desde el código con `node scripts/seo-map.mjs` (fuente: `app/lib/services.ts`). La **matriz SEO completa** (estado, index, H2, canonical, datos estructurados, enlaces entrantes y salientes, CTA, imagen social y última actualización de cada URL, incluidas las páginas planificadas) está en `docs/SEO-MATRIX.md` y se genera con `node scripts/seo-matrix.mjs <url>`. Las pruebas `tests/rendered-html.test.mjs` comprueban que title y H1 coinciden exactamente en el HTML publicado.
 
 | URL | Intención | Palabra principal | Secundarias | Title (car.) | H1 | Meta description (car.) |
 |---|---|---|---|---|---|---|
@@ -21,6 +21,7 @@ La tabla se genera desde el código con `node scripts/seo-map.mjs` (fuente: `app
 | `/servicios/lavanderia-profesional-granada` | Externalizar la lavandería de un negocio en Granada con un servicio profesional. | lavandería Granada | lavandería profesional Granada; lavandería para empresas Granada; lavandería con recogida y entrega Granada | Lavandería profesional en Granada para empresas \| Granalva (58) | Lavandería profesional para empresas en Granada | Lavandería en Granada para empresas y alojamientos: desmanchado, lavado, secado, planchado y doblado, con recogida y entrega coordinadas. Pide propuesta. (153) |
 | `/servicios/lavanderia-hoteles-granada` | Externalizar el lavado de la ropa de un hotel o alojamiento en Granada. | lavandería para hoteles Granada | lavado de ropa de hotel; lavandería hostelería Granada; recogida y entrega de ropa hotelera | Lavandería para hoteles en Granada \| Granalva (45) | Lavandería para hoteles y alojamientos en Granada | Lavandería para hoteles en Granada: lavado de sábanas y toallas, recogida y entrega de ropa hotelera coordinada con la ocupación y renting textil opcional. (155) |
 | `/servicios/lavanderia-apartamentos-turisticos-granada` | Resolver el lavado de sábanas y toallas de uno o varios apartamentos turísticos en Granada. | lavandería apartamentos turísticos Granada | lavado de sábanas y toallas; lavandería para apartamentos; recogida y entrega | Lavandería para apartamentos turísticos en Granada \| Granalva (61) | Lavandería para apartamentos turísticos en Granada | Lavandería para apartamentos turísticos en Granada: recogida, lavado de sábanas y toallas y entrega coordinada con la rotación de huéspedes. (140) |
+| `/servicios/lavanderia-sierra-nevada` | Contratar lavandería con recogida y entrega para un alojamiento de Sierra Nevada, sobre todo en temporada de esquí. | lavandería Sierra Nevada | lavandería profesional Sierra Nevada; lavandería para hoteles Sierra Nevada; lavandería apartamentos turísticos Sierra Nevada; recogida y entrega lavandería Sierra Nevada; renting textil Sierra Nevada; lavado de sábanas y toallas Sierra Nevada | Lavandería en Sierra Nevada para hoteles y apartamentos \| Granalva (66) | Lavandería profesional con recogida y entrega en Sierra Nevada | Lavandería profesional para hoteles, apartamentos turísticos y alojamientos de Sierra Nevada. Recogida, entrega, cuidado textil y rutas adaptadas a la temporada. (161) |
 | `/servicios/limpieza-apartamentos-turisticos-granada` | Contratar la limpieza entre estancias de apartamentos turísticos o viviendas vacacionales en Granada. | limpieza apartamentos turísticos Granada | limpieza alquiler vacacional; limpieza entre huéspedes; limpieza de alojamientos | Limpieza de apartamentos turísticos en Granada \| Granalva (57) | Limpieza de apartamentos turísticos en Granada | Limpieza de apartamentos turísticos en Granada entre huéspedes, coordinada con entradas y salidas, con revisión final y lavandería opcional. (140) |
 | `/servicios/limpieza-oficinas-locales-granada` | Contratar la limpieza periódica de una oficina, despacho o local comercial en Granada. | limpieza oficinas Granada | limpieza locales comerciales Granada; limpieza de despachos; limpieza de comercios | Limpieza de oficinas y locales comerciales en Granada \| Granalva (64) | Limpieza de oficinas y locales comerciales en Granada | Limpieza de oficinas, despachos y locales comerciales en Granada. Horarios adaptados a tu actividad, planificación periódica y equipo coordinado. (145) |
 | `/servicios/limpieza-fin-de-obra-granada` | Dejar un espacio listo para su uso después de una obra o reforma en Granada. | limpieza fin de obra Granada | limpieza después de reforma; limpieza de obra; limpieza final de obra | Limpieza fin de obra y reformas en Granada \| Granalva (53) | Limpieza fin de obra y después de reformas en Granada | Limpieza fin de obra en Granada para viviendas, locales y oficinas. Limpieza después de reforma con valoración previa y revisión final. (135) |
@@ -31,12 +32,13 @@ La tabla se genera desde el código con `node scripts/seo-map.mjs` (fuente: `app
 
 - `/servicios/empresa-limpieza-granada` → «limpieza de oficinas y locales comerciales» (`/servicios/limpieza-oficinas-locales-granada`), «limpieza de apartamentos turísticos» (`/servicios/limpieza-apartamentos-turisticos-granada`), «limpieza fin de obra en Granada» (`/servicios/limpieza-fin-de-obra-granada`), «lavandería profesional para empresas» (`/servicios/lavanderia-profesional-granada`)
 - `/servicios/lavanderia-profesional-granada` → «lavandería para hoteles en Granada» (`/servicios/lavanderia-hoteles-granada`), «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`), «renting textil para alojamientos» (`/servicios/renting-textil-granada`)
-- `/servicios/lavanderia-hoteles-granada` → «renting textil para hoteles y apartamentos» (`/servicios/renting-textil-granada`), «lavandería profesional en Granada» (`/servicios/lavanderia-profesional-granada`), «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`)
-- `/servicios/lavanderia-apartamentos-turisticos-granada` → «limpieza de apartamentos turísticos en Granada» (`/servicios/limpieza-apartamentos-turisticos-granada`), «alquiler de sábanas y toallas (renting textil)» (`/servicios/renting-textil-granada`), «lavandería para hoteles y alojamientos» (`/servicios/lavanderia-hoteles-granada`)
+- `/servicios/lavanderia-hoteles-granada` → «renting textil para hoteles y apartamentos» (`/servicios/renting-textil-granada`), «lavandería profesional en Granada» (`/servicios/lavanderia-profesional-granada`), «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`), «lavandería para hoteles en Sierra Nevada» (`/servicios/lavanderia-sierra-nevada`)
+- `/servicios/lavanderia-apartamentos-turisticos-granada` → «limpieza de apartamentos turísticos en Granada» (`/servicios/limpieza-apartamentos-turisticos-granada`), «alquiler de sábanas y toallas (renting textil)» (`/servicios/renting-textil-granada`), «lavandería para hoteles y alojamientos» (`/servicios/lavanderia-hoteles-granada`), «lavandería para apartamentos en Sierra Nevada» (`/servicios/lavanderia-sierra-nevada`)
+- `/servicios/lavanderia-sierra-nevada` → «lavandería para hoteles y alojamientos» (`/servicios/lavanderia-hoteles-granada`), «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`), «renting textil para la temporada» (`/servicios/renting-textil-granada`)
 - `/servicios/limpieza-apartamentos-turisticos-granada` → «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`), «renting textil para alojamientos» (`/servicios/renting-textil-granada`), «empresa de limpieza profesional en Granada» (`/servicios/empresa-limpieza-granada`)
 - `/servicios/limpieza-oficinas-locales-granada` → «empresa de limpieza profesional en Granada» (`/servicios/empresa-limpieza-granada`), «limpieza fin de obra antes de abrir un local» (`/servicios/limpieza-fin-de-obra-granada`), «lavandería para empresas con uniformidad» (`/servicios/lavanderia-profesional-granada`)
 - `/servicios/limpieza-fin-de-obra-granada` → «limpieza periódica de oficinas y locales» (`/servicios/limpieza-oficinas-locales-granada`), «empresa de limpieza profesional en Granada» (`/servicios/empresa-limpieza-granada`), «limpieza de apartamentos turísticos reformados» (`/servicios/limpieza-apartamentos-turisticos-granada`)
-- `/servicios/renting-textil-granada` → «lavandería para hoteles en Granada» (`/servicios/lavanderia-hoteles-granada`), «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`), «limpieza de apartamentos turísticos» (`/servicios/limpieza-apartamentos-turisticos-granada`)
+- `/servicios/renting-textil-granada` → «lavandería para hoteles en Granada» (`/servicios/lavanderia-hoteles-granada`), «lavandería para apartamentos turísticos» (`/servicios/lavanderia-apartamentos-turisticos-granada`), «limpieza de apartamentos turísticos» (`/servicios/limpieza-apartamentos-turisticos-granada`), «renting textil para la temporada en Sierra Nevada» (`/servicios/lavanderia-sierra-nevada`)
 - `/servicios/lavanderia-domicilio-granada` → «lavandería profesional para empresas» (`/servicios/lavanderia-profesional-granada`), «servicios de limpieza en Granada» (`/servicios/empresa-limpieza-granada`)
 
 ### Búsquedas prioritarias → página que las atiende
@@ -52,6 +54,9 @@ La tabla se genera desde el código con `node scripts/seo-map.mjs` (fuente: `app
 | limpieza oficinas Granada / limpieza locales comerciales Granada | `/servicios/limpieza-oficinas-locales-granada` |
 | limpieza fin de obra Granada | `/servicios/limpieza-fin-de-obra-granada` |
 | renting textil Granada | `/servicios/renting-textil-granada` |
+| lavandería Sierra Nevada / lavandería profesional Sierra Nevada / lavandería para hoteles Sierra Nevada / lavandería apartamentos (turísticos) Sierra Nevada / recogida y entrega lavandería Sierra Nevada / renting textil Sierra Nevada / lavado de sábanas y toallas Sierra Nevada | `/servicios/lavanderia-sierra-nevada` |
+| contacto / presupuesto (navegacional) | `/contacto` (conserva la URL de WordPress) |
+| quiénes somos / equipo (marca) | `/sobre-nosotros` (conserva la URL de WordPress) |
 | lavandería a domicilio Granada / lavandería con recogida y entrega Granada | `/servicios/lavanderia-domicilio-granada` (particulares). La recogida y entrega para empresas se trata en `/servicios/lavanderia-profesional-granada` |
 | Limpiezas Granalva (marca) | `/` |
 
@@ -59,7 +64,45 @@ Riesgo de solapamiento vigilado: la portada («empresa de limpieza y lavandería
 
 **Lavandería industrial:** no se usa esa expresión mientras Granalva no confirme instalaciones y capacidad que la justifiquen.
 
-**Sierra Nevada:** no hay página ni mención de esa zona hasta que el propietario confirme que presta allí el servicio de forma real.
+**Sierra Nevada:**
+- **Lavandería con recogida y entrega y renting textil:** confirmados por el propietario el 7 de noviembre de 2026. Tienen la landing `/servicios/lavanderia-sierra-nevada`, que permanece publicada todo el año; fuera de temporada se actualiza el bloque comercial, pero la URL no se elimina.
+- **Limpieza de alojamientos en Sierra Nevada:** **no está confirmada**, así que no se menciona. Si se confirma, se añade una sección propia a la landing; no se crea otra URL salvo que exista contenido suficiente.
+- **Sin datos no confirmados:** no se publican precios, plazos garantizados, frecuencias ni zonas concretas (por ejemplo, Pradollano) hasta confirmarlos.
+
+## Portada compacta orientada a conversión B2B
+
+La portada resume y distribuye; no contiene todo el contenido SEO de cada servicio. Tiene 10 bloques, en este orden:
+
+1. Cabecera fija y cinta superior.
+2. Hero con H1, introducción y CTA por prioridad.
+3. Autoridad verificable.
+4. Empresas frente a particulares, con un peso de 70/30.
+5. Selector dinámico de 4 líneas de servicio.
+6. Proceso.
+7. Bloque estacional de Sierra Nevada.
+8. Sectores.
+9. Reseñas.
+10. CTA final y formulario empresarial.
+
+Detalles de implementación:
+
+- **Longitud:** pasa de 10 193 px a unos 7 900 px de alto a 1440 px de ancho.
+- **Contenido trasladado:** el equipo y la historia de marca están ahora en `/sobre-nosotros`, y el selector de colada en `/servicios/lavanderia-domicilio-granada#colada`.
+- **Selector dinámico:** sigue el patrón accesible de pestañas, con flechas, Inicio y Fin. Los 4 paneles están en el HTML del servidor; los inactivos llevan `hidden`, pero su texto y sus enlaces son rastreables. Cada panel enlaza las páginas indexables de su línea.
+- **Prioridad de CTA:**
+  1. «Solicitar presupuesto empresarial»;
+  2. «Contratar lavandería profesional»;
+  3. «Limpieza para empresas»;
+  4. «Temporada en Sierra Nevada»;
+  5. «Hacer un pedido particular».
+- **CTA en páginas B2B:** no se usa «Hacer un pedido». Cada servicio tiene su propio CTA: «Planificar recogidas y entregas», «Reservar ruta de temporada», etc.
+
+## Formularios y medición de conversiones
+
+- **Variantes:** formulario general (portada y `/contacto`) y formulario de Sierra Nevada, incrustado en la landing (`#reservar-ruta`).
+- **Ampliación progresiva:** 6 campos obligatorios o básicos y un desplegable opcional de «datos operativos»: ubicación, unidades, volumen, frecuencia, inicio e información adicional.
+- **Atribución guardada con cada solicitud:** página de envío, página de entrada, referrer y parámetros UTM de la primera visita.
+- **Preselección:** `/contacto?servicio=<slug>` preselecciona el servicio. La canonical sigue siendo `/contacto`, así que los parámetros no generan duplicados.
 
 ## Contenido de cada página de servicio
 
@@ -94,6 +137,8 @@ Pendiente de material real: fotografías propias por servicio, casos de éxito a
 
 | Elemento | Implementación | Verificación |
 |---|---|---|
+| Panel y API | `/admin` y `/api/*` con `X-Robots-Tag: noindex, nofollow`, `Disallow` en robots y acceso por roles. Las solicitudes no se pueden leer ni crear desde la API pública | Prueba «panel y API» |
+| Contenido duplicado | Similitud de texto entre cada par de páginas indexables, medida con fragmentos de 5 palabras: falla por encima del 50 %. Máximo actual: 29 % | Prueba «duplicados» |
 | Renderizado | HTML generado de forma estática (SSG). El H1, la introducción y los enlaces no dependen de JavaScript. La portada es un componente de servidor y solo las zonas interactivas son de cliente | `npm test` lee el HTML inicial |
 | Códigos HTTP | 200 en páginas válidas; 404 real en direcciones inexistentes (`dynamicParams = false`) | Prueba 8 |
 | 404 | Página diseñada con `noindex, follow` y enlaces a los 9 servicios | Prueba 8 |
@@ -109,18 +154,32 @@ Pendiente de material real: fotografías propias por servicio, casos de éxito a
 | Fuentes | Granaina precargada con `font-display: swap`. Retirada Geist, que se descargaba sin usarse | Lighthouse |
 | Accesibilidad | Menú móvil (aria-expanded, foco atrapado, Escape); breadcrumbs; tabs con `aria-controls`; contraste AA en las etiquetas sobre fondo claro | Lighthouse + Playwright |
 
-### Mediciones de laboratorio (Lighthouse 12.8.2, `next start` local, 7 nov 2026)
+### Mediciones de laboratorio (Lighthouse 12.8.2, `next start` local, móvil simulado salvo indicación)
 
-| Página | Rendimiento | Accesibilidad | Buenas prácticas | SEO | LCP | CLS | TBT |
-|---|---|---|---|---|---|---|---|
-| `/` móvil | 91 | 97* | 100 | 100 | 3,3 s | 0 | 110 ms |
-| `/` escritorio | 100 | 100 | 100 | 100 | 0,7 s | 0 | 0 ms |
-| `/servicios/lavanderia-hoteles-granada` móvil | 98 | 100 | 100 | 100 | 2,4 s | 0 | 50 ms |
-| `/servicios` móvil | 97 | 100 | 100 | 100 | 2,6 s | 0 | 50 ms |
+| Página | Fase SEO: 1.ª medición (antes de diferir el vídeo y corregir accesibilidad) | Fase SEO: medición final | Fase B2B (actual) |
+|---|---|---|---|
+| `/` móvil | Rend. 87 · Acces. 96 · LCP 3,1 s · TBT 300 ms · 2,3 MB | Rend. 91 · Acces. 97 · LCP 3,3 s · TBT 110 ms | **Rend. 92 · Acces. 100 · SEO 100 · BP 100 · LCP 3,3 s · CLS 0 · TBT 50 ms** |
+| `/` escritorio | Rend. 100 · Acces. 96 · LCP 0,7 s | Rend. 100 · Acces. 100 | **Rend. 100 · Acces. 97\* · SEO 100 · LCP 0,7 s · CLS 0** |
+| Página de servicio (hoteles) móvil | Rend. 96 · Acces. 96 · LCP 2,6 s · 267 KB | Rend. 98 · Acces. 100 · LCP 2,4 s | **Rend. 96 · Acces. 100 · SEO 100 · LCP 2,8 s · CLS 0 · 374 KB** |
+| `/servicios/lavanderia-sierra-nevada` móvil | — (no existía) | — | **Rend. 95 · Acces. 100 · SEO 100 · LCP 2,8 s · CLS 0** (con caché de imágenes; 3,6 s en la primera conversión AVIF) |
+| `/contacto` móvil | — (no existía) | — | **Rend. 97 · Acces. 100 · SEO 100 · LCP 2,6 s · CLS 0** |
+| `/sobre-nosotros` móvil | — (no existía) | — | **Rend. 96 · Acces. 100 · SEO 100 · LCP 2,7 s · CLS 0** |
 
 \* El único aviso es de contraste y se mide a mitad de la animación automática del recorrido «Así funciona». Los colores intermedios de la transición no cumplen, pero sus dos estados finales sí (más de 4,5:1).
 
+La versión 10 original (vinext) no se midió con Lighthouse; la referencia de partida es la 1.ª medición de la fase SEO, ya en Next.js.
+
+Diferencias de la fase B2B respecto a la anterior:
+
+- La portada mide 7 900 px de alto a 1440 px de ancho, frente a 10 193 (22 % menos).
+- El peso de la portada sigue dominado por el vídeo del hero (unos 2 MB), que se descarga después del evento `load` y no se descarga con movimiento reducido ni con ahorro de datos.
+- El LCP móvil de las páginas interiores está entre 2,6 y 2,8 s en la simulación de un móvil lento. Los 2,4 s de la fase anterior se midieron en otra ejecución; la diferencia entra en la variación habitual de Lighthouse y se debe a la imagen del hero.
+
 Son datos de laboratorio con un móvil lento simulado; **no son datos reales de usuarios**. Los Core Web Vitals reales (LCP < 2,5 s, INP < 200 ms, CLS < 0,1) se comprobarán en Search Console y PageSpeed Insights cuando haya tráfico en el dominio definitivo. En la portada, el LCP en móvil es la imagen de fondo del hero y el 53 % del tiempo es «render delay» en la simulación. Si los datos reales lo confirman, la siguiente mejora será servir el hero con `next/image` en lugar de un fondo CSS.
+
+## Competencia
+
+Ver `docs/COMPETITOR-SEO-AUDIT.md`: 16 páginas de 14 competidores, con title, H1, estructura, datos estructurados, velocidad, autoridad, fortalezas, debilidades y oportunidades.
 
 ## Requisitos SEO del CMS (fases 3 a 8)
 

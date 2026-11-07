@@ -43,11 +43,21 @@ export type ServicePage = {
   audiences: string[];
   /** Cobertura geográfica real. No añadir zonas sin confirmación del propietario. */
   coverage: string;
+  /** Área de servicio específica para datos estructurados (por defecto, la de la empresa). */
+  areaServed?: { "@type": string; name: string }[];
   faqs: { question: string; answer: string }[];
   /** Entre dos y cuatro servicios relacionados con texto de enlace descriptivo. */
   related: { slug: string; anchor: string }[];
+  /** Texto del CTA principal, adaptado a la intención (B2B o particular). */
+  ctaLabel: string;
   ctaTitle: string;
   ctaText: string;
+  /** Secciones específicas de la página (p. ej. temporada, rutas, textiles). */
+  extraSections?: { id: string; eyebrow: string; title: string; intro?: string; items: { title: string; text: string }[] }[];
+  /** Variante de formulario incrustado en la propia página (ancla #reservar-ruta). */
+  embeddedForm?: "sierra-nevada";
+  /** Muestra el selector de tamaño de colada (ancla #colada). */
+  showLoadPicker?: boolean;
   /** Fecha de la última revisión del contenido (ISO 8601). */
   updatedAt: string;
 };
@@ -110,6 +120,7 @@ export const servicePages: ServicePage[] = [
       { slug: "limpieza-fin-de-obra-granada", anchor: "limpieza fin de obra en Granada" },
       { slug: "lavanderia-profesional-granada", anchor: "lavandería profesional para empresas" },
     ],
+    ctaLabel: "Solicitar presupuesto empresarial",
     ctaTitle: "Cuéntanos qué necesita tu empresa.",
     ctaText: "Estudiaremos el espacio, la frecuencia y los horarios para preparar una propuesta de limpieza clara y ajustada.",
     updatedAt: CONTENT_REVIEWED,
@@ -166,6 +177,7 @@ export const servicePages: ServicePage[] = [
       { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
       { slug: "renting-textil-granada", anchor: "renting textil para alojamientos" },
     ],
+    ctaLabel: "Planificar recogidas y entregas",
     ctaTitle: "Cuéntanos el volumen y la frecuencia de tu lavandería.",
     ctaText: "Con los kilos aproximados, los tipos de textil y la ubicación preparamos una ruta y una propuesta adaptadas.",
     updatedAt: CONTENT_REVIEWED,
@@ -221,7 +233,9 @@ export const servicePages: ServicePage[] = [
       { slug: "renting-textil-granada", anchor: "renting textil para hoteles y apartamentos" },
       { slug: "lavanderia-profesional-granada", anchor: "lavandería profesional en Granada" },
       { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
+      { slug: "lavanderia-sierra-nevada", anchor: "lavandería para hoteles en Sierra Nevada" },
     ],
+    ctaLabel: "Planificar recogidas y entregas",
     ctaTitle: "Planifiquemos la lavandería de tu alojamiento.",
     ctaText: "Indícanos plazas, ocupación aproximada y stock actual para dimensionar las recogidas y entregas.",
     updatedAt: CONTENT_REVIEWED,
@@ -277,9 +291,134 @@ export const servicePages: ServicePage[] = [
       { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos en Granada" },
       { slug: "renting-textil-granada", anchor: "alquiler de sábanas y toallas (renting textil)" },
       { slug: "lavanderia-hoteles-granada", anchor: "lavandería para hoteles y alojamientos" },
+      { slug: "lavanderia-sierra-nevada", anchor: "lavandería para apartamentos en Sierra Nevada" },
     ],
+    ctaLabel: "Planificar recogidas y entregas",
     ctaTitle: "Organicemos la lavandería de tus apartamentos.",
     ctaText: "Cuéntanos cuántos alojamientos gestionas, sus plazas y dónde están para proponer una ruta de recogida y entrega.",
+    updatedAt: CONTENT_REVIEWED,
+  },
+  {
+    slug: "lavanderia-sierra-nevada",
+    navLabel: "Lavandería en Sierra Nevada",
+    h1: "Lavandería profesional con recogida y entrega en Sierra Nevada",
+    eyebrow: "TEMPORADA 2026/27 · SIERRA NEVADA",
+    metaTitle: "Lavandería en Sierra Nevada para hoteles y apartamentos | Granalva",
+    metaDescription:
+      "Lavandería profesional para hoteles, apartamentos turísticos y alojamientos de Sierra Nevada. Recogida, entrega, cuidado textil y rutas adaptadas a la temporada.",
+    intent: "Contratar lavandería con recogida y entrega para un alojamiento de Sierra Nevada, sobre todo en temporada de esquí.",
+    primaryKeyword: "lavandería Sierra Nevada",
+    secondaryKeywords: [
+      "lavandería profesional Sierra Nevada",
+      "lavandería para hoteles Sierra Nevada",
+      "lavandería apartamentos turísticos Sierra Nevada",
+      "recogida y entrega lavandería Sierra Nevada",
+      "renting textil Sierra Nevada",
+      "lavado de sábanas y toallas Sierra Nevada",
+    ],
+    summary:
+      "Organizamos la lavandería profesional, la recogida y entrega y el suministro textil de hoteles, apartamentos turísticos y alojamientos para que cada entrada llegue a tiempo, incluso en los momentos de mayor ocupación.",
+    image: IMAGES.renting,
+    imageAlt: "Sábanas y toallas blancas preparadas para un alojamiento de temporada",
+    introTitle: "Lavandería en Sierra Nevada: la temporada se prepara antes de que empiece",
+    intro: [
+      "En la estación, la ocupación cambia con la nieve, los puentes y los fines de semana. Un alojamiento puede pasar de una semana tranquila a cambiar todas sus camas en un mismo día, y la ropa limpia tiene que estar arriba antes de la siguiente entrada.",
+      "Granalva organiza la lavandería profesional de alojamientos de Sierra Nevada desde Granada: planificamos con antelación el volumen previsto, acordamos rutas de recogida y entrega y preparamos sábanas y toallas por tipología para que el equipo del alojamiento solo tenga que colocarlas.",
+      "Cuando el stock propio no alcanza para los picos de ocupación, estudiamos el renting textil como refuerzo, integrado en la misma ruta de lavandería.",
+    ],
+    promise: "Previsión antes de la temporada y coordinación directa durante ella.",
+    needsTitle: "Lo que exige la temporada en Sierra Nevada",
+    needs: [
+      { title: "Picos de ocupación", text: "Fines de semana, puentes y festivos concentran muchas entradas y salidas en pocas horas." },
+      { title: "Logística de montaña", text: "La distancia, la meteorología y los accesos obligan a planificar las rutas con antelación." },
+      { title: "Espacio limitado", text: "Muchos alojamientos tienen poco espacio para almacenar ropa limpia y sucia entre una entrega y la siguiente." },
+    ],
+    includes: [
+      { title: "Recogida y entrega", text: "Rutas programadas entre Granada y el alojamiento, acordadas según volumen y temporada." },
+      { title: "Lavado y acabado", text: "Desmanchado, lavado, secado, planchado y doblado según el servicio contratado." },
+      { title: "Preparación por tipología", text: "Ropa de cama y baño organizada para facilitar su almacenamiento y distribución." },
+      { title: "Renting textil opcional", text: "Refuerzo del stock de sábanas y toallas para los periodos de mayor ocupación." },
+    ],
+    process: [
+      { title: "Previsión de temporada", text: "Revisamos plazas, ocupación esperada, stock y espacio de almacenamiento antes de empezar." },
+      { title: "Ruta acordada", text: "Fijamos puntos, días y franjas de recogida y entrega compatibles con las entradas del alojamiento." },
+      { title: "Tratamiento textil", text: "Procesamos la ropa en Granada y revisamos el resultado antes de preparar la entrega." },
+      { title: "Entrega y ajuste", text: "Entregamos preparado y revisamos la planificación cuando cambia la ocupación." },
+    ],
+    audiences: ["Hoteles de montaña", "Apartamentos turísticos", "Gestores de varias unidades", "Apartahoteles", "Albergues y hostales", "Alojamientos de temporada"],
+    coverage:
+      "Atendemos alojamientos de Sierra Nevada mediante rutas programadas desde Granada. Al preparar la propuesta confirmamos la viabilidad de cada ubicación, los días de recogida y entrega y la frecuencia, según el volumen y la temporada.",
+    areaServed: [{ "@type": "Place", name: "Sierra Nevada (Granada)" }],
+    faqs: [
+      { question: "¿Recogéis la ropa directamente en el alojamiento de Sierra Nevada?", answer: "Sí, organizamos la recogida y la entrega mediante rutas acordadas. Confirmamos la ubicación, los puntos de recogida y los días al preparar la propuesta." },
+      { question: "¿Con cuánta antelación conviene organizar la temporada?", answer: "Cuanto antes conozcamos plazas, ocupación prevista y stock, mejor podremos dimensionar rutas y textiles. Lo ideal es hablarlo antes del inicio de la temporada." },
+      { question: "¿Qué pasa en los fines de semana y puentes de máxima ocupación?", answer: "La planificación tiene en cuenta los picos previstos. Si cambian las reservas, coordinamos con el alojamiento los ajustes posibles en la ruta." },
+      { question: "¿Podéis suministrar sábanas y toallas además de lavarlas?", answer: "Podemos estudiar renting textil vinculado a la lavandería para reforzar el stock durante la temporada." },
+      { question: "¿Trabajáis también fuera de la temporada de esquí?", answer: "La página y el servicio se mantienen todo el año. Fuera de temporada adaptamos rutas y frecuencia al volumen real de cada alojamiento." },
+    ],
+    related: [
+      { slug: "lavanderia-hoteles-granada", anchor: "lavandería para hoteles y alojamientos" },
+      { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
+      { slug: "renting-textil-granada", anchor: "renting textil para la temporada" },
+    ],
+    ctaLabel: "Reservar ruta de temporada",
+    ctaTitle: "Reserva tu ruta para la temporada 2026/27.",
+    ctaText: "Cuéntanos qué alojamiento gestionas, cuántas plazas tiene y cuándo empiezas. Te proponemos una ruta de recogida y entrega.",
+    extraSections: [
+      {
+        id: "hoteles",
+        eyebrow: "HOTELES Y ALOJAMIENTOS",
+        title: "Lavandería para hoteles en Sierra Nevada",
+        intro: "En un hotel de montaña, la ropa de cama y baño condiciona la preparación de habitaciones en los días de más entradas.",
+        items: [
+          { title: "Volumen por temporada", text: "Partimos de las plazas y de la ocupación prevista para estimar el volumen semanal." },
+          { title: "Entregas para planta", text: "Textiles clasificados y doblados para que pasen directamente al almacén o a las plantas." },
+          { title: "Coordinación con gobernanta", text: "Un interlocutor directo para cambios de última hora y picos de ocupación." },
+        ],
+      },
+      {
+        id: "apartamentos",
+        eyebrow: "APARTAMENTOS TURÍSTICOS Y GESTORES",
+        title: "Lavandería para apartamentos turísticos en Sierra Nevada",
+        intro: "Los gestores con varias unidades necesitan juegos completos disponibles entre una salida y la siguiente entrada.",
+        items: [
+          { title: "Juegos por apartamento", text: "Organizamos la ropa por juegos para simplificar la preparación de cada unidad." },
+          { title: "Puntos de recogida", text: "Recogida por apartamento o en un punto centralizado, según la dispersión de la cartera." },
+          { title: "Rotación de temporada", text: "Calculamos los juegos necesarios para cubrir la rotación sin acumular textiles." },
+        ],
+      },
+      {
+        id: "rutas",
+        eyebrow: "RUTAS Y COORDINACIÓN",
+        title: "Rutas de recogida y entrega programadas",
+        items: [
+          { title: "Planificación previa", text: "Acordamos la ruta antes de la temporada, con margen para los fines de semana de más actividad." },
+          { title: "Comunicación directa", text: "Un canal directo con el equipo de Granalva para confirmar recogidas, entregas y cambios." },
+          { title: "Ajuste con la ocupación", text: "Revisamos la frecuencia cuando cambian las reservas o la temporada." },
+        ],
+      },
+      {
+        id: "textiles",
+        eyebrow: "TIPOS DE TEXTILES",
+        title: "Sábanas, toallas y textiles de alojamiento",
+        items: [
+          { title: "Ropa de cama", text: "Sábanas, fundas y otras piezas de cama según el formato de cada alojamiento." },
+          { title: "Ropa de baño", text: "Toallas y textiles de baño de uso recurrente." },
+          { title: "Otros textiles", text: "Consúltanos otros textiles del alojamiento para confirmar su tratamiento." },
+        ],
+      },
+      {
+        id: "picos",
+        eyebrow: "PREPARACIÓN ANTE PICOS",
+        title: "Preparados para los momentos de mayor ocupación",
+        items: [
+          { title: "Stock suficiente", text: "Calculamos la rotación para que haya ropa limpia disponible en los días de más cambios." },
+          { title: "Renting como refuerzo", text: "Si el stock propio no alcanza, valoramos renting textil para la temporada." },
+          { title: "Seguimiento", text: "Revisamos con el alojamiento cómo ha funcionado cada pico para ajustar el siguiente." },
+        ],
+      },
+    ],
+    embeddedForm: "sierra-nevada",
     updatedAt: CONTENT_REVIEWED,
   },
   {
@@ -334,6 +473,7 @@ export const servicePages: ServicePage[] = [
       { slug: "renting-textil-granada", anchor: "renting textil para alojamientos" },
       { slug: "empresa-limpieza-granada", anchor: "empresa de limpieza profesional en Granada" },
     ],
+    ctaLabel: "Solicitar presupuesto empresarial",
     ctaTitle: "Prepara cada entrada sin carreras de última hora.",
     ctaText: "Indícanos cuántos apartamentos gestionas, su capacidad y la rotación habitual para proponerte una planificación.",
     updatedAt: CONTENT_REVIEWED,
@@ -390,6 +530,7 @@ export const servicePages: ServicePage[] = [
       { slug: "limpieza-fin-de-obra-granada", anchor: "limpieza fin de obra antes de abrir un local" },
       { slug: "lavanderia-profesional-granada", anchor: "lavandería para empresas con uniformidad" },
     ],
+    ctaLabel: "Solicitar presupuesto empresarial",
     ctaTitle: "Mantén tu oficina o local siempre preparado.",
     ctaText: "Cuéntanos la superficie, los horarios y la frecuencia que necesitas para preparar una propuesta de limpieza periódica.",
     updatedAt: CONTENT_REVIEWED,
@@ -446,6 +587,7 @@ export const servicePages: ServicePage[] = [
       { slug: "empresa-limpieza-granada", anchor: "empresa de limpieza profesional en Granada" },
       { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos reformados" },
     ],
+    ctaLabel: "Solicitar presupuesto de fin de obra",
     ctaTitle: "¿Cuándo tiene que estar listo el espacio?",
     ctaText: "Envíanos la superficie, el tipo de obra y la fecha objetivo. Si es posible, añade fotografías para valorar el alcance.",
     updatedAt: CONTENT_REVIEWED,
@@ -501,7 +643,9 @@ export const servicePages: ServicePage[] = [
       { slug: "lavanderia-hoteles-granada", anchor: "lavandería para hoteles en Granada" },
       { slug: "lavanderia-apartamentos-turisticos-granada", anchor: "lavandería para apartamentos turísticos" },
       { slug: "limpieza-apartamentos-turisticos-granada", anchor: "limpieza de apartamentos turísticos" },
+      { slug: "lavanderia-sierra-nevada", anchor: "renting textil para la temporada en Sierra Nevada" },
     ],
+    ctaLabel: "Solicitar propuesta de renting",
     ctaTitle: "Calculemos los textiles que necesita tu alojamiento.",
     ctaText: "Indícanos plazas, tipos de cama, ocupación y stock actual para dimensionar una propuesta de renting textil.",
     updatedAt: CONTENT_REVIEWED,
@@ -558,8 +702,10 @@ export const servicePages: ServicePage[] = [
       { slug: "lavanderia-profesional-granada", anchor: "lavandería profesional para empresas" },
       { slug: "empresa-limpieza-granada", anchor: "servicios de limpieza en Granada" },
     ],
+    ctaLabel: "Solicitar recogida",
     ctaTitle: "Solicita la recogida de tu colada.",
     ctaText: "Indícanos tu dirección, el tamaño aproximado de la colada y tu disponibilidad. Te confirmamos la franja de recogida.",
+    showLoadPicker: true,
     updatedAt: CONTENT_REVIEWED,
   },
 ];

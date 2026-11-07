@@ -18,11 +18,14 @@ const pages = [
   ["/servicios/lavanderia-profesional-granada", "Lavandería profesional en Granada para empresas | Granalva", "Lavandería profesional para empresas en Granada"],
   ["/servicios/lavanderia-hoteles-granada", "Lavandería para hoteles en Granada | Granalva", "Lavandería para hoteles y alojamientos en Granada"],
   ["/servicios/lavanderia-apartamentos-turisticos-granada", "Lavandería para apartamentos turísticos en Granada | Granalva", "Lavandería para apartamentos turísticos en Granada"],
+  ["/servicios/lavanderia-sierra-nevada", "Lavandería en Sierra Nevada para hoteles y apartamentos | Granalva", "Lavandería profesional con recogida y entrega en Sierra Nevada"],
   ["/servicios/limpieza-apartamentos-turisticos-granada", "Limpieza de apartamentos turísticos en Granada | Granalva", "Limpieza de apartamentos turísticos en Granada"],
   ["/servicios/limpieza-oficinas-locales-granada", "Limpieza de oficinas y locales comerciales en Granada | Granalva", "Limpieza de oficinas y locales comerciales en Granada"],
   ["/servicios/limpieza-fin-de-obra-granada", "Limpieza fin de obra y reformas en Granada | Granalva", "Limpieza fin de obra y después de reformas en Granada"],
   ["/servicios/renting-textil-granada", "Renting textil en Granada para alojamientos | Granalva", "Renting textil para alojamientos y empresas en Granada"],
   ["/servicios/lavanderia-domicilio-granada", "Lavandería a domicilio en Granada con recogida | Granalva", "Lavandería a domicilio con recogida y entrega en Granada"],
+  ["/contacto", "Contacto y presupuestos de limpieza y lavandería | Granalva", "Contacto y presupuestos de limpieza y lavandería"],
+  ["/sobre-nosotros", "Sobre nosotros: equipo de limpieza y lavandería en Granada | Granalva", "Sobre Granalva: limpieza y lavandería con equipo propio en Granada"],
 ];
 const servicePaths = pages.map(([path]) => path).filter((path) => path.startsWith("/servicios/"));
 
@@ -116,20 +119,31 @@ test("la portada contiene en el HTML inicial la propuesta acordada", () => {
   const body = text(home);
   assert.match(body, /Servicios de limpieza para empresas, hoteles y apartamentos turísticos, lavandería profesional con recogida y entrega, renting textil y soluciones para particulares en Granada\./);
   assert.match(body, /Tu empresa no puede parar\. Tu hogar tampoco debería esperar\./);
-  assert.match(home, />Solicitar presupuesto <span>→<\/span><\/a>/);
-  assert.match(home, />Hacer un pedido <span>→<\/span><\/a>/);
+  // CTA por prioridad comercial: empresa primero, particular como acceso secundario.
+  for (const cta of ["Solicitar presupuesto empresarial", "Contratar lavandería profesional", "Reservar ruta de temporada", "Hacer un pedido particular"]) {
+    assert.ok(body.includes(cta), `CTA ausente: ${cta}`);
+  }
+  assert.ok(body.indexOf("Solicitar presupuesto empresarial") < body.indexOf("Hacer un pedido particular"), "el CTA de empresa debe ir antes");
+  // Bloque estacional de Sierra Nevada.
+  assert.match(body, /TEMPORADA 2026\/27 · SIERRA NEVADA/);
+  assert.match(body, /¿Estás preparando la temporada en Sierra Nevada\?/);
+  // Selector de servicios: los cuatro paneles están en el HTML inicial (no dependen de JavaScript).
+  for (const panel of ["lavanderia", "limpieza", "renting", "particulares"]) {
+    assert.match(home, new RegExp(`id="servicio-panel-${panel}"`), `panel ${panel}`);
+  }
+  assert.equal((home.match(/id="servicio-tab-[a-z]+"/g) ?? []).length, 4, "4 pestañas en el selector de servicios");
   // La portada enlaza todos los servicios desde el contenido.
   for (const path of servicePaths) assert.match(home, new RegExp(`href="${escape(path)}"`), `portada → ${path}`);
 });
 
 test("las páginas de servicio muestran breadcrumbs, cobertura, CTA y 2-4 servicios relacionados", () => {
-  for (const path of ["/servicios", ...servicePaths]) {
+  for (const path of ["/servicios", "/contacto", "/sobre-nosotros", ...servicePaths]) {
     const page = html.get(path);
     assert.match(page, /<nav class="breadcrumbs[^"]*" aria-label="Ruta de navegación">/, `${path}: breadcrumbs`);
   }
   for (const path of servicePaths) {
     const page = html.get(path);
-    assert.match(page, /href="\/#contacto"/, `${path}: enlace al formulario`);
+    assert.match(page, /href="(\/contacto\?servicio=[a-z-]+#formulario|#reservar-ruta)"/, `${path}: enlace al formulario`);
     assert.match(page, /href="tel:\+34744488964"/, `${path}: teléfono`);
     assert.match(text(page), /Zona de servicio\./, `${path}: cobertura`);
     assert.match(page, /<time dateTime="\d{4}-\d{2}-\d{2}">/, `${path}: fecha de revisión`);
@@ -249,4 +263,85 @@ test("el host con www redirige con 301 al dominio canónico sin www", async () =
   response.resume();
   assert.equal(response.statusCode, 301);
   assert.equal(response.headers.location, `${canonical.origin}/servicios`);
+});
+
+test("Sierra Nevada: landing completa, formulario propio y área de servicio específica", () => {
+  const page = html.get("/servicios/lavanderia-sierra-nevada");
+  const body = text(page);
+  for (const id of ["hoteles", "apartamentos", "rutas", "textiles", "picos", "reservar-ruta"]) {
+    assert.match(page, new RegExp(`id="${id}"`), `sección ${id}`);
+  }
+  assert.match(page, /<input type="hidden" name="formulario" value="sierra-nevada"/, "formulario B2B de Sierra Nevada");
+  assert.ok(body.includes("Zona de servicio."), "cobertura");
+  assert.doesNotMatch(body, /limpieza de alojamientos en Sierra Nevada/i, "la limpieza en Sierra Nevada no está confirmada");
+  const service = nodesOf(jsonLd(page)).find((node) => hasType(node, "Service"));
+  assert.deepEqual(service.areaServed, [{ "@type": "Place", name: "Sierra Nevada (Granada)" }]);
+});
+
+test("cada URL del sitemap cumple los requisitos de indexación", async () => {
+  const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
+  const known = new Set(pages.map(([path]) => (path === "/" ? SITE_URL : `${SITE_URL}${path}`)));
+  for (const loc of all(sitemap, /<loc>([^<]+)<\/loc>/g)) {
+    assert.ok(known.has(loc), `URL del sitemap sin cubrir en las pruebas: ${loc}`);
+    const path = loc.slice(SITE_URL.length) || "/";
+    const response = await fetch(`${BASE}${path}`, { redirect: "manual" });
+    assert.equal(response.status, 200, path);
+    assert.equal(response.headers.get("x-robots-tag"), null, `${path}: X-Robots-Tag`);
+    const page = await response.text();
+    assert.match(page, /<title>[^<]{10,}<\/title>/, `${path}: title`);
+    assert.match(page, /<meta name="description" content="[^"]{70,}"/, `${path}: description`);
+    assert.match(page, /<link rel="canonical" href="https:\/\//, `${path}: canonical`);
+    assert.equal((page.match(/<h1[\s>]/g) ?? []).length, 1, `${path}: un único H1`);
+    assert.doesNotMatch(page, /<meta name="robots" content="[^"]*noindex/, `${path}: noindex accidental`);
+    assert.ok(jsonLd(page).length >= 2, `${path}: JSON-LD de la empresa y de la página`);
+    assert.match(page, /href="(\/contacto[^"]*|#contacto|#reservar-ruta|tel:\+34744488964)"/, `${path}: CTA`);
+  }
+});
+
+test("no hay contenido duplicado significativo entre páginas indexables", () => {
+  // Texto propio: contenido de <main> sin los componentes de interfaz comunes
+  // (cabecera, pie, cinta y formulario de solicitud, idénticos en varias páginas).
+  const mainText = (page) => text((page.match(/<main[\s\S]*?<\/main>/)?.[0] ?? page).replace(/<header[\s\S]*?<\/header>|<footer[\s\S]*?<\/footer>|<div class="top-ribbon"[\s\S]*?<\/div><\/div>|<form[\s\S]*?<\/form>/g, " "));
+  const shingles = (value) => {
+    const words = value.toLowerCase().split(/\s+/).filter(Boolean);
+    const set = new Set();
+    for (let index = 0; index + 5 <= words.length; index += 1) set.add(words.slice(index, index + 5).join(" "));
+    return set;
+  };
+  const sets = pages.map(([path]) => [path, shingles(mainText(html.get(path)))]);
+  const report = [];
+  for (let a = 0; a < sets.length; a += 1) {
+    for (let b = a + 1; b < sets.length; b += 1) {
+      const [pathA, setA] = sets[a];
+      const [pathB, setB] = sets[b];
+      let shared = 0;
+      for (const item of setA) if (setB.has(item)) shared += 1;
+      const similarity = shared / Math.min(setA.size, setB.size);
+      report.push([similarity, pathA, pathB]);
+      assert.ok(similarity < 0.5, `${pathA} y ${pathB} comparten el ${Math.round(similarity * 100)} % del texto`);
+    }
+  }
+  const [max, pathA, pathB] = report.sort((x, y) => y[0] - x[0])[0];
+  console.log(`# máxima similitud entre páginas: ${Math.round(max * 100)} % (${pathA} ↔ ${pathB})`);
+});
+
+test("el panel y la API de Payload no son indexables ni públicos", async () => {
+  const admin = await fetch(`${BASE}/admin`, { redirect: "manual" });
+  assert.equal(admin.headers.get("x-robots-tag"), "noindex, nofollow");
+  const api = await fetch(`${BASE}/api/contact-submissions`);
+  assert.equal(api.headers.get("x-robots-tag"), "noindex, nofollow");
+  assert.ok([401, 403].includes(api.status), `las solicitudes no deben ser públicas (HTTP ${api.status})`);
+  const create = await fetch(`${BASE}/api/contact-submissions`, { method: "POST", headers: { "content-type": "application/json" }, body: "{}" });
+  assert.ok([401, 403].includes(create.status), `no se pueden crear solicitudes desde la API pública (HTTP ${create.status})`);
+});
+
+test("los formularios están en el HTML inicial (funcionan sin JavaScript)", () => {
+  for (const path of ["/", "/contacto", "/servicios/lavanderia-sierra-nevada"]) {
+    const page = html.get(path);
+    const main = page.match(/<main[\s\S]*<\/main>/)?.[0] ?? "";
+    assert.match(main, /<form[^>]*class="contact-form"/, `${path}: formulario dentro de <main>`);
+    assert.doesNotMatch(page, /<div hidden id="S:/, `${path}: contenido diferido que requiere JavaScript`);
+    assert.match(main, /name="consentimiento"/, `${path}: consentimiento`);
+    assert.match(main, /name="website"/, `${path}: campo trampa antispam`);
+  }
 });

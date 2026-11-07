@@ -25,8 +25,13 @@ La web abre directamente sobre la portada. No existe introducción, espera inici
 
 ```bash
 npm ci
-npm run dev
+cp .env.example .env.local     # rellena DATABASE_URL y PAYLOAD_SECRET
+docker compose up -d           # PostgreSQL local (o usa una base existente)
+npm run db:migrate             # aplica las migraciones de Payload
+npm run dev                    # http://localhost:3000 · panel: /admin
 ```
+
+La primera cuenta creada en `/admin` recibe automáticamente el rol de propietario.
 
 Comprobaciones:
 

@@ -83,7 +83,7 @@ export function MobileNav({ links, services, phone }: { links: NavLink[]; servic
             </ul>
           </nav>
           <div className="mobile-nav__actions">
-            <Link className="button button--dark" href="/#contacto" onClick={close}>Solicitar presupuesto <span>→</span></Link>
+            <Link className="button button--dark" href="/contacto#formulario" onClick={close}>Solicitar presupuesto <span>→</span></Link>
             <a className="mobile-nav__phone" href={phone.href}>Llamar al {phone.label}</a>
           </div>
         </div>,

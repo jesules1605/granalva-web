@@ -18,8 +18,15 @@ export const BUSINESS = {
   areaServed: [
     { "@type": "City", name: "Granada" },
     { "@type": "AdministrativeArea", name: "Área metropolitana de Granada" },
+    // Confirmado por el propietario (7 nov 2026) para lavandería con recogida y entrega.
+    { "@type": "Place", name: "Sierra Nevada (Granada)" },
   ],
   logo: "/granalva-logo.jpg",
+  /**
+   * Titular del sitio y responsable del tratamiento de datos, según el aviso legal
+   * vigente de WordPress (persona física). Revisar con asesoría legal en la fase 7.
+   */
+  legalOwner: "Margarita Alva Corral",
   /**
    * Perfiles oficiales (Google Business Profile, redes sociales). Solo URLs reales
    * y verificadas; se publican en `sameAs`. Vacío hasta que el propietario las facilite.
@@ -32,7 +39,15 @@ export const BUSINESS = {
  * real, el CTA «Hacer un pedido» lleva al selector de colada, que termina en el
  * formulario de solicitud de recogida (no simula compras ni pagos).
  */
-export const ORDER_URL = process.env.NEXT_PUBLIC_ORDER_URL || "/#lavanderia";
+export const ORDER_URL = process.env.NEXT_PUBLIC_ORDER_URL || "/servicios/lavanderia-domicilio-granada#colada";
+
+/**
+ * WhatsApp: solo se muestra si se configura un número confirmado con WhatsApp
+ * Business (NEXT_PUBLIC_WHATSAPP_NUMBER, formato internacional sin «+», p. ej. 34744488964).
+ */
+export const WHATSAPP_URL = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
+  ? `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER}?text=${encodeURIComponent("Hola, quería información sobre los servicios de Granalva.")}`
+  : null;
 
 /**
  * Indexación. Solo producción se indexa: cualquier preproducción debe definir
