@@ -1,0 +1,10 @@
+He adjuntado el ZIP completo del proyecto Granalva. No reconstruyas la web desde la URL ni repitas la auditoría remota: el código fuente exacto de la versión publicada está dentro.
+
+Empieza leyendo, por este orden, START-HERE-CLAUDE.md, CLAUDE.md, docs/CMS-ADMIN-PLAN.md, docs/AUDIT-HANDOFF.md y docs/PRODUCTION-CHECKLIST.md. Conserva también la carpeta auditoria/ que ya creaste en tu sesión y combina sus capturas y mapa de redirecciones con este repositorio.
+
+Objetivo: convertir esta base en la web definitiva de limpiezasgranalva.com, conservar el diseño y las once páginas SEO, corregir los defectos ya auditados e integrar Payload CMS con PostgreSQL y un panel protegido en /admin. El propietario debe poder editar textos, fotos, vídeos, servicios, clientes, reseñas, equipo, blog, SEO y redirecciones; además debe consultar los formularios recibidos.
+
+No inventes datos, clientes, años, reseñas, coberturas o certificaciones. Mantén WordPress en producción hasta que exista una preproducción verificada, formulario real, legales, backups y redirecciones 301.
+
+Primero descomprime el proyecto, verifica npm ci, npm run lint y npm test, crea una rama de trabajo y presenta un plan de implementación por fases con los archivos concretos que modificarás. Después ejecuta la primera fase sin volver a pedirme el código fuente.
+
