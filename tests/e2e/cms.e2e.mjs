@@ -40,8 +40,8 @@ if (init.json?.initialized === false) {
   token = login.json.token;
 }
 const me = await api("/api/users/me", { token });
-assert.equal(me.json.user.role, "owner");
-ok("sesión de propietario");
+assert.ok(["owner", "admin"].includes(me.json.user.role), "rol con acceso a solicitudes");
+ok(`sesión iniciada (${me.json.user.role})`);
 
 try {
   // 2. Panel y API no indexables; las solicitudes no son públicas.

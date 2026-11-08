@@ -22,10 +22,14 @@ export const Users: CollectionConfig = {
   hooks: {
     beforeChange: [
       // La primera cuenta creada en /admin es siempre la del propietario.
-      async ({ data, operation, req }) => {
+      async ({ data, operation, originalDoc, req }) => {
         if (operation === "create") {
           const { totalDocs } = await req.payload.count({ collection: "users", overrideAccess: true, req });
           if (totalDocs === 0) return { ...data, role: "owner", active: true };
+        }
+        // Segunda barrera: solo el propietario cambia rol o estado de una cuenta.
+        if (operation === "update" && req.user && (req.user as { role?: string }).role !== "owner" && originalDoc) {
+          return { ...data, role: originalDoc.role, active: originalDoc.active };
         }
         return data;
       },
