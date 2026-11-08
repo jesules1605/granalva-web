@@ -24,7 +24,13 @@ const CSP = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   // 404 global con varios layouts raíz (web + Payload). Ver app/global-not-found.tsx.
-  experimental: { globalNotFound: true },
+  experimental: {
+    globalNotFound: true,
+    // La caché persistente de Turbopack en `next build` (activa por defecto en 16.4)
+    // llegó a servir un CSS desfasado: faltaban las reglas añadidas al final de
+    // globals.css, en local y en Vercel. Se desactiva para que cada build sea fiel al código.
+    turbopackFileSystemCacheForBuild: false,
+  },
   images: {
     // Medios del panel guardados en Vercel Blob.
     remotePatterns: [{ protocol: "https", hostname: "*.public.blob.vercel-storage.com" }],
