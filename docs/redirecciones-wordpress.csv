@@ -18,3 +18,4 @@ https://limpiezasgranalva.com/comments/feed/;;410;Feed de comentarios sin conten
 https://limpiezasgranalva.com/referencias/;https://limpiezasgranalva.com/referencias;301;Se conserva la URL: nueva página de referencias con reseñas verificadas (WordPress la tenía en 404). Barra final en un salto.
 https://limpiezasgranalva.com/referencias;https://limpiezasgranalva.com/referencias;200;Página de referencias mejorada (opiniones, sectores, calidad, CTA).
 http://limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;HTTP → HTTPS lo aplica la plataforma (Vercel) antes de la web; comprobar tras el cambio de DNS.
+http://www.limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;HTTP + www en un único salto: www configurado como redirección de dominio en Vercel (comprobar tras el cambio de DNS).

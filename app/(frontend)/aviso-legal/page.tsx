@@ -5,7 +5,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "../../components/legal-page";
 import { LEGAL_UPDATED, legalCrumbs, legalMetadata } from "../../lib/legal";
+import { PHOTOS } from "../../lib/photos";
 import { BUSINESS, SITE_DOMAIN } from "../../lib/site";
+
+// Una entrada por fotografía original (la versión móvil comparte autoría).
+const uniquePhotos = Object.values(PHOTOS).filter((photo, index, all) => all.findIndex((p) => p.sourceUrl === photo.sourceUrl) === index);
 
 const defaultMetadata = legalMetadata("/aviso-legal", "Aviso legal", "Aviso legal y condiciones de uso de la web de Limpiezas Granalva: titular, condiciones, responsabilidad y propiedad intelectual.");
 
@@ -35,6 +39,16 @@ function AvisoLegalDefault() {
 
       <h2>5. Propiedad intelectual e industrial</h2>
       <p>Los textos, el diseño, el logotipo, las fotografías y los vídeos de la web pertenecen a {BUSINESS.name} o se usan con autorización de sus titulares. Queda prohibida su reproducción, distribución o comunicación pública con fines comerciales sin autorización. La tipografía Granaina es obra de Sergio Arredondo y se utiliza conforme a su licencia.</p>
+
+      <h3 id="creditos-fotografias">Créditos de las fotografías</h3>
+      <p>Mientras se incorporan fotografías propias, algunas imágenes proceden de Wikimedia Commons y se usan conforme a su licencia:</p>
+      <ul>
+        {uniquePhotos.map((photo) => (
+          <li key={photo.src}>
+            {photo.alt}: {photo.author}, <a href={photo.sourceUrl} rel="noopener" target="_blank">Wikimedia Commons</a>, <a href={photo.licenseUrl} rel="noopener license" target="_blank">{photo.license}</a>. {photo.changes}.
+          </li>
+        ))}
+      </ul>
 
       <h2>6. Protección de datos y cookies</h2>
       <p>El tratamiento de los datos personales se explica en la <Link href="/politica-de-privacidad">política de privacidad</Link> y el uso de cookies en la <Link href="/politica-de-cookies">política de cookies</Link>.</p>
