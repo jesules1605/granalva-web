@@ -19,3 +19,9 @@ https://limpiezasgranalva.com/referencias/;https://limpiezasgranalva.com/referen
 https://limpiezasgranalva.com/referencias;https://limpiezasgranalva.com/referencias;200;Página de referencias mejorada (opiniones, sectores, calidad, CTA).
 http://limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;HTTP → HTTPS lo aplica la plataforma (Vercel) antes de la web; comprobar tras el cambio de DNS.
 http://www.limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;HTTP + www en un único salto: www configurado como redirección de dominio en Vercel (comprobar tras el cambio de DNS).
+https://limpiezasgranalva.com/elementor-hf/footer/;;410;Plantilla interna de Elementor (pie) visible en la exportación XML: se retira.
+https://limpiezasgranalva.com/elementor-hf/main-header/;;410;Plantilla interna de Elementor (cabecera) visible en la exportación XML: se retira.
+https://limpiezasgranalva.com/wp-content/uploads/2025/07/logo-granalva-e1751451712653.png;;410;Las 45 imágenes de /wp-content/ no se migran con la misma URL (fotos nuevas en R2): 410.
+https://limpiezasgranalva.com/wp-content/uploads/2025/06/kitdigital-copy-4.png;;410;Logotipos de Kit Digital retirados por decisión del propietario.
+https://limpiezasgranalva.com/wp-admin/;;410;El panel de WordPress deja de existir; el nuevo está en /admin.
+https://limpiezasgranalva.com/wp-login.php;;410;Acceso de WordPress retirado.

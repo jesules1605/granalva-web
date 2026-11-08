@@ -1,5 +1,5 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { goneUrls, legacyRedirects } from "./app/lib/redirects";
+import { isGone, legacyRedirects } from "./app/lib/redirects";
 
 // Redirecciones permanentes en un solo salto (301), antes de renderizar:
 //  1. www → dominio canónico sin www;
@@ -95,7 +95,7 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const host = request.headers.get("host") ?? "";
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
-  if (goneUrls.has(path)) {
+  if (isGone(path, search)) {
     return new NextResponse('<!doctype html><html lang="es"><meta charset="utf-8"><meta name="robots" content="noindex"><title>Contenido retirado · Granalva</title><p>Este contenido ya no existe. <a href="/">Ir a Limpiezas Granalva</a>.</p></html>', {
       status: 410,
       headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex" },
@@ -120,5 +120,5 @@ export async function proxy(request: NextRequest) {
 
 export const config = {
   // Sin recursos internos, API ni panel de administración.
-  matcher: ["/((?!_next/|api/|admin|.*\\.(?:png|jpg|jpeg|webp|avif|svg|ico|mp4|otf|woff2?|txt|xml)$).*)"],
+  matcher: ["/((?!_next/|api/|admin|.*\\.(?:png|jpg|jpeg|webp|avif|svg|ico|mp4|otf|woff2?|txt|xml)$).*)", "/wp-content/:path*", "/wp-includes/:path*"],
 };

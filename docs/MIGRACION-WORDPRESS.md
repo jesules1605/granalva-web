@@ -72,3 +72,14 @@ Si tras el cambio falla algo crítico (web caída, formulario sin registrar, err
 1. Restaurar los valores anteriores de A/CNAME desde la exportación de la zona (con TTL de 300 s la propagación es rápida).
 2. WordPress sigue intacto en su hosting.
 3. Revisar el fallo en la preproducción y repetir el cambio cuando esté resuelto.
+
+## Contraste con la exportación XML de WordPress (8 nov 2026)
+
+La exportación «Todo el contenido» coincide con el inventario rastreado. El archivo no se sube a git porque contiene el correo del autor.
+
+- **8 páginas publicadas:** todas tienen su 301 de un salto o conservan la URL.
+- **1 entrada** («Hello world!», la de ejemplo): 410.
+- **45 adjuntos:** se responde 410 a todo `/wp-content/`, porque las fotos nuevas están en R2 con otras URLs.
+- **Plantillas internas de Elementor** (`/elementor-hf/…`, `?elementor_library=`, `?elementor_snippet=`): 410.
+- **Accesos de WordPress** (`/wp-admin`, `/wp-login.php`, `/wp-json`, `/xmlrpc.php`): 410.
+- **Contenido no publicado:** ningún borrador, página privada ni entrada programada.

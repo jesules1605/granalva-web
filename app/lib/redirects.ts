@@ -21,3 +21,10 @@ export const legacyRedirects: LegacyRedirect[] = [
  * responden 410 Gone para que los buscadores los retiren, en lugar de redirigirlos a portada.
  */
 export const goneUrls = new Set(["/hello-world", "/feed", "/comments/feed", "/hello-world/feed"]);
+
+/** Zonas internas de WordPress y Elementor sin equivalente (exportación XML del 8 nov 2026): 410. */
+export const gonePrefixes = ["/wp-content/", "/wp-includes/", "/wp-admin", "/wp-login.php", "/wp-json", "/elementor-hf/", "/xmlrpc.php"];
+export const isGone = (path: string, search = "") =>
+  goneUrls.has(path) ||
+  gonePrefixes.some((prefix) => path === prefix.replace(/\/$/, "") || path.startsWith(prefix)) ||
+  (path === "/" && /(?:^|[?&])(?:p=1|elementor_library=|elementor_snippet=)/.test(search));
