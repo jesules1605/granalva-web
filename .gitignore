@@ -41,3 +41,6 @@ next-env.d.ts
 /tests/visual/out/
 *.tsbuildinfo
 /vista-previa/
+
+# Archivos subidos al panel en local (en producción van a R2/Blob) y másters de vídeo retirados
+/media/
