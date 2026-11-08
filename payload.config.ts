@@ -37,7 +37,8 @@ const email = process.env.SMTP_HOST
         host: process.env.SMTP_HOST,
         port: Number(process.env.SMTP_PORT || 587),
         secure: Number(process.env.SMTP_PORT || 587) === 465,
-        auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASS },
+        // Las contraseñas de aplicación de Google se muestran con espacios: se quitan.
+        auth: { user: process.env.SMTP_USER, pass: /gmail\.com$/i.test(process.env.SMTP_HOST ?? "") ? (process.env.SMTP_PASS ?? "").replace(/\s+/g, "") : process.env.SMTP_PASS },
       },
     })
   : undefined;
