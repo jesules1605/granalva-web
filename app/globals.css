@@ -1104,3 +1104,4 @@ html.nav-open,html.nav-open body{overflow:hidden}
 .cms-documents a{text-decoration:underline;font-weight:700;color:var(--navy)}
 .cms-cta-text{margin:10px 0 0;max-width:60ch;color:#e5edf8}
 .reviews__more{margin:26px 0 0;padding:0 6vw;text-align:center}
+.cms-block .section-number,.cms-head .section-number{color:var(--cobalt)}
