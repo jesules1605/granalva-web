@@ -40,7 +40,13 @@ async function safe<T>(fallback: T, run: (payload: Payload) => Promise<T>): Prom
   }
 }
 
-const mediaOf = (value: unknown): Media | null => (value && typeof value === "object" && "url" in value ? (value as Media) : null);
+/** Rutas de medios relativas: válidas en preproducción y en el dominio final (Payload las genera absolutas con serverURL). */
+const relativeMediaUrl = (url?: string | null) => (url ? url.replace(/^https?:\/\/[^/]+(?=\/api\/media\/)/, "") : url);
+const mediaOf = (value: unknown): Media | null => {
+  if (!value || typeof value !== "object" || !("url" in value)) return null;
+  const media = value as Media;
+  return { ...media, url: relativeMediaUrl(media.url) ?? null };
+};
 
 /** Posición focal de Payload (porcentajes) → object-position CSS. */
 export const focalOf = (media: Media | null) =>

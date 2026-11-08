@@ -7,7 +7,7 @@ import { breadcrumbJsonLd, faqJsonLd, jsonLdString, ORGANIZATION_ID, WEBSITE_ID,
 import { absoluteUrl, BUSINESS, INDEXABLE } from "../lib/site";
 import type { Media, Page } from "../../payload-types";
 
-const media = (value: unknown) => (value && typeof value === "object" && "url" in value ? (value as Media) : null);
+const media = (value: unknown) => (value && typeof value === "object" && "url" in value ? ({ ...(value as Media), url: ((value as Media).url ?? "").replace(/^https?:\/\/[^/]+(?=\/api\/media\/)/, "") } as Media) : null);
 const focal = (m: Media | null) => (m && typeof m.focalX === "number" && typeof m.focalY === "number" ? `${m.focalX}% ${m.focalY}%` : undefined);
 
 /** Metadatos SEO de una página del panel (canonical siempre en el dominio final). */

@@ -20,7 +20,7 @@ export async function generateStaticParams() {
 }
 
 const formatDate = (iso: string) => new Intl.DateTimeFormat("es-ES", { day: "numeric", month: "long", year: "numeric", timeZone: "Europe/Madrid" }).format(new Date(iso));
-const cover = (value: unknown) => (value && typeof value === "object" && "url" in value ? (value as Media) : null);
+const cover = (value: unknown) => (value && typeof value === "object" && "url" in value ? ({ ...(value as Media), url: ((value as Media).url ?? "").replace(/^https?:\/\/[^/]+(?=\/api\/media\/)/, "") } as Media) : null);
 
 async function load(slug: string) {
   const { isEnabled } = await draftMode();

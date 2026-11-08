@@ -12,7 +12,7 @@ import { serviceBySlug } from "../lib/services";
 import type { Media, Page } from "../../payload-types";
 
 type Block = NonNullable<Page["layout"]>[number];
-const media = (value: unknown) => (value && typeof value === "object" && "url" in value ? (value as Media) : null);
+const media = (value: unknown) => (value && typeof value === "object" && "url" in value ? ({ ...(value as Media), url: ((value as Media).url ?? "").replace(/^https?:\/\/[^/]+(?=\/api\/media\/)/, "") } as Media) : null);
 const formatMonth = (iso: string) => new Intl.DateTimeFormat("es-ES", { month: "long", year: "numeric", timeZone: "Europe/Madrid" }).format(new Date(iso));
 
 const CtaLink = ({ href, label, className }: { href?: string | null; label?: string | null; className: string }) =>
