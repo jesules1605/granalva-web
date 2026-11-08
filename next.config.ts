@@ -68,7 +68,7 @@ const nextConfig: NextConfig = {
       },
       {
         // Recursos estáticos con nombre estable: caché larga en el navegador.
-        source: "/:file(.*\\.(?:png|jpg|webp|avif|svg|mp4|otf))",
+        source: "/:file(.*\\.(?:png|jpg|webp|avif|svg|mp4|otf|woff2))",
         headers: [{ key: "Cache-Control", value: "public, max-age=2592000, stale-while-revalidate=86400" }],
       },
     ];

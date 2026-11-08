@@ -54,7 +54,7 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
     "@graph": [organizationJsonLd(servicePages, { sameAs: extras.sameAs, telephone: settings.phoneE164, email: settings.email }), websiteJsonLd()],
   };
   // Granaina se usa en todos los titulares: se precarga para evitar saltos de fuente.
-  preload("/fonts/granaina-limpia.otf", { as: "font", type: "font/otf", crossOrigin: "anonymous" });
+  preload("/fonts/granaina-limpia.woff2", { as: "font", type: "font/woff2", crossOrigin: "anonymous" });
 
   return (
     <html lang="es">

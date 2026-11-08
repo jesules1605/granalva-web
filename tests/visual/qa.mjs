@@ -24,7 +24,7 @@ mkdirSync(out, { recursive: true });
 
 const sitemap = await readSitemaps(base);
 const routes = [...new Set([...[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname), "/aviso-legal", "/politica-de-privacidad", "/politica-de-cookies", "/declaracion-de-accesibilidad", "/blog", "/no-existe-esta-pagina"])];
-const viewports = [[1920, 1080], [1440, 900], [1366, 768], [1024, 768], [768, 1024], [430, 932], [390, 844], [360, 800]];
+const viewports = [[1920, 1080], [1440, 900], [1366, 768], [1280, 800], [1024, 768], [768, 1024], [430, 932], [390, 844], [360, 800], [320, 640]];
 
 const browser = await chromium.launch();
 const problems = [];

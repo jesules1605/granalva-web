@@ -23,7 +23,7 @@ export async function generateMetadata(): Promise<Metadata> {
   return {
     title: { absolute: TITLE },
     description: DESCRIPTION,
-    alternates: { canonical: URL },
+    alternates: { canonical: URL, types: { "application/rss+xml": absoluteUrl("/blog/rss.xml") } },
     robots: posts.length === 0 ? { index: false, follow: true } : undefined,
     openGraph: { type: "website", locale: "es_ES", siteName: BUSINESS.name, url: URL, title: TITLE, description: DESCRIPTION },
   };
