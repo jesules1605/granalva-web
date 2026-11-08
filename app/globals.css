@@ -1142,3 +1142,4 @@ html.nav-open,html.nav-open body{overflow:hidden}
 #servicios .section-number{display:block;margin-bottom:6px}
 #servicios .services__more{margin-top:clamp(28px,3vw,44px)}
 .s-hero__tagline,.s-hero h1,.wide-title,.service-lead,.cms-head__lead{text-wrap:balance}
+.service-introduction .service-lead{margin-top:clamp(22px,2.4vw,34px)}
