@@ -1,3 +1,13 @@
+
+
+/** Lee el índice de sitemaps y devuelve el XML concatenado de los sitemaps hijos. */
+async function readSitemaps(base) {
+  const index = await (await fetch(`${base}/sitemap.xml`)).text();
+  const children = [...index.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  let xml = "";
+  for (const path of children) xml += await (await fetch(`${base}${path}`)).text();
+  return xml;
+}
 // Genera la matriz SEO de todas las páginas recorriendo la web en marcha.
 // Uso: node scripts/seo-matrix.mjs http://localhost:3000 > docs/SEO-MATRIX.md
 // Las páginas publicadas se leen del HTML real; las planificadas se declaran abajo.
@@ -66,7 +76,7 @@ for (const page of published) {
     lastmod: "",
   });
 }
-const sitemap = await (await fetch(base + "/sitemap.xml")).text();
+const sitemap = await readSitemaps(base);
 for (const m of sitemap.matchAll(/<url>\s*<loc>([^<]+)<\/loc>\s*<lastmod>([^<]+)<\/lastmod>/g)) {
   const path = m[1].slice(SITE_URL.length) || "/";
   if (pages.has(path)) pages.get(path).lastmod = m[2].slice(0, 10);

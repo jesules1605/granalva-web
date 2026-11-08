@@ -69,8 +69,10 @@ export interface Config {
   collections: {
     'contact-submissions': ContactSubmission;
     pages: Page;
+    campaigns: Campaign;
     services: Service;
     posts: Post;
+    categories: Category;
     media: Media;
     team: Team;
     reviews: Review;
@@ -87,8 +89,10 @@ export interface Config {
   collectionsSelect: {
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
     pages: PagesSelect<false> | PagesSelect<true>;
+    campaigns: CampaignsSelect<false> | CampaignsSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
+    categories: CategoriesSelect<false> | CategoriesSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
     team: TeamSelect<false> | TeamSelect<true>;
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
@@ -481,6 +485,8 @@ export interface Page {
  */
 export interface Media {
   id: number;
+  title?: string | null;
+  caption?: string | null;
   /**
    * Describe la imagen con naturalidad (qué se ve). Obligatorio.
    */
@@ -537,6 +543,37 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * Bloque de temporada de la portada (p. ej. Sierra Nevada). Sin campaña activa se muestra el texto revisado por defecto.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns".
+ */
+export interface Campaign {
+  id: number;
+  name: string;
+  active?: boolean | null;
+  priority?: number | null;
+  startDate?: string | null;
+  endDate?: string | null;
+  label: string;
+  title: string;
+  text: string;
+  points?:
+    | {
+        title: string;
+        text: string;
+        id?: string | null;
+      }[]
+    | null;
+  primaryLabel: string;
+  primaryHref: string;
+  secondaryLabel?: string | null;
+  secondaryHref?: string | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * Ajustes por servicio. Los campos vacíos usan el texto revisado para SEO.
@@ -600,6 +637,8 @@ export interface Post {
   slug?: string | null;
   publishedAt?: string | null;
   author?: string | null;
+  authorMember?: (number | null) | Team;
+  categories?: (number | Category)[] | null;
   excerpt: string;
   cover?: (number | null) | Media;
   content: {
@@ -644,6 +683,17 @@ export interface Team {
   photo?: (number | null) | Media;
   photoConsent?: boolean | null;
   visible?: boolean | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories".
+ */
+export interface Category {
+  id: number;
+  name: string;
+  description?: string | null;
   updatedAt: string;
   createdAt: string;
 }
@@ -825,12 +875,20 @@ export interface PayloadLockedDocument {
         value: number | Page;
       } | null)
     | ({
+        relationTo: 'campaigns';
+        value: number | Campaign;
+      } | null)
+    | ({
         relationTo: 'services';
         value: number | Service;
       } | null)
     | ({
         relationTo: 'posts';
         value: number | Post;
+      } | null)
+    | ({
+        relationTo: 'categories';
+        value: number | Category;
       } | null)
     | ({
         relationTo: 'media';
@@ -1145,6 +1203,34 @@ export interface PagesSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "campaigns_select".
+ */
+export interface CampaignsSelect<T extends boolean = true> {
+  name?: T;
+  active?: T;
+  priority?: T;
+  startDate?: T;
+  endDate?: T;
+  label?: T;
+  title?: T;
+  text?: T;
+  points?:
+    | T
+    | {
+        title?: T;
+        text?: T;
+        id?: T;
+      };
+  primaryLabel?: T;
+  primaryHref?: T;
+  secondaryLabel?: T;
+  secondaryHref?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
@@ -1179,6 +1265,8 @@ export interface PostsSelect<T extends boolean = true> {
   slug?: T;
   publishedAt?: T;
   author?: T;
+  authorMember?: T;
+  categories?: T;
   excerpt?: T;
   cover?: T;
   content?: T;
@@ -1192,9 +1280,21 @@ export interface PostsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "categories_select".
+ */
+export interface CategoriesSelect<T extends boolean = true> {
+  name?: T;
+  description?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "media_select".
  */
 export interface MediaSelect<T extends boolean = true> {
+  title?: T;
+  caption?: T;
   alt?: T;
   credit?: T;
   category?: T;
@@ -1468,6 +1568,21 @@ export interface SiteSetting {
   email?: string | null;
   whatsapp?: string | null;
   areaServedLabel?: string | null;
+  /**
+   * P. ej. «Lunes a viernes, 8:00–20:00». Debe coincidir con Google Business Profile.
+   */
+  openingHours?: string | null;
+  orderUrl?: string | null;
+  /**
+   * Solo perfiles reales de Granalva. Se publican en los datos estructurados (sameAs).
+   */
+  social?:
+    | {
+        platform: 'Google Business Profile' | 'Instagram' | 'Facebook' | 'LinkedIn' | 'TikTok' | 'YouTube' | 'Otra';
+        url: string;
+        id?: string | null;
+      }[]
+    | null;
   ribbon?:
     | {
         text: string;
@@ -1556,6 +1671,15 @@ export interface SiteSettingsSelect<T extends boolean = true> {
   email?: T;
   whatsapp?: T;
   areaServedLabel?: T;
+  openingHours?: T;
+  orderUrl?: T;
+  social?:
+    | T
+    | {
+        platform?: T;
+        url?: T;
+        id?: T;
+      };
   ribbon?:
     | T
     | {
@@ -1617,6 +1741,10 @@ export interface TaskSchedulePublish {
       | ({
           relationTo: 'pages';
           value: number | Page;
+        } | null)
+      | ({
+          relationTo: 'campaigns';
+          value: number | Campaign;
         } | null)
       | ({
           relationTo: 'services';

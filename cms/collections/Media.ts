@@ -23,6 +23,8 @@ export const Media: CollectionConfig = {
   },
   versions: { maxPerDoc: 10 },
   fields: [
+    { name: "title", label: "Título (uso interno y descargas)", type: "text", maxLength: 120 },
+    { name: "caption", label: "Pie de foto (opcional)", type: "text", maxLength: 200 },
     { name: "alt", label: "Texto alternativo", type: "text", required: true, admin: { description: "Describe la imagen con naturalidad (qué se ve). Obligatorio." } },
     { name: "credit", label: "Autoría y licencia", type: "text", required: true, admin: { description: "P. ej. «Fotografía propia de Granalva» o «Autor · licencia». Necesario para publicar con garantías." } },
     { name: "category", label: "Uso previsto", type: "select", options: [

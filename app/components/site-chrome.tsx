@@ -4,7 +4,7 @@ import { CookieSettingsButton } from "./cookie-consent";
 import { MobileNav, type NavLink } from "./mobile-nav";
 import { RibbonLoop } from "./ribbon-loop";
 import { servicePages } from "../lib/services";
-import { getChrome, getSiteSettings } from "../lib/cms";
+import { getBusinessExtras, getChrome, getSiteSettings } from "../lib/cms";
 import { BUSINESS } from "../lib/site";
 
 // Navegación principal por defecto. Se puede sustituir desde el panel
@@ -56,7 +56,7 @@ export async function SiteHeader() {
 }
 
 export async function SiteFooter() {
-  const settings = await getSiteSettings();
+  const [settings, extras] = await Promise.all([getSiteSettings(), getBusinessExtras()]);
   return (
     <footer className="footer">
       <div className="footer-brand">
@@ -84,6 +84,8 @@ export async function SiteFooter() {
         <a href={`tel:${settings.phoneE164}`}>{settings.phoneDisplay}</a>
         <a href={`mailto:${settings.email}`}>{settings.email}</a>
         <span>{settings.areaServedLabel}</span>
+        {extras.openingHours ? <span>{extras.openingHours}</span> : null}
+        {extras.orderUrl ? <a href={extras.orderUrl}>Hacer un pedido de lavandería</a> : null}
         <Link href="/contacto">Contacto y presupuestos</Link>
         <Link href="/sobre-nosotros">Sobre nosotros</Link>
         <Link href="/referencias">Referencias y opiniones</Link>

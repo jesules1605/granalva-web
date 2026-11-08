@@ -18,6 +18,7 @@ export const seoFields = (options: { canonicalPath?: boolean } = {}): Field => (
   type: "group",
   admin: { description: "Vacío = valores por defecto. Una intención de búsqueda por página; no copies el title de otra." },
   fields: [
+    { name: "serpPreview", type: "ui", admin: { components: { Field: { path: "/cms/components/SerpPreview#SerpPreview", clientProps: { path: "seo" } } } } },
     { name: "metaTitle", label: "Title (sin «| Granalva»)", type: "text", validate: (v: string | null | undefined) => !v || (v.length >= 20 && v.length <= 62) ? true : `Entre 20 y 62 caracteres (ahora ${v?.length}).` },
     { name: "metaDescription", label: "Meta description", type: "textarea", validate: (v: string | null | undefined) => !v || (v.length >= 100 && v.length <= 160) ? true : `Entre 100 y 160 caracteres (ahora ${v?.length}).` },
     ...(options.canonicalPath === false ? [] : [{

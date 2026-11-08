@@ -9,7 +9,7 @@ export type Crumb = { name: string; path: string };
 export const ORGANIZATION_ID = `${SITE_URL}/#organization`;
 export const WEBSITE_ID = `${SITE_URL}/#website`;
 
-export function organizationJsonLd(services: Pick<ServicePage, "slug" | "navLabel">[]) {
+export function organizationJsonLd(services: Pick<ServicePage, "slug" | "navLabel">[], extras: { sameAs?: string[]; telephone?: string; email?: string } = {}) {
   return {
     "@type": ["Organization", "ProfessionalService"],
     "@id": ORGANIZATION_ID,
@@ -18,8 +18,8 @@ export function organizationJsonLd(services: Pick<ServicePage, "slug" | "navLabe
     url: SITE_URL,
     logo: absoluteUrl(BUSINESS.logo),
     image: absoluteUrl(BUSINESS.logo),
-    email: BUSINESS.email,
-    telephone: BUSINESS.phoneE164,
+    email: extras.email ?? BUSINESS.email,
+    telephone: extras.telephone ?? BUSINESS.phoneE164,
     description: BUSINESS.description,
     areaServed: BUSINESS.areaServed,
     contactPoint: {
@@ -30,7 +30,7 @@ export function organizationJsonLd(services: Pick<ServicePage, "slug" | "navLabe
       areaServed: "ES-GR",
       availableLanguage: "Spanish",
     },
-    ...(BUSINESS.sameAs.length ? { sameAs: BUSINESS.sameAs } : {}),
+    ...((extras.sameAs ?? BUSINESS.sameAs).length ? { sameAs: extras.sameAs ?? BUSINESS.sameAs } : {}),
     hasOfferCatalog: {
       "@type": "OfferCatalog",
       name: "Servicios de limpieza y lavandería en Granada",

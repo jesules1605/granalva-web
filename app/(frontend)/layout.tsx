@@ -2,6 +2,7 @@ import type { Metadata, Viewport } from "next";
 import { preload } from "react-dom";
 import "../globals.css";
 import { CookieConsent } from "../components/cookie-consent";
+import { getBusinessExtras, getSiteSettings } from "../lib/cms";
 import { jsonLdString, organizationJsonLd, websiteJsonLd } from "../lib/seo";
 import { servicePages, SITE_URL } from "../lib/services";
 import { BUSINESS, INDEXABLE } from "../lib/site";
@@ -45,12 +46,13 @@ export const viewport: Viewport = {
   themeColor: "#123d92",
 };
 
-const structuredData = {
-  "@context": "https://schema.org",
-  "@graph": [organizationJsonLd(servicePages), websiteJsonLd()],
-};
-
-export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+export default async function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
+  // NAP y perfiles oficiales del panel (Ajustes del sitio) en los datos estructurados.
+  const [settings, extras] = await Promise.all([getSiteSettings(), getBusinessExtras()]);
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@graph": [organizationJsonLd(servicePages, { sameAs: extras.sameAs, telephone: settings.phoneE164, email: settings.email }), websiteJsonLd()],
+  };
   // Granaina se usa en todos los titulares: se precarga para evitar saltos de fuente.
   preload("/fonts/granaina-limpia.otf", { as: "font", type: "font/otf", crossOrigin: "anonymous" });
 

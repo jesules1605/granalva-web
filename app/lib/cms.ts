@@ -303,3 +303,44 @@ export const getHomeConfig = cache((draft = false) =>
     };
   }),
 );
+
+export type CampaignBlock = {
+  label: string;
+  title: string;
+  text: string;
+  points: { title: string; text: string }[];
+  primary: { label: string; href: string };
+  secondary: { label: string; href: string } | null;
+};
+
+/** Campaña estacional activa (dentro de sus fechas) o null para usar el bloque por defecto. */
+export const getActiveCampaign = cache(() =>
+  safe<CampaignBlock | null>(null, async (payload) => {
+    const now = new Date().toISOString();
+    const result = await payload.find({
+      collection: "campaigns",
+      where: { and: [{ active: { equals: true } }, { _status: { equals: "published" } }, { or: [{ startDate: { exists: false } }, { startDate: { less_than_equal: now } }] }, { or: [{ endDate: { exists: false } }, { endDate: { greater_than_equal: now } }] }] },
+      sort: "-priority",
+      limit: 1,
+      depth: 0,
+    });
+    const c = result.docs[0];
+    if (!c) return null;
+    return {
+      label: c.label,
+      title: c.title,
+      text: c.text,
+      points: (c.points ?? []).map((p) => ({ title: p.title, text: p.text })),
+      primary: { label: c.primaryLabel, href: c.primaryHref },
+      secondary: c.secondaryLabel && c.secondaryHref ? { label: c.secondaryLabel, href: c.secondaryHref } : null,
+    };
+  }),
+);
+
+/** Perfiles oficiales, horario y enlace de pedidos del panel. */
+export const getBusinessExtras = cache(() =>
+  safe<{ sameAs: string[]; openingHours: string | null; orderUrl: string | null }>({ sameAs: [], openingHours: null, orderUrl: null }, async (payload) => {
+    const s = await payload.findGlobal({ slug: "site-settings", depth: 0 });
+    return { sameAs: (s.social ?? []).map((item) => item.url), openingHours: s.openingHours || null, orderUrl: s.orderUrl || null };
+  }),
+);

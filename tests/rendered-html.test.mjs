@@ -8,6 +8,16 @@ import { spawn } from "node:child_process";
 import { request as httpRequest } from "node:http";
 import { after, before, test } from "node:test";
 
+/** Lee el índice de sitemaps y devuelve el XML concatenado de los sitemaps hijos. */
+async function readSitemaps(base) {
+  const index = await (await fetch(`${base}/sitemap.xml`)).text();
+  const children = [...index.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  let xml = "";
+  for (const path of children) xml += await (await fetch(`${base}${path}`)).text();
+  return xml;
+}
+
+
 const PORT = Number(process.env.TEST_PORT ?? 4310);
 const BASE = `http://127.0.0.1:${PORT}`;
 const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://limpiezasgranalva.com").replace(/\/+$/, "");
@@ -216,7 +226,10 @@ test("los enlaces internos responden 200 y no hay páginas huérfanas", async ()
 });
 
 test("sitemap y robots solo exponen las URLs indexables", async () => {
-  const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
+  const index = await (await fetch(`${BASE}/sitemap.xml`)).text();
+  assert.match(index, /<sitemapindex/, "índice de sitemaps");
+  assert.ok(index.includes(`${SITE_URL}/sitemaps/paginas.xml`) && index.includes(`${SITE_URL}/sitemaps/servicios.xml`), "sitemaps por tipo");
+  const sitemap = await readSitemaps(BASE);
   const locs = all(sitemap, /<loc>([^<]+)<\/loc>/g).sort();
   assert.deepEqual(locs, pages.map(([path]) => (path === "/" ? SITE_URL : `${SITE_URL}${path}`)).sort());
   assert.equal(all(sitemap, /<lastmod>([^<]+)<\/lastmod>/g).length, pages.length, "lastmod en cada URL");
@@ -317,7 +330,7 @@ test("Sierra Nevada: landing completa, formulario propio y área de servicio esp
 });
 
 test("cada URL del sitemap cumple los requisitos de indexación", async () => {
-  const sitemap = await (await fetch(`${BASE}/sitemap.xml`)).text();
+  const sitemap = await readSitemaps(BASE);
   const known = new Set(pages.map(([path]) => (path === "/" ? SITE_URL : `${SITE_URL}${path}`)));
   for (const loc of all(sitemap, /<loc>([^<]+)<\/loc>/g)) {
     assert.ok(known.has(loc), `URL del sitemap sin cubrir en las pruebas: ${loc}`);

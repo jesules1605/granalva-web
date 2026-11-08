@@ -8,6 +8,8 @@ import { es } from "@payloadcms/translations/languages/es";
 import { buildConfig } from "payload";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import sharp from "sharp";
+import { Campaigns } from "./cms/collections/Campaigns";
+import { Categories } from "./cms/collections/Categories";
 import { ClientLogos } from "./cms/collections/ClientLogos";
 import { ContactSubmissions } from "./cms/collections/ContactSubmissions";
 import { Media } from "./cms/collections/Media";
@@ -56,7 +58,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
   },
   i18n: { fallbackLanguage: "es", supportedLanguages: { es } },
-  collections: [ContactSubmissions, Pages, Services, Posts, Media, Team, Reviews, ClientLogos, Redirects, Users],
+  collections: [ContactSubmissions, Pages, Campaigns, Services, Posts, Categories, Media, Team, Reviews, ClientLogos, Redirects, Users],
   globals: [HomePage, SiteSettings, Navigation],
   // Subidas: máximo 15 MB por archivo (los tipos MIME se limitan en cada colección).
   upload: { limits: { fileSize: 15 * 1024 * 1024 } },

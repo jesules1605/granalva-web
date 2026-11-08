@@ -11,7 +11,7 @@ import { RouteProcess } from "../components/home/route-process";
 import { ServiceSelector } from "../components/home/service-selector";
 import { LogoSeal } from "../components/logo-seal";
 import { SiteFooter, SiteHeader } from "../components/site-chrome";
-import { getClientLogos, getHomeConfig, getHomeHero, getReviews, getSiteSettings, getTeam, type HomeSectionKey } from "../lib/cms";
+import { getActiveCampaign, getClientLogos, getHomeConfig, getHomeHero, getReviews, getSiteSettings, getTeam, type HomeSectionKey } from "../lib/cms";
 import { journeys, sectors, serviceCategories, sierraNevadaBlock } from "../lib/home-content";
 import { jsonLdString, ORGANIZATION_ID, WEBSITE_ID } from "../lib/seo";
 import { SITE_URL } from "../lib/services";
@@ -89,7 +89,9 @@ const laundryLinks = [
 
 export default async function Home() {
   const { isEnabled: draft } = await draftMode();
-  const [hero, config, settings, reviews, teamMembers, logos] = await Promise.all([getHomeHero(draft), getHomeConfig(draft), getSiteSettings(), getReviews(), getTeam(), getClientLogos()]);
+  const [hero, config, settings, reviews, teamMembers, logos, campaign] = await Promise.all([getHomeHero(draft), getHomeConfig(draft), getSiteSettings(), getReviews(), getTeam(), getClientLogos(), getActiveCampaign()]);
+  // Campaña estacional del panel; sin campaña activa, el bloque revisado de Sierra Nevada.
+  const season = campaign ?? { ...sierraNevadaBlock, secondary: sierraNevadaBlock.secondary as { label: string; href: string } | null };
 
   const headings = Object.fromEntries(config.sections.filter((section) => section.heading).map((section) => [section.key, section.heading]));
   const h = (key: HomeSectionKey, fallback: ReactNode): ReactNode => headings[key] ?? fallback;
@@ -143,16 +145,16 @@ export default async function Home() {
       <>
       <section className="sierra-block" id="sierra-nevada" aria-labelledby="sierra-title">
               <div className="sierra-block__head">
-                <span className="sierra-block__label">{sierraNevadaBlock.label}</span>
-                <h2 id="sierra-title">{h("sierra", <>{sierraNevadaBlock.title}</>)}</h2>
-                <p>{sierraNevadaBlock.text}</p>
+                <span className="sierra-block__label">{season.label}</span>
+                <h2 id="sierra-title">{h("sierra", <>{season.title}</>)}</h2>
+                <p>{season.text}</p>
                 <div className="sierra-block__actions">
-                  <Link className="button button--yellow" href={sierraNevadaBlock.primary.href}>{sierraNevadaBlock.primary.label} <span>→</span></Link>
-                  <Link className="text-link text-link--light" href={sierraNevadaBlock.secondary.href}>{sierraNevadaBlock.secondary.label} <span>→</span></Link>
+                  <Link className="button button--yellow" href={season.primary.href}>{season.primary.label} <span>→</span></Link>
+                  {season.secondary ? <Link className="text-link text-link--light" href={season.secondary.href}>{season.secondary.label} <span>→</span></Link> : null}
                 </div>
               </div>
               <ul className="sierra-block__points">
-                {sierraNevadaBlock.points.map((point, index) => (
+                {season.points.map((point, index) => (
                   <li key={point.title}>
                     <span>{String(index + 1).padStart(2, "0")}</span>
                     <strong>{point.title}</strong>

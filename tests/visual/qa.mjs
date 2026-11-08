@@ -5,6 +5,16 @@
 import { mkdirSync, writeFileSync } from "node:fs";
 import { createRequire } from "node:module";
 
+/** Lee el índice de sitemaps y devuelve el XML concatenado de los sitemaps hijos. */
+async function readSitemaps(base) {
+  const index = await (await fetch(`${base}/sitemap.xml`)).text();
+  const children = [...index.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname);
+  let xml = "";
+  for (const path of children) xml += await (await fetch(`${base}${path}`)).text();
+  return xml;
+}
+
+
 const require = createRequire(import.meta.url);
 let chromium;
 try { ({ chromium } = require("playwright")); } catch { ({ chromium } = require(process.env.PLAYWRIGHT_PATH ?? "playwright")); }
@@ -12,7 +22,7 @@ const base = process.argv[2] ?? "http://localhost:3000";
 const out = process.argv[3] ?? "tests/visual/out/qa";
 mkdirSync(out, { recursive: true });
 
-const sitemap = await (await fetch(`${base}/sitemap.xml`)).text();
+const sitemap = await readSitemaps(base);
 const routes = [...new Set([...[...sitemap.matchAll(/<loc>([^<]+)<\/loc>/g)].map((m) => new URL(m[1]).pathname), "/aviso-legal", "/politica-de-privacidad", "/politica-de-cookies", "/declaracion-de-accesibilidad", "/blog", "/no-existe-esta-pagina"])];
 const viewports = [[1920, 1080], [1440, 900], [1366, 768], [1024, 768], [768, 1024], [430, 932], [390, 844], [360, 800]];
 

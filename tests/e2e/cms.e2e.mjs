@@ -117,9 +117,8 @@ try {
   const articleHtml = await article.text();
   assert.match(articleHtml, /"@type":"Article"/);
   assert.match(articleHtml, /<h1>Artículo de prueba E2E<\/h1>/);
-  await fetch(`${base}/sitemap.xml`);
-  await sleep(1000);
-  assert.ok((await (await fetch(`${base}/sitemap.xml`)).text()).includes(`/blog/${slug}`), "artículo en el sitemap");
+  assert.ok((await (await fetch(`${base}/sitemaps/blog.xml`)).text()).includes(`/blog/${slug}`), "artículo en el sitemap del blog");
+  assert.ok((await (await fetch(`${base}/blog/rss.xml`)).text()).includes(`/blog/${slug}`), "artículo en el RSS");
   const draft = await api("/api/posts?draft=true", { method: "POST", token, body: { title: "Borrador E2E", excerpt: "No debe verse.", content, _status: "draft" } });
   cleanup.push(`/api/posts/${draft.json.doc.id}`);
   assert.equal((await fetch(`${base}/blog/${draft.json.doc.slug}`)).status, 404, "un borrador no es público");

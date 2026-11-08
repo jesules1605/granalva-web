@@ -44,6 +44,7 @@ export const Services: CollectionConfig = {
       type: "collapsible",
       label: "SEO",
       fields: [
+        { name: "serpPreview", type: "ui", admin: { components: { Field: { path: "/cms/components/SerpPreview#SerpPreview", clientProps: { path: "" } } } } },
         { name: "metaTitle", label: "Title (sin «| Granalva»)", type: "text", validate: lengthBetween(25, 62), admin: { description: "Una intención por página; no repitas el title de otro servicio." } },
         { name: "metaDescription", label: "Meta description", type: "textarea", validate: lengthBetween(110, 160) },
         { name: "summary", label: "Resumen (entradilla y tarjetas)", type: "textarea", validate: lengthBetween(80, 260) },

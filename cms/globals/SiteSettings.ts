@@ -22,6 +22,18 @@ export const SiteSettings: GlobalConfig = {
         { name: "email", label: "Correo de contacto", type: "email" },
         { name: "whatsapp", label: "WhatsApp (solo números, con prefijo: 34600000000)", type: "text", validate: (v: string | null | undefined) => !v || /^\d{9,15}$/.test(v) ? true : "Solo dígitos, con prefijo internacional." },
         { name: "areaServedLabel", label: "Zona de servicio (texto visible)", type: "text" },
+        { name: "openingHours", label: "Horario de atención (texto visible)", type: "text", admin: { description: "P. ej. «Lunes a viernes, 8:00–20:00». Debe coincidir con Google Business Profile." } },
+        { name: "orderUrl", label: "Enlace a la aplicación de pedidos (particulares)", type: "text", validate: (v: string | null | undefined) => !v || /^(https:\/\/|\/)/.test(v) ? true : "URL https:// o ruta interna." },
+        {
+          name: "social",
+          label: "Perfiles oficiales (Google Business Profile, redes)",
+          type: "array",
+          admin: { description: "Solo perfiles reales de Granalva. Se publican en los datos estructurados (sameAs)." },
+          fields: [{ type: "row", fields: [
+            { name: "platform", label: "Plataforma", type: "select", required: true, options: ["Google Business Profile", "Instagram", "Facebook", "LinkedIn", "TikTok", "YouTube", "Otra"].map((v) => ({ label: v, value: v })) },
+            { name: "url", label: "URL", type: "text", required: true, validate: (v: string | null | undefined) => /^https:\/\//.test(v ?? "") ? true : "URL https://" },
+          ] }],
+        },
       ],
     },
     { name: "ribbon", label: "Marquesina superior", type: "array", maxRows: 8, fields: [{ name: "text", label: "Texto", type: "text", required: true, maxLength: 48 }] },
