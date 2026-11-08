@@ -1105,3 +1105,40 @@ html.nav-open,html.nav-open body{overflow:hidden}
 .cms-cta-text{margin:10px 0 0;max-width:60ch;color:#e5edf8}
 .reviews__more{margin:26px 0 0;padding:0 6vw;text-align:center}
 .cms-block .section-number,.cms-head .section-number{color:var(--cobalt)}
+
+/* === Producción: ServiceHero idéntico en todas las rutas (tokens) === */
+:root{--s-hero-h:580px;--s-hero-pad-top:112px;--s-hero-pad-x:6vw;--s-hero-pad-bottom:48px;--s-hero-h1:clamp(44px,4.4vw,74px);--s-hero-h1-lh:.92}
+@media(max-width:1279px){:root{--s-hero-h:560px;--s-hero-pad-top:104px}}
+@media(max-width:760px){:root{--s-hero-h:570px;--s-hero-pad-top:96px;--s-hero-pad-x:20px;--s-hero-pad-bottom:28px;--s-hero-h1:clamp(34px,9.6vw,44px);--s-hero-h1-lh:.98}}
+.s-hero{height:var(--s-hero-h);min-height:0;align-items:stretch}
+.s-hero__copy{display:flex;flex-direction:column;align-items:flex-start;height:100%;max-width:1440px;padding:var(--s-hero-pad-top) var(--s-hero-pad-x) var(--s-hero-pad-bottom)}
+.s-hero .breadcrumbs{margin:0;min-height:1.6em}
+.s-hero__eyebrow{margin:16px 0 0;min-height:1.6em}
+.s-hero h1{margin:16px 0 0;max-width:24ch;font-size:var(--s-hero-h1);line-height:var(--s-hero-h1-lh)}
+.s-hero__tagline{margin:18px 0 0}
+.s-hero__actions{margin-top:auto;padding-top:20px}
+@media(max-width:760px){
+  /* Migas y etiqueta reservan dos líneas: el H1 empieza siempre a la misma altura. */
+  .s-hero .breadcrumbs{min-height:2.9em;align-items:flex-start}
+  .s-hero__eyebrow{min-height:2.8em;align-items:flex-start;font-size:10px;letter-spacing:.12em}
+  .s-hero h1{max-width:none}
+  .s-hero__tagline{font-size:22px}
+  .s-hero__actions{gap:10px}
+  .s-hero__actions .button{padding:12px 15px}
+}
+.service-lead{max-width:62ch;margin:0 0 30px;font-family:var(--serif);font-size:clamp(19px,1.6vw,24px);line-height:1.5;color:var(--navy)}
+.cms-intro{padding-bottom:0}
+.s-hero__scrim{opacity:var(--hero-overlay,.72)}
+/* Migas siempre en una línea dentro de la portada (el último tramo se recorta con «…»). */
+.s-hero .breadcrumbs,.s-hero .breadcrumbs ol{flex-wrap:nowrap;max-width:100%;min-width:0;overflow:hidden;white-space:nowrap}
+.s-hero .breadcrumbs li:last-child{min-width:0;overflow:hidden;text-overflow:ellipsis}
+.s-hero .breadcrumbs{min-height:0;height:1.6em}
+.s-hero__eyebrow{line-height:1.35}
+@media(max-width:760px){.s-hero .breadcrumbs{height:1.6em;min-height:0}.s-hero__eyebrow{height:2.7em;min-height:0;overflow:hidden}}
+@media(min-width:761px){.s-hero__eyebrow{height:1.6em;min-height:0;white-space:nowrap}}
+.s-hero .breadcrumbs li:last-child{display:flex;min-width:0}.s-hero .breadcrumbs li:last-child span{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+/* «Una respuesta. Todo coordinado.»: más aire entre título y cuadro informativo. */
+#servicios .wide-title{margin-bottom:clamp(36px,4vw,64px)}
+#servicios .section-number{display:block;margin-bottom:6px}
+#servicios .services__more{margin-top:clamp(28px,3vw,44px)}
+.s-hero__tagline,.s-hero h1,.wide-title,.service-lead,.cms-head__lead{text-wrap:balance}

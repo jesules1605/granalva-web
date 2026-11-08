@@ -28,7 +28,7 @@ async function mediaFor(payload: Payload, origin: string, photo: Photo, category
   const data = Buffer.from(await response.arrayBuffer());
   const doc = await payload.create({
     collection: "media",
-    data: { alt: photo.alt, credit: `${photo.author} · ${photo.license} · ${photo.sourceUrl} · ${photo.changes}`, category, realPhoto: false },
+    data: { alt: photo.alt, credit: photo.sourceUrl ? `${photo.author} · ${photo.license} · ${photo.sourceUrl} · ${photo.changes}` : "Fotografía propia de Granalva", category, realPhoto: !photo.sourceUrl },
     file: { data, mimetype: "image/jpeg", name: photo.src.split("/").pop()!, size: data.length },
   });
   log.push(`medio: ${doc.filename}`);
@@ -69,12 +69,12 @@ export async function POST(request: Request) {
   const md = (markdown: string) => convertMarkdownToLexical({ editorConfig, markdown });
 
   // 1. Fotos y portada.
-  const categoryFor: Record<string, MediaCategory> = { hotelRoom: "portada", hotelRoomMobile: "portada", sierraNevada: "sierra-nevada", apartment: "limpieza-apartamentos", bedLinen: "lavanderia", office: "empresas", renovation: "empresas", industrialLaundry: "lavanderia" };
+  const categoryFor: Record<string, MediaCategory> = { granalvaBedroom: "portada", granalvaBedroomMobile: "portada", hotelRoom: "lavanderia", hotelRoomMobile: "lavanderia", sierraNevada: "sierra-nevada", apartment: "limpieza-apartamentos", office: "empresas", renovation: "empresas" };
   const ids: Record<string, number> = {};
   for (const [key, photo] of Object.entries(PHOTOS)) ids[key] = await mediaFor(payload, origin, photo, categoryFor[key] ?? "otro");
   const home = await payload.findGlobal({ slug: "home-page", depth: 0 });
   if (!home.imageDesktop) {
-    await payload.updateGlobal({ slug: "home-page", data: { imageDesktop: ids.hotelRoom, imageMobile: ids.hotelRoomMobile, overlay: 85, zoom: false, _status: "published" } });
+    await payload.updateGlobal({ slug: "home-page", data: { imageDesktop: ids.granalvaBedroom, imageMobile: ids.granalvaBedroomMobile, overlay: 70, zoom: false, _status: "published" } });
     log.push("portada: imagen principal asignada");
   }
 
@@ -84,7 +84,7 @@ export async function POST(request: Request) {
     const exists = await payload.find({ collection: "services", where: { slug: { equals: service.slug } }, limit: 1, depth: 0, draft: true });
     if (exists.docs[0]) continue;
     const key = photoKey(service.image);
-    await payload.create({ collection: "services", data: { slug: service.slug as never, heroImage: key ? ids[key] : undefined, heroOverlay: 90, _status: "published" } });
+    await payload.create({ collection: "services", data: { slug: service.slug as never, heroImage: key ? ids[key] : undefined, heroOverlay: 72, _status: "published" } });
     log.push(`servicio: ${service.slug}`);
   }
 
@@ -115,7 +115,7 @@ export async function POST(request: Request) {
     title: "Sobre Granalva: limpieza y lavandería profesional en Granada",
     seo: { metaTitle: "Sobre nosotros: equipo de limpieza y lavandería en Granada", schemaType: "AboutPage" },
     layout: [
-      { blockType: "hero", eyebrow: "EMPRESA GRANADINA · EQUIPO PROPIO", lead: "Limpieza de apartamentos turísticos, espacios profesionales y lavandería con recogida y entrega para empresas, alojamientos y particulares de Granada.", image: ids.apartment, overlay: 90, primaryLabel: "Solicitar presupuesto", primaryHref: "/contacto#formulario" },
+      { blockType: "hero", eyebrow: "EMPRESA GRANADINA · EQUIPO PROPIO", lead: "Limpieza de apartamentos turísticos, espacios profesionales y lavandería con recogida y entrega para empresas, alojamientos y particulares de Granada.", image: ids.granalvaBedroom, overlay: 70, primaryLabel: "Solicitar presupuesto", primaryHref: "/contacto#formulario" },
       { blockType: "text", heading: "Una empresa con procesos. Un equipo con nombre.", content: md("Granalva es una empresa granadina con experiencia específica en limpieza de apartamentos turísticos, espacios profesionales y lavandería. Cada servicio se coordina, ejecuta y revisa por un equipo que trabaja junto.") },
       { blockType: "team", heading: "Quién coordina cada servicio" },
       { blockType: "cards", heading: "Cuatro principios en cada servicio", columns: "4", items: [
@@ -157,7 +157,7 @@ export async function POST(request: Request) {
     title: "Lavandería a domicilio para particulares en Granada",
     seo: { metaTitle: "Lavandería a domicilio para particulares en Granada", schemaType: "WebPage" },
     layout: [
-      { blockType: "hero", eyebrow: "PARA PARTICULARES", lead: "Recogemos tu colada en casa y te la devolvemos limpia, seca y doblada.", image: ids.bedLinen, overlay: 90, primaryLabel: "Hacer un pedido", primaryHref: "/servicios/lavanderia-domicilio-granada#colada" },
+      { blockType: "hero", eyebrow: "PARA PARTICULARES", lead: "Recogemos tu colada en casa y te la devolvemos limpia, seca y doblada.", image: ids.hotelRoom, overlay: 90, primaryLabel: "Hacer un pedido", primaryHref: "/servicios/lavanderia-domicilio-granada#colada" },
       { blockType: "services", heading: "Servicio para particulares", services: ["lavanderia-domicilio-granada"] },
     ],
   });

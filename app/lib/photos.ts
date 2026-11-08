@@ -1,4 +1,5 @@
-// Fotografías provisionales con licencia comercial verificada (Wikimedia Commons).
+// Fotografías: la de portada es propia de Granalva; el resto, provisionales con licencia
+// comercial verificada (Wikimedia Commons).
 // Se sustituyen desde el panel (/admin) por fotografías reales de Granalva sin tocar código.
 // Las licencias CC BY / CC BY-SA exigen atribución: se muestra en el aviso legal
 // («Créditos de las fotografías»). Procedencia completa: docs/FOTOGRAFIAS.md.
@@ -8,7 +9,7 @@ export type Photo = {
   height: number;
   alt: string;
   author: string;
-  license: "CC BY 2.0" | "CC BY 4.0" | "CC BY-SA 4.0" | "CC0 (dominio público)";
+  license: "CC BY 2.0" | "CC BY 4.0" | "CC BY-SA 4.0" | "CC0 (dominio público)" | "Propia de Granalva";
   licenseUrl: string;
   sourceUrl: string;
   /** Cambios respecto al original (obligatorio indicarlos en CC BY / BY-SA). */
@@ -20,11 +21,23 @@ const CC = {
   "CC BY 4.0": "https://creativecommons.org/licenses/by/4.0/deed.es",
   "CC BY-SA 4.0": "https://creativecommons.org/licenses/by-sa/4.0/deed.es",
   "CC0 (dominio público)": "https://creativecommons.org/publicdomain/zero/1.0/deed.es",
+  "Propia de Granalva": "",
 } as const;
 
 const photo = (p: Omit<Photo, "licenseUrl">): Photo => ({ ...p, licenseUrl: CC[p.license] });
 
 export const PHOTOS = {
+  // Fotografía de portada facilitada por Granalva («Foto-portada-Granalva», 8 nov 2026).
+  granalvaBedroom: photo({
+    src: "/fotos/granalva-preparacion-cama-alojamiento-granada.jpg", width: 1448, height: 1086,
+    alt: "Profesional de Granalva preparando la cama de un alojamiento de estilo granadino con ropa de cama blanca y colcha azul",
+    author: "Limpiezas Granalva", license: "Propia de Granalva", sourceUrl: "", changes: "Recorte vertical para móvil",
+  }),
+  granalvaBedroomMobile: photo({
+    src: "/fotos/granalva-preparacion-cama-alojamiento-granada-movil.jpg", width: 868, height: 1086,
+    alt: "Profesional de Granalva preparando la cama de un alojamiento de estilo granadino con ropa de cama blanca y colcha azul",
+    author: "Limpiezas Granalva", license: "Propia de Granalva", sourceUrl: "", changes: "Recorte vertical 4:5",
+  }),
   hotelRoom: photo({
     src: "/fotos/habitacion-hotel-ropa-cama-blanca.jpg", width: 1920, height: 1277,
     alt: "Habitación de hotel con la cama hecha, ropa de cama blanca y toallas preparadas",
@@ -53,13 +66,6 @@ export const PHOTOS = {
     sourceUrl: "https://commons.wikimedia.org/wiki/File:Hotel_room_bedroom_in_building_on_Chapel_Street,_Salford,_Greater_Manchester,_England,_on_5_October_2025.jpg",
     changes: "Redimensionada",
   }),
-  bedLinen: photo({
-    src: "/fotos/ropa-de-cama-blanca-alojamiento.jpg", width: 1920, height: 1440,
-    alt: "Ropa de cama blanca de un alojamiento, con funda nórdica y almohada",
-    author: "Thirunavukkarasye-Raveendran", license: "CC BY-SA 4.0",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Bettbezug_Paris_Hotel_2013_PD-2.jpg",
-    changes: "Redimensionada",
-  }),
   office: photo({
     src: "/fotos/oficina-vacia-limpia.jpg", width: 1920, height: 1440,
     alt: "Oficina diáfana y limpia, con suelo de moqueta y ventanales",
@@ -73,13 +79,6 @@ export const PHOTOS = {
     author: "Dietmar Rabich", license: "CC BY-SA 4.0",
     sourceUrl: "https://commons.wikimedia.org/wiki/File:D%C3%BClmen,_Alte_Brennerei_L%C3%B6hning_--_2015_--_8609-13.jpg",
     changes: "Redimensionada",
-  }),
-  industrialLaundry: photo({
-    src: "/fotos/lavanderia-industrial-plegadora.jpg", width: 1010, height: 853,
-    alt: "Máquinas de lavandería industrial para el plegado de ropa de cama",
-    author: "Larry D. Moore", license: "CC BY 4.0",
-    sourceUrl: "https://commons.wikimedia.org/wiki/File:Laundry_1_Harmony_of_the_Seas_2026.jpg",
-    changes: "Recortada (sin personas) y redimensionada",
   }),
 } satisfies Record<string, Photo>;
 

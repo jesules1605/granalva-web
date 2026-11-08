@@ -46,7 +46,7 @@ export const HomePage: GlobalConfig = {
           type: "number",
           min: 40,
           max: 100,
-          defaultValue: 85,
+          defaultValue: 70,
           admin: { description: "40 = foto muy visible; 100 = máximo contraste. Por debajo de 60 comprueba que el texto se lee bien." },
         },
         { name: "zoom", label: "Zoom lento (de 1 a 1,03 en 16 s, sin desplazamiento; se desactiva con movimiento reducido)", type: "checkbox", defaultValue: false },

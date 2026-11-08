@@ -27,7 +27,6 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
         crumbs={crumbs}
         eyebrow={service.eyebrow}
         title={service.h1}
-        lead={service.summary}
         image={service.image}
         imageAlt={service.imageAlt}
         focal={service.imageFocal}
@@ -50,6 +49,7 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
           <span className="section-number">01 / EL SERVICIO</span>
           <h2>{service.introTitle}</h2>
         </div>
+        <p className="service-lead">{service.summary}</p>
         <div className="service-introduction__copy">
           {service.intro.map((paragraph) => <p key={paragraph}>{paragraph}</p>)}
           <blockquote>{service.promise}</blockquote>

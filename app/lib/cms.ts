@@ -183,10 +183,10 @@ export type HomeHeroData = {
 
 /** Valores revisados para SEO (H1 y entradilla de la portada). */
 export const DEFAULT_HOME_HERO: HomeHeroData = {
-  desktop: { src: PHOTOS.hotelRoom.src, width: PHOTOS.hotelRoom.width, height: PHOTOS.hotelRoom.height, focal: "60% 50%" },
-  mobile: { src: PHOTOS.hotelRoomMobile.src, width: PHOTOS.hotelRoomMobile.width, height: PHOTOS.hotelRoomMobile.height, focal: "50% 50%" },
-  alt: PHOTOS.hotelRoom.alt,
-  overlay: 85,
+  desktop: { src: PHOTOS.granalvaBedroom.src, width: PHOTOS.granalvaBedroom.width, height: PHOTOS.granalvaBedroom.height, focal: "62% 45%" },
+  mobile: { src: PHOTOS.granalvaBedroomMobile.src, width: PHOTOS.granalvaBedroomMobile.width, height: PHOTOS.granalvaBedroomMobile.height, focal: "50% 40%" },
+  alt: PHOTOS.granalvaBedroom.alt,
+  overlay: 70,
   zoom: false,
   eyebrow: "Empresa granadina · Equipo propio",
   titleLine1: "Empresa de limpieza y lavandería",

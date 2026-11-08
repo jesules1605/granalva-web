@@ -9,7 +9,7 @@ import { PHOTOS } from "../../lib/photos";
 import { BUSINESS, SITE_DOMAIN } from "../../lib/site";
 
 // Una entrada por fotografía original (la versión móvil comparte autoría).
-const uniquePhotos = Object.values(PHOTOS).filter((photo, index, all) => all.findIndex((p) => p.sourceUrl === photo.sourceUrl) === index);
+const uniquePhotos = Object.values(PHOTOS).filter((photo, index, all) => photo.sourceUrl && all.findIndex((p) => p.sourceUrl === photo.sourceUrl) === index);
 
 const defaultMetadata = legalMetadata("/aviso-legal", "Aviso legal", "Aviso legal y condiciones de uso de la web de Limpiezas Granalva: titular, condiciones, responsabilidad y propiedad intelectual.");
 

@@ -10,7 +10,7 @@ export const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://limpiezasg
 /** Imágenes de servicio. Pendiente de sustituir por fotografías reales de Granalva. */
 // Fotografías provisionales con licencia verificada (app/lib/photos.ts). Sustituibles desde el panel.
 export const IMAGES = {
-  laundry: PHOTOS.bedLinen.src,
+  laundry: PHOTOS.hotelRoom.src,
   cleaning: PHOTOS.apartment.src,
   renting: PHOTOS.hotelRoom.src,
 } as const;
@@ -153,8 +153,8 @@ export const servicePages: ServicePage[] = [
     primaryKeyword: "lavandería Granada",
     secondaryKeywords: ["lavandería profesional Granada", "lavandería para empresas Granada", "lavandería con recogida y entrega Granada"],
     summary: "Externaliza el cuidado de tus textiles con una ruta coordinada, un proceso completo y atención directa.",
-    image: PHOTOS.bedLinen.src,
-    imageAlt: PHOTOS.bedLinen.alt,
+    image: PHOTOS.hotelRoom.src,
+    imageAlt: PHOTOS.hotelRoom.alt,
     introTitle: "Lavandería profesional en Granada: tus textiles listos cuando los necesitas",
     intro: [
       "La lavandería profesional no consiste solo en lavar. Requiere coordinar volúmenes, recogidas, entregas y acabados para que la ropa vuelva lista para entrar de nuevo en servicio.",
@@ -456,8 +456,9 @@ export const servicePages: ServicePage[] = [
     primaryKeyword: "limpieza apartamentos turísticos Granada",
     secondaryKeywords: ["limpieza alquiler vacacional", "limpieza entre huéspedes", "limpieza de alojamientos"],
     summary: "Apartamentos preparados para la siguiente entrada con un proceso pensado para la rotación turística.",
-    image: PHOTOS.apartment.src,
-    imageAlt: PHOTOS.apartment.alt,
+    image: PHOTOS.granalvaBedroom.src,
+    imageAlt: PHOTOS.granalvaBedroom.alt,
+    imageFocal: "68% 40%",
     introTitle: "Limpieza de apartamentos turísticos: no es limpiar una vivienda, es preparar una experiencia",
     intro: [
       "Una limpieza turística tiene un tiempo concreto, una entrada prevista y una lista de detalles que afectan directamente a la percepción del huésped. Por eso trabajamos con una planificación específica para alojamientos.",
@@ -627,8 +628,8 @@ export const servicePages: ServicePage[] = [
     primaryKeyword: "renting textil Granada",
     secondaryKeywords: ["alquiler de sábanas y toallas", "textiles para hoteles", "textiles para apartamentos"],
     summary: "Disponibilidad de ropa de cama y baño sin asumir toda la compra, reposición y rotación del stock.",
-    image: PHOTOS.bedLinen.src,
-    imageAlt: PHOTOS.bedLinen.alt,
+    image: PHOTOS.hotelRoom.src,
+    imageAlt: PHOTOS.hotelRoom.alt,
     introTitle: "Renting textil en Granada: textiles disponibles sin inmovilizar más stock del necesario",
     intro: [
       "El renting textil ayuda a reducir la inversión inicial y simplifica la reposición de ropa de cama y baño. Para que funcione, debe estar coordinado con la lavandería y con el ritmo de entradas del alojamiento.",
@@ -685,8 +686,8 @@ export const servicePages: ServicePage[] = [
     primaryKeyword: "lavandería a domicilio Granada",
     secondaryKeywords: ["recogida y entrega de ropa", "colada a domicilio", "lavado y doblado"],
     summary: "Tu colada sale de casa y vuelve limpia, seca y doblada para que recuperes tiempo sin desplazarte.",
-    image: PHOTOS.bedLinen.src,
-    imageAlt: PHOTOS.bedLinen.alt,
+    image: PHOTOS.hotelRoom.src,
+    imageAlt: PHOTOS.hotelRoom.alt,
     introTitle: "Lavandería a domicilio en Granada: la semana ya tiene suficientes tareas",
     intro: [
       "La lavandería a domicilio está pensada para personas que quieren ahorrar tiempo, resolver una acumulación de ropa o delegar la colada habitual sin desplazarse.",

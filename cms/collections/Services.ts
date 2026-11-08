@@ -34,7 +34,7 @@ export const Services: CollectionConfig = {
           { name: "heroImageMobile", label: "Fotografía móvil (opcional, vertical)", type: "upload", relationTo: "media" },
         ] },
         { name: "heroAlt", label: "Texto alternativo (vacío = el del archivo)", type: "text", maxLength: 160 },
-        { name: "heroOverlay", label: "Oscurecimiento azul (%)", type: "number", min: 40, max: 100, defaultValue: 90, admin: { description: "Por debajo de 60 comprueba en la vista previa que el texto se lee bien." } },
+        { name: "heroOverlay", label: "Oscurecimiento azul (%)", type: "number", min: 40, max: 100, defaultValue: 72, admin: { description: "Por debajo de 60 comprueba en la vista previa que el texto se lee bien." } },
         { name: "eyebrow", label: "Etiqueta superior", type: "text", maxLength: 60 },
         { name: "tagline", label: "Frase editorial", type: "text", maxLength: 80 },
         { name: "ctaLabel", label: "Texto del botón principal", type: "text", maxLength: 40 },

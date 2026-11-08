@@ -12,8 +12,6 @@ export type ServiceHeroProps = {
   /** Etiqueta superior (p. ej. «SERVICIO DE TEMPORADA · SIERRA NEVADA»). */
   eyebrow: string;
   title: string;
-  /** Entradilla opcional (resumen del servicio). */
-  lead?: string;
   /** Frase editorial opcional en Granaina. */
   tagline?: string;
   image: string;
@@ -24,7 +22,7 @@ export type ServiceHeroProps = {
   focal?: string;
   /** Variante vertical para móvil (opcional, desde el panel). */
   mobile?: HeroImage;
-  /** Oscurecimiento azul 40-100 (por defecto 90). */
+  /** Oscurecimiento azul 40-100 (por defecto 72: contraste AA sin tapar la foto). */
   overlay?: number;
   cta?: { href: string; label: string };
   /** Acción secundaria (teléfono, enlace…). */
@@ -32,12 +30,14 @@ export type ServiceHeroProps = {
 };
 
 /**
- * Portada común de todas las páginas de servicio (Sierra Nevada incluida):
+ * Portada común de todas las páginas de servicio (Sierra Nevada incluida). Misma altura,
+ * rejilla y posiciones en todas las rutas (tokens --s-hero-*): migas, etiqueta, H1 y CTA
+ * ocupan siempre las mismas coordenadas; la entradilla va en el primer bloque de la página.
  * fotografía real con next/image (<picture> con variante móvil, AVIF/WebP,
  * prioridad alta porque es el LCP), capa azul de contraste separada y ajustable,
  * migas, etiqueta, H1 en Granaina y CTA. Todo configurable por servicio en el panel.
  */
-export function ServiceHero({ crumbs, eyebrow, title, lead, tagline, image, imageAlt, imageSize, focal = "center", mobile, overlay = 90, cta, secondary }: ServiceHeroProps) {
+export function ServiceHero({ crumbs, eyebrow, title, tagline, image, imageAlt, imageSize, focal = "center", mobile, overlay = 72, cta, secondary }: ServiceHeroProps) {
   const common = { alt: imageAlt, sizes: "100vw", quality: 75, fetchPriority: "high" as const, loading: "eager" as const };
   const desktop = getImageProps({ ...common, src: image, width: imageSize?.width ?? 1920, height: imageSize?.height ?? 1280 }).props;
   const small = mobile ? getImageProps({ ...common, src: mobile.src, width: mobile.width, height: mobile.height }).props : null;
@@ -55,7 +55,6 @@ export function ServiceHero({ crumbs, eyebrow, title, lead, tagline, image, imag
         <Breadcrumbs crumbs={crumbs} />
         <p className="s-hero__eyebrow"><LogoSeal small />{eyebrow}</p>
         <h1>{title}</h1>
-        {lead ? <p className="s-hero__lead">{lead}</p> : null}
         {tagline ? <p className="s-hero__tagline">{tagline}</p> : null}
         {cta || secondary ? (
           <div className="s-hero__actions">

@@ -94,11 +94,11 @@ function AboutPageDefault() {
       <section className="team" id="experiencia">
         <div className="team-visual">
           <div className="team-gallery team-gallery--main">
-            <Image src={PHOTOS.apartment.src} alt={PHOTOS.apartment.alt} fill sizes="(max-width: 1000px) 100vw, 54vw" quality={70} />
+            <Image src={PHOTOS.granalvaBedroom.src} alt={PHOTOS.granalvaBedroom.alt} fill sizes="(max-width: 1000px) 100vw, 54vw" quality={70} />
             <span>EN LOS ALOJAMIENTOS</span>
           </div>
           <div className="team-gallery team-gallery--detail">
-            <Image src={PHOTOS.bedLinen.src} alt={PHOTOS.bedLinen.alt} fill sizes="(max-width: 760px) 46vw, 22vw" quality={70} />
+            <Image src={PHOTOS.hotelRoom.src} alt={PHOTOS.hotelRoom.alt} fill sizes="(max-width: 760px) 46vw, 22vw" quality={70} />
             <span>EN LA LAVANDERÍA</span>
           </div>
           <div className="team-logo-card" aria-label="Granalva, equipo de Granada">

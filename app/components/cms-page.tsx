@@ -64,7 +64,6 @@ export async function CmsPage({ page }: { page: Page }) {
           crumbs={crumbs}
           eyebrow={hero.eyebrow || BUSINESS.name.toUpperCase()}
           title={page.title}
-          lead={hero.lead ?? undefined}
           tagline={hero.tagline ?? undefined}
           image={image.url}
           imageAlt={image.alt}
@@ -81,6 +80,7 @@ export async function CmsPage({ page }: { page: Page }) {
           {hero?.lead ? <p className="cms-head__lead">{hero.lead}</p> : null}
         </section>
       )}
+      {hero && image?.url && hero.lead ? <section className="cms-block cms-intro"><p className="service-lead">{hero.lead}</p></section> : null}
       <PageBlocks blocks={blocks} />
       <SiteFooter />
     </main>
