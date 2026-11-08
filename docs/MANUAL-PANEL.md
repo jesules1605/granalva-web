@@ -2,12 +2,29 @@
 
 ## Acceso
 
-- **Primera vez:** abre `https://<web>/admin`. Como aún no hay usuarios, el panel pide crear el primero, que será el **propietario**. Usa `info@limpiezasgranalva.com` o tu correo personal y una contraseña larga.
-- **Contraseña olvidada:** en la pantalla de acceso, «¿Olvidaste tu contraseña?». Recibirás un correo; requiere el SMTP configurado.
+- **Dirección del panel:**
+  - hoy, en preproducción: `https://granalva.netlify.app/admin`;
+  - cuando se publique: `https://limpiezasgranalva.com/admin`.
+- **Entrar:** escribe tu correo y tu contraseña. Nunca envíes la contraseña por chat ni por correo.
+- **Cambiar tu contraseña:** arriba a la derecha, tu nombre → «Cuenta» → «Cambiar contraseña» → escribe la nueva dos veces → «Guardar».
+- **Contraseña olvidada:**
+  - en la pantalla de acceso, pulsa «¿Olvidaste tu contraseña?» y escribe tu correo;
+  - llega un mensaje de «Web Granalva», enviado desde `info@limpiezasgranalva.com`, con un enlace válido durante una hora;
+  - pulsa el enlace y escribe la contraseña nueva.
+- **Crear un usuario** (solo el propietario):
+  - Usuarios → «Crear nuevo»;
+  - rellena nombre, correo, una contraseña provisional y el rol;
+  - entrega la contraseña provisional en persona o por teléfono, y pide a esa persona que la cambie al entrar o que use «¿Olvidaste tu contraseña?».
+- **Retirar el acceso:** Usuarios → la persona → desmarca «Activo» → «Guardar». Es mejor que borrar, porque conserva el historial.
+- **Si el propietario pierde el acceso y no le llega el correo de recuperación:**
+  - comprueba la carpeta de spam;
+  - si sigue sin llegar, un técnico puede restablecer la cuenta desde el servidor sin ver tu contraseña. Para ello debe tener acceso a Netlify y a Neon, que están en tus cuentas.
 - **Seguridad:**
   - tras 5 intentos fallidos la cuenta se bloquea 15 minutos;
   - la sesión caduca a las 8 horas;
-  - el panel nunca aparece en Google.
+  - el panel nunca aparece en Google;
+  - un administrador o un editor no pueden cambiar su propio rol.
+- **Correo de los avisos:** se envía con una «contraseña de aplicación» de Google llamada «Web Granalva». Si un día la borras en https://myaccount.google.com/apppasswords, crea otra y pégala en Netlify, en la variable `SMTP_PASS`. Tu contraseña normal del correo no interviene.
 
 ## Roles
 
@@ -83,7 +100,7 @@ Contenido → Medios.
   - «Uso previsto», para encontrar la foto después.
 - **Recorte y punto focal:** al editar el archivo.
 - **Formatos:** JPG, PNG, WebP, AVIF y PDF, hasta 15 MB.
-- **Almacenamiento:** los archivos se guardan en Vercel Blob, que es persistente.
+- **Almacenamiento:** los archivos se guardan en Cloudflare R2 (cubo privado `granalva-medios`), que es persistente: no se pierden al redesplegar la web.
 
 ## Autoridad
 
@@ -108,8 +125,29 @@ SEO → Redirecciones: URL antigua → URL nueva (301).
 - No permite crear cadenas: si el destino ya redirige, avisa.
 - No redirijas nunca todo a la portada.
 
-## Copias de seguridad
+## Copias de seguridad y restauración
 
-- **Base de datos:** copias automáticas del proveedor (Neon). Restauración a un punto anterior desde su panel.
-- **Contenido:** cada servicio, página y portada guarda su historial de versiones.
-- **Medios:** Vercel Blob. Conviene descargar de vez en cuando las fotos originales.
+**Base de datos (Neon).** Contiene los textos, las solicitudes, los usuarios y el historial.
+
+- **Copia automática:** Neon permite volver a un punto de las últimas horas. El margen exacto según el plan aparece en Neon → proyecto `granalva` → «Backup & Restore».
+- **Copia manual sin programas**, recomendada antes de cambios grandes y una vez al mes:
+  1. Abre Neon → proyecto `granalva` → «Branches» → «Create branch».
+  2. Ponle de nombre la fecha (por ejemplo, `copia-2026-12-01`), con origen `main` y la opción «Current point in time».
+  3. Esa rama es una foto fija de toda la base de datos y no cambia aunque edites la web. El plan gratuito admite varias; borra las antiguas.
+- **Restaurar:**
+  - en «Backup & Restore», elige el momento y pulsa «Restore»;
+  - o restaura desde una rama de copia;
+  - Neon guarda automáticamente el estado anterior, así que la restauración también se puede deshacer.
+- **Copia externa completa** (para un técnico): `pg_dump "$DATABASE_URL" > granalva-AAAA-MM-DD.sql`, y para restaurar, `psql`. La cadena está en Netlify, como variable secreta.
+
+**Contenido.** Cada servicio, página, entrada y la portada guardan su historial: abre el documento → «Versiones» → elige una → «Restaurar esta versión».
+
+**Fotos y documentos (Cloudflare R2).**
+
+- Sobreviven a los redespliegues.
+- Al **borrar** un medio en el panel, el archivo se elimina de R2. Si solo quieres dejar de usarlo, sustitúyelo en la sección correspondiente en lugar de borrarlo.
+- **Guarda tú los originales** (en el ordenador o en Google Drive) de cada foto que subas.
+- **Recuperar una foto concreta:** Cloudflare → R2 → `granalva-medios` → el archivo → «Download».
+- **Restaurar una foto borrada:** súbela de nuevo desde el original en Medios y vuelve a asignarla.
+
+**Código.** Está en GitHub (`jesules1605/granalva-web`), con todo su historial. Netlify permite volver a un despliegue anterior: Deploys → elige uno → «Publish deploy».
