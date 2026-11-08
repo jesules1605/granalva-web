@@ -84,3 +84,34 @@
 
 La implementación debe ser técnicamente excelente, pero nadie puede garantizar el puesto número 1. El crecimiento dependerá además de Google Business Profile, reseñas legítimas, autoridad local, casos de éxito, menciones, enlaces relevantes y mejora continua basada en Search Console.
 
+
+## Estado a 8 nov 2026 y día de publicación
+
+### Hecho y verificado en local
+- Formulario real → PostgreSQL (Payload) con estados nuevo/contactado/presupuesto enviado/ganado/perdido, exportación CSV, anti-duplicados, campo trampa, tiempo mínimo, límite por IP y Turnstile opcional (`npm run test:e2e`).
+- Panel: servicios (SEO y portada con borradores, versiones y programación), blog con vista previa, medios en Vercel Blob, equipo, reseñas, empresas colaboradoras con autorización, redirecciones, ajustes y menú (`npm run test:e2e:cms`).
+- Textos legales con datos reales, aviso de cookies con Consent Mode v2 (`tests/e2e/cookies.e2e.mjs`), CSP, HSTS y Permissions-Policy.
+- Mapa de redirecciones de WordPress verificado en `npm test` (`docs/redirecciones-wordpress.csv`).
+
+### Variables por entorno (Vercel → Settings → Environment Variables)
+| Variable | Preproducción | Producción |
+|---|---|---|
+| `NEXT_PUBLIC_NOINDEX` | `true` | *(vacía)*: **solo en el dominio final** |
+| `NEXT_PUBLIC_SITE_URL` | `https://limpiezasgranalva.com` | `https://limpiezasgranalva.com` |
+| `DATABASE_URL` | base de datos de preproducción | base de datos de producción (distinta) |
+| `PAYLOAD_SECRET` | aleatoria | aleatoria distinta |
+| `BLOB_READ_WRITE_TOKEN` | almacén de preproducción | almacén de producción |
+| `SMTP_*`, `EMAIL_FROM`, `CONTACT_TO_EMAIL` | correo de pruebas | correo real |
+| `CRON_SECRET` | aleatoria | aleatoria |
+| `NEXT_PUBLIC_GA_ID`, Turnstile | opcional | cuando se faciliten |
+
+La canonical apunta siempre al dominio final, nunca a `*.vercel.app`; la preproducción se protege con `noindex` + `Disallow: /`.
+
+### Día de publicación (tras «AUTORIZO PUBLICACIÓN»)
+1. Copia final de WordPress y exportación de la zona DNS (`docs/MIGRACION-WORDPRESS.md`).
+2. `npm run db:migrate` contra la base de datos de producción; crear el usuario propietario.
+3. Desplegar producción sin `NEXT_PUBLIC_NOINDEX`; añadir `limpiezasgranalva.com` y `www` al proyecto.
+4. Cambiar solo A (`@`) y CNAME (`www`). MX, SPF, DKIM y DMARC no se tocan.
+5. Comprobaciones posteriores: HTTPS, www → sin www, `robots.txt` sin `Disallow: /`, `sitemap.xml`, canonicals, redirecciones del CSV, envío real del formulario, acceso a `/admin`, consola sin errores y Lighthouse.
+6. Search Console: verificar la propiedad de dominio, enviar el sitemap e inspeccionar la portada y los servicios prioritarios.
+7. Si algo crítico falla: reversión del DNS (WordPress sigue intacto).
