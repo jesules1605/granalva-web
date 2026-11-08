@@ -25,7 +25,7 @@ export function HomeHero({ hero }: { hero: HomeHeroData }) {
     <section className={hero.zoom ? "hero hero--business hero--zoom" : "hero hero--business"} id="inicio" style={style}>
       <picture className="hero-photo">
         <source media="(max-width: 760px)" srcSet={mobile.srcSet} sizes="100vw" />
-        {/* eslint-disable-next-line @next/next/no-img-element, jsx-a11y/alt-text -- props de getImageProps (incluye alt) */}
+        {/* eslint-disable-next-line jsx-a11y/alt-text -- props de getImageProps (incluye alt) */}
         <img {...desktop} className="hero-photo__img" />
       </picture>
       <div className="hero-scrim" aria-hidden="true" />
