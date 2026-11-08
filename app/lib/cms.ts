@@ -3,6 +3,7 @@ import config from "@payload-config";
 import { cache } from "react";
 import { getPayload, type Payload } from "payload";
 import type { Media, Post } from "../../payload-types";
+import { PHOTOS } from "./photos";
 import { clientLogos as defaultClientLogos, team as defaultTeam, verifiedReviews, type Review } from "./home-content";
 import { serviceBySlug, type ServicePage } from "./services";
 
@@ -156,6 +157,65 @@ export const getChrome = cache(() =>
       navigation: navigation.links && navigation.links.length > 0 ? navigation.links.map((link) => ({ href: link.href, label: link.label })) : null,
       ribbon: settings.ribbon && settings.ribbon.length > 0 ? settings.ribbon.map((item) => item.text) : null,
       whatsapp: settings.whatsapp || null,
+    };
+  }),
+);
+
+export type HeroImage = { src: string; width: number; height: number; focal: string };
+export type HomeHeroData = {
+  desktop: HeroImage;
+  mobile: HeroImage;
+  alt: string;
+  overlay: number;
+  zoom: boolean;
+  eyebrow: string;
+  titleLine1: string;
+  titleLine2: string;
+  subtitle: string;
+  primary: { label: string; href: string };
+  secondary: { label: string; href: string };
+};
+
+/** Valores revisados para SEO (H1 y entradilla de la portada). */
+export const DEFAULT_HOME_HERO: HomeHeroData = {
+  desktop: { src: PHOTOS.hotelRoom.src, width: PHOTOS.hotelRoom.width, height: PHOTOS.hotelRoom.height, focal: "60% 50%" },
+  mobile: { src: PHOTOS.hotelRoomMobile.src, width: PHOTOS.hotelRoomMobile.width, height: PHOTOS.hotelRoomMobile.height, focal: "50% 50%" },
+  alt: PHOTOS.hotelRoom.alt,
+  overlay: 85,
+  zoom: false,
+  eyebrow: "Empresa granadina · Equipo propio",
+  titleLine1: "Empresa de limpieza y lavandería",
+  titleLine2: "profesional en Granada",
+  subtitle:
+    "Servicios de limpieza para empresas, hoteles y apartamentos turísticos, lavandería profesional con recogida y entrega, renting textil y soluciones para particulares en Granada.",
+  primary: { label: "Solicitar presupuesto empresarial", href: "#contacto" },
+  secondary: { label: "Contratar lavandería profesional", href: "/servicios/lavanderia-profesional-granada" },
+};
+
+const heroImage = (value: unknown, fallback: HeroImage): HeroImage => {
+  const media = mediaOf(value);
+  return media?.url && media.width && media.height ? { src: media.url, width: media.width, height: media.height, focal: focalOf(media) ?? "50% 50%" } : fallback;
+};
+
+/** Portada publicada en el panel sobre los valores por defecto (borrador si hay vista previa). */
+export const getHomeHero = cache((draft = false) =>
+  safe<HomeHeroData>(DEFAULT_HOME_HERO, async (payload) => {
+    const doc = await payload.findGlobal({ slug: "home-page", depth: 1, draft });
+    const d = DEFAULT_HOME_HERO;
+    const desktop = heroImage(doc.imageDesktop, d.desktop);
+    const desktopMedia = mediaOf(doc.imageDesktop);
+    return {
+      desktop,
+      mobile: heroImage(doc.imageMobile, doc.imageDesktop ? desktop : d.mobile),
+      alt: doc.imageAlt || desktopMedia?.alt || d.alt,
+      overlay: typeof doc.overlay === "number" ? doc.overlay : d.overlay,
+      zoom: Boolean(doc.zoom),
+      eyebrow: doc.eyebrow || d.eyebrow,
+      titleLine1: doc.titleLine1 || d.titleLine1,
+      titleLine2: doc.titleLine2 || d.titleLine2,
+      subtitle: doc.subtitle || d.subtitle,
+      primary: { label: doc.primaryLabel || d.primary.label, href: doc.primaryHref || d.primary.href },
+      secondary: { label: doc.secondaryLabel || d.secondary.label, href: doc.secondaryHref || d.secondary.href },
     };
   }),
 );

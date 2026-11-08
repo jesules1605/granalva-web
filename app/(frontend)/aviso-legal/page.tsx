@@ -30,7 +30,7 @@ export default function AvisoLegal() {
       <p>Los enlaces a sitios de terceros se ofrecen solo como referencia. {BUSINESS.name} no controla ni responde de sus contenidos. Quien quiera enlazar a esta web puede hacerlo a la portada o a cualquier página, sin reproducir sus contenidos ni dar a entender una relación que no exista.</p>
 
       <h2>5. Propiedad intelectual e industrial</h2>
-      <p>Los textos, el diseño, el logotipo, las fotografías y los vídeos de la web pertenecen a {BUSINESS.name} o se usan con autorización de sus titulares. Queda prohibida su reproducción, distribución o comunicación pública con fines comerciales sin autorización. La tipografía Granaina es obra de Sergio Arredondo y se utiliza conforme a su licencia. Los logotipos del programa Kit Digital, del Plan de Recuperación, Transformación y Resiliencia y de la Unión Europea (NextGenerationEU) se muestran por la obligación de publicidad de la ayuda recibida.</p>
+      <p>Los textos, el diseño, el logotipo, las fotografías y los vídeos de la web pertenecen a {BUSINESS.name} o se usan con autorización de sus titulares. Queda prohibida su reproducción, distribución o comunicación pública con fines comerciales sin autorización. La tipografía Granaina es obra de Sergio Arredondo y se utiliza conforme a su licencia.</p>
 
       <h2>6. Protección de datos y cookies</h2>
       <p>El tratamiento de los datos personales se explica en la <Link href="/politica-de-privacidad">política de privacidad</Link> y el uso de cookies en la <Link href="/politica-de-cookies">política de cookies</Link>.</p>

@@ -24,7 +24,7 @@ export const metadata: Metadata = {
     title: TITLE,
     description: DESCRIPTION,
     url: URL,
-    images: [{ url: "/limpieza-profesional-alojamiento-granada.png", alt: "Servicios de limpieza y lavandería de Granalva en Granada" }],
+    images: [{ url: "/og-granalva-limpieza-lavanderia-granada.jpg", alt: "Servicios de limpieza y lavandería de Granalva en Granada" }],
   },
 };
 

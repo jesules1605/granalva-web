@@ -104,10 +104,12 @@ export interface Config {
   };
   fallbackLocale: null;
   globals: {
+    'home-page': HomePage;
     'site-settings': SiteSetting;
     navigation: Navigation;
   };
   globalsSelect: {
+    'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
   };
@@ -912,6 +914,34 @@ export interface PayloadMigrationsSelect<T extends boolean = true> {
   createdAt?: T;
 }
 /**
+ * Imagen principal, titular y botones del inicio. Los campos vacíos usan el texto revisado para SEO.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page".
+ */
+export interface HomePage {
+  id: number;
+  imageDesktop?: (number | null) | Media;
+  imageMobile?: (number | null) | Media;
+  imageAlt?: string | null;
+  /**
+   * 40 = foto muy visible; 100 = máximo contraste. Por debajo de 60 comprueba que el texto se lee bien.
+   */
+  overlay?: number | null;
+  zoom?: boolean | null;
+  eyebrow?: string | null;
+  titleLine1?: string | null;
+  titleLine2?: string | null;
+  subtitle?: string | null;
+  primaryLabel?: string | null;
+  primaryHref?: string | null;
+  secondaryLabel?: string | null;
+  secondaryHref?: string | null;
+  _status?: ('draft' | 'published') | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "site-settings".
  */
@@ -944,6 +974,29 @@ export interface Navigation {
     | null;
   updatedAt?: string | null;
   createdAt?: string | null;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "home-page_select".
+ */
+export interface HomePageSelect<T extends boolean = true> {
+  imageDesktop?: T;
+  imageMobile?: T;
+  imageAlt?: T;
+  overlay?: T;
+  zoom?: T;
+  eyebrow?: T;
+  titleLine1?: T;
+  titleLine2?: T;
+  subtitle?: T;
+  primaryLabel?: T;
+  primaryHref?: T;
+  secondaryLabel?: T;
+  secondaryHref?: T;
+  _status?: T;
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -1006,7 +1059,7 @@ export interface TaskSchedulePublish {
           relationTo: 'posts';
           value: number | Post;
         } | null);
-    global?: string | null;
+    global?: 'home-page' | null;
     user?: {
       relationTo: 'users';
       value: number | User;

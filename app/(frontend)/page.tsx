@@ -1,15 +1,16 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import Image from "next/image";
 import Link from "next/link";
 import { ContactForm } from "../components/contact-form";
 import { ClientLogos } from "../components/home/client-logos";
-import { HeroVideo } from "../components/home/hero-video";
+import { HomeHero } from "../components/home/home-hero";
 import { Reviews } from "../components/home/reviews";
 import { RouteProcess } from "../components/home/route-process";
 import { ServiceSelector } from "../components/home/service-selector";
 import { LogoSeal } from "../components/logo-seal";
 import { SiteFooter, SiteHeader } from "../components/site-chrome";
-import { getClientLogos, getReviews, getTeam } from "../lib/cms";
+import { getClientLogos, getHomeHero, getReviews, getTeam } from "../lib/cms";
 import { journeys, sectors, serviceCategories, sierraNevadaBlock } from "../lib/home-content";
 import { jsonLdString, ORGANIZATION_ID, WEBSITE_ID } from "../lib/seo";
 import { SITE_URL } from "../lib/services";
@@ -70,7 +71,8 @@ const laundryLinks = [
 ];
 
 export default async function Home() {
-  const [reviews, teamMembers, logos] = await Promise.all([getReviews(), getTeam(), getClientLogos()]);
+  const { isEnabled: draft } = await draftMode();
+  const [hero, reviews, teamMembers, logos] = await Promise.all([getHomeHero(draft), getReviews(), getTeam(), getClientLogos()]);
 
   return (
     <main className="site-shell home">
@@ -78,34 +80,8 @@ export default async function Home() {
       {/* 1. Cabecera fija y cinta superior */}
       <SiteHeader />
 
-      {/* 2. Hero: H1 SEO, propuesta de valor y CTA por prioridad comercial */}
-      <section className="hero hero--business" id="inicio">
-        <HeroVideo>
-          {/* Póster como imagen real del HTML (elemento LCP, descubierta al analizar el HTML). No se usa
-              preload(); los enlaces a «/» no se precargan (site-chrome, breadcrumbs) para no descargarlo en otras páginas. */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="hero-poster" src="/video/granalva-hero-poster-1280.webp" alt="" width={1280} height={800} fetchPriority="high" decoding="async" aria-hidden="true" />
-          <div className="hero-scrim" aria-hidden="true" />
-          <div className="hero-grid" aria-hidden="true" />
-          <div className="hero-copy">
-            <p className="eyebrow"><LogoSeal small /> Empresa granadina · Equipo propio</p>
-            <h1>Empresa de limpieza y lavandería{" "}<br /><em>profesional en Granada</em></h1>
-            <p className="hero-lead">Servicios de limpieza para empresas, hoteles y apartamentos turísticos, lavandería profesional con recogida y entrega, renting textil y soluciones para particulares en Granada.</p>
-            <div className="hero-actions">
-              <a className="button button--yellow" href="#contacto">Solicitar presupuesto empresarial <span>→</span></a>
-              <Link className="button button--glass" href="/servicios/lavanderia-profesional-granada">Contratar lavandería profesional <span>→</span></Link>
-            </div>
-            <ul className="hero-quicklinks" aria-label="Accesos directos">
-              <li><Link href="/servicios/empresa-limpieza-granada">Limpieza para empresas</Link></li>
-              <li><a href="#sierra-nevada">Temporada en Sierra Nevada</a></li>
-              <li><Link href="/servicios/lavanderia-domicilio-granada#colada">Hacer un pedido particular</Link></li>
-            </ul>
-          </div>
-          <div className="hero-stamp" aria-label="Granalva, servicio local en Granada">
-            <Image src="/granalva-logo.jpg" alt="Granalva" width={800} height={800} sizes="240px" />
-          </div>
-        </HeroVideo>
-      </section>
+      {/* 2. Hero: fotografía administrable (LCP), H1 SEO y CTA por prioridad comercial */}
+      <HomeHero hero={hero} />
 
       {/* 3. Propuesta de valor y 4. recorridos principales */}
       <section className="value-section" id="empresas" aria-labelledby="propuesta-title">

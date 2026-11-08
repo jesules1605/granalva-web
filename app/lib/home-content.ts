@@ -1,3 +1,4 @@
+import { PHOTOS } from "./photos";
 // Contenido de la portada. Se trasladará al global `homepage` y a las colecciones
 // `team` y `reviews` de Payload (fase 4).
 // Reseñas: proceden de la página pública de referencias de Granalva; no modificar
@@ -26,12 +27,6 @@ export const verifiedReviews: Review[] = [
   { quote: "Gran profesionalidad y seriedad. Son muy responsables y hacen siempre un trabajo impecable. 100% recomendable", author: "Alejandra Gilabert", date: "2023-12-06", platform: "Google" },
   { quote: "Muy profesionales!! Se nota la experiencia! Muy agradables y eficientes! Recomendable 100%", author: "Belen Linares Jiménez", date: "2023-12-06", platform: "Google" },
   { quote: "Es una chica trabajadora, responsable y cuidadosa con todos los detalles. La recomiendo 100%", author: "Mari Tere Sanchez", date: "2023-12-06", platform: "Google" },
-];
-
-export const videoChapters = [
-  { number: "01", label: "Lavandería profesional", text: "Textiles preparados y entregas coordinadas", time: 0 },
-  { number: "02", label: "Limpieza de empresas", text: "Oficinas, locales y espacios impecables", time: 5.1 },
-  { number: "03", label: "Alojamientos", text: "Limpieza, lavandería y renting textil", time: 10.1 },
 ];
 
 export const processSteps = [
@@ -157,8 +152,8 @@ export const serviceCategories: ServiceCategory[] = [
       "Desmanchado, lavado, secado, planchado y doblado",
       "Textiles organizados por tipología",
     ],
-    image: "/textiles-lavanderia-profesional-granada.png",
-    imageAlt: "Ropa de cama, toallas y prendas limpias y dobladas",
+    image: PHOTOS.industrialLaundry.src,
+    imageAlt: PHOTOS.industrialLaundry.alt,
     cta: { label: "Contratar lavandería profesional", href: "/contacto?servicio=lavanderia-profesional-granada" },
     links: [
       { label: "Lavandería profesional para empresas", href: "/servicios/lavanderia-profesional-granada" },
@@ -179,8 +174,8 @@ export const serviceCategories: ServiceCategory[] = [
       "Protocolo por espacio y revisión de puntos críticos",
       "Oficinas, locales, apartamentos turísticos y fin de obra",
     ],
-    image: "/limpieza-profesional-alojamiento-granada.png",
-    imageAlt: "Preparación de un dormitorio durante una limpieza profesional",
+    image: PHOTOS.apartment.src,
+    imageAlt: PHOTOS.apartment.alt,
     cta: { label: "Contactar para limpieza", href: "/contacto?servicio=empresa-limpieza-granada" },
     links: [
       { label: "Empresa de limpieza profesional", href: "/servicios/empresa-limpieza-granada" },
@@ -201,8 +196,8 @@ export const serviceCategories: ServiceCategory[] = [
       "Rotación calculada según plazas y ocupación",
       "Condiciones de reposición definidas desde el principio",
     ],
-    image: "/ropa-cama-bano-renting-textil-granada.png",
-    imageAlt: "Juego de sábanas y toallas blancas preparado para un alojamiento",
+    image: PHOTOS.hotelRoom.src,
+    imageAlt: PHOTOS.hotelRoom.alt,
     cta: { label: "Solicitar propuesta de renting", href: "/contacto?servicio=renting-textil-granada" },
     links: [{ label: "Renting textil para alojamientos y empresas", href: "/servicios/renting-textil-granada" }],
   },
@@ -213,8 +208,8 @@ export const serviceCategories: ServiceCategory[] = [
     title: "Tu colada, recogida y entregada en casa",
     description: "Recogemos la ropa en tu puerta, la lavamos, secamos y doblamos, y te la devolvemos preparada para guardar.",
     advantages: ["Tres tamaños de referencia: 4, 8 y 12 kg", "Lavado, secado y doblado", "Recogida y entrega en Granada y área metropolitana"],
-    image: "/textiles-lavanderia-profesional-granada.png",
-    imageAlt: "Colada limpia, seca y doblada lista para su entrega",
+    image: PHOTOS.bedLinen.src,
+    imageAlt: PHOTOS.bedLinen.alt,
     cta: { label: "Hacer un pedido particular", href: "/servicios/lavanderia-domicilio-granada#colada" },
     links: [{ label: "Lavandería a domicilio con recogida y entrega", href: "/servicios/lavanderia-domicilio-granada" }],
   },

@@ -19,8 +19,7 @@
     "payload:importmap": "payload generate:importmap",
     "seo:map": "node scripts/seo-map.mjs",
     "seo:matrix": "node scripts/seo-matrix.mjs",
-    "test:e2e:cms": "node tests/e2e/cms.e2e.mjs",
-    "test:video": "node tests/visual/video-check.mjs"
+    "test:e2e:cms": "node tests/e2e/cms.e2e.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.93.0",

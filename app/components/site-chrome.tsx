@@ -97,16 +97,6 @@ export function SiteFooter() {
         </nav>
         <a href="https://granadatierrasoñada.es" target="_blank" rel="noreferrer">Tipografía Granaina · Sergio Arredondo</a>
       </div>
-      {/* Publicidad obligatoria de la ayuda Kit Digital (fondos NextGenerationEU). */}
-      <div className="footer-funding">
-        <p>Programa Kit Digital cofinanciado por los fondos Next Generation (EU) del Mecanismo de Recuperación y Resiliencia.</p>
-        <div className="footer-funding__logos">
-          <Image src="/kit-digital/gobierno-espana-plan-recuperacion.png" alt="Gobierno de España · Plan de Recuperación, Transformación y Resiliencia" width={600} height={96} sizes="300px" />
-          <Image src="/kit-digital/financiado-union-europea-nextgenerationeu.png" alt="Financiado por la Unión Europea · NextGenerationEU" width={480} height={126} sizes="180px" />
-          <Image src="/kit-digital/kit-digital.png" alt="Kit Digital" width={722} height={198} sizes="140px" />
-          <Image src="/kit-digital/acelera-pyme.png" alt="Acelera pyme" width={660} height={242} sizes="110px" />
-        </div>
-      </div>
     </footer>
   );
 }

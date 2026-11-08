@@ -5,8 +5,8 @@ import { Breadcrumbs } from "../../components/breadcrumbs";
 import { LogoSeal } from "../../components/logo-seal";
 import { SiteFooter, SiteHeader } from "../../components/site-chrome";
 import { team } from "../../lib/home-content";
+import { PHOTOS } from "../../lib/photos";
 import { breadcrumbJsonLd, jsonLdString, ORGANIZATION_ID, WEBSITE_ID, type Crumb } from "../../lib/seo";
-import { IMAGES } from "../../lib/services";
 import { absoluteUrl, BUSINESS } from "../../lib/site";
 
 // Conserva la URL /sobre-nosotros/ de WordPress (sin barra final por el 301 de proxy.ts).
@@ -91,11 +91,11 @@ export default function AboutPage() {
       <section className="team" id="experiencia">
         <div className="team-visual">
           <div className="team-gallery team-gallery--main">
-            <Image src={IMAGES.cleaning} alt="Preparación de un dormitorio durante la limpieza de un alojamiento" fill sizes="(max-width: 1000px) 100vw, 54vw" quality={70} />
+            <Image src={PHOTOS.apartment.src} alt={PHOTOS.apartment.alt} fill sizes="(max-width: 1000px) 100vw, 54vw" quality={70} />
             <span>EN LOS ALOJAMIENTOS</span>
           </div>
           <div className="team-gallery team-gallery--detail">
-            <Image src={IMAGES.laundry} alt="Textiles limpios, doblados y preparados para su entrega" fill sizes="(max-width: 760px) 46vw, 22vw" quality={70} />
+            <Image src={PHOTOS.bedLinen.src} alt={PHOTOS.bedLinen.alt} fill sizes="(max-width: 760px) 46vw, 22vw" quality={70} />
             <span>EN LA LAVANDERÍA</span>
           </div>
           <div className="team-logo-card" aria-label="Granalva, equipo de Granada">

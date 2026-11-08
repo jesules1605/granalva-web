@@ -17,6 +17,7 @@ import { Reviews } from "./cms/collections/Reviews";
 import { Services } from "./cms/collections/Services";
 import { Team } from "./cms/collections/Team";
 import { Users } from "./cms/collections/Users";
+import { HomePage } from "./cms/globals/HomePage";
 import { Navigation } from "./cms/globals/Navigation";
 import { SiteSettings } from "./cms/globals/SiteSettings";
 
@@ -55,7 +56,7 @@ export default buildConfig({
   },
   i18n: { fallbackLanguage: "es", supportedLanguages: { es } },
   collections: [ContactSubmissions, Services, Posts, Media, Team, Reviews, ClientLogos, Redirects, Users],
-  globals: [SiteSettings, Navigation],
+  globals: [HomePage, SiteSettings, Navigation],
   // Subidas: máximo 15 MB por archivo (los tipos MIME se limitan en cada colección).
   upload: { limits: { fileSize: 15 * 1024 * 1024 } },
   // Medios persistentes: en producción y preproducción, Vercel Blob (BLOB_READ_WRITE_TOKEN).
