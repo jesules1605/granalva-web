@@ -33,7 +33,7 @@ export function ServiceHero({ crumbs, eyebrow, title, lead, tagline, image, imag
   return (
     <section className="s-hero">
       <div className="s-hero__media">
-        <Image src={image} alt={imageAlt} fill priority sizes="100vw" quality={70} style={{ objectPosition: focal }} />
+        <Image src={image} alt={imageAlt} fill loading="eager" fetchPriority="high" sizes="100vw" quality={70} style={{ objectPosition: focal }} />
       </div>
       <div className="s-hero__scrim" aria-hidden="true" />
       <div className="s-hero__copy">

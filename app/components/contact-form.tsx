@@ -187,7 +187,7 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
         <b>Información básica sobre protección de datos.</b> Responsable: {BUSINESS.legalOwner} ({BUSINESS.name}). Finalidad: responder a tu solicitud.
         Legitimación: tu consentimiento. No se ceden datos a terceros salvo obligación legal. Puedes ejercer tus derechos escribiendo a
         {" "}<a href="mailto:info@limpiezasgranalva.com">info@limpiezasgranalva.com</a>. No enviamos comunicaciones comerciales automáticas.
-        {" "}<Link href="/politica-de-privacidad">Más información</Link>.
+        {" "}<Link href="/politica-de-privacidad">Política de privacidad completa</Link>.
       </p>
 
       <button className="button button--dark form-submit" type="submit" disabled={pending}>

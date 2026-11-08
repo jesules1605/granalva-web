@@ -1,7 +1,6 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
-import { preload } from "react-dom";
 import { ContactForm } from "../components/contact-form";
 import { ClientLogos } from "../components/home/client-logos";
 import { HeroVideo } from "../components/home/hero-video";
@@ -72,8 +71,6 @@ const laundryLinks = [
 
 export default async function Home() {
   const [reviews, teamMembers, logos] = await Promise.all([getReviews(), getTeam(), getClientLogos()]);
-  // Imagen de fondo del hero (elemento LCP): se solicita con prioridad alta.
-  preload("/video/granalva-hero-poster-1280.webp", { as: "image", fetchPriority: "high" });
 
   return (
     <main className="site-shell home">
@@ -84,6 +81,10 @@ export default async function Home() {
       {/* 2. Hero: H1 SEO, propuesta de valor y CTA por prioridad comercial */}
       <section className="hero hero--business" id="inicio">
         <HeroVideo>
+          {/* Póster como imagen real del HTML (elemento LCP, descubierta al analizar el HTML). No se usa
+              preload(); los enlaces a «/» no se precargan (site-chrome, breadcrumbs) para no descargarlo en otras páginas. */}
+          {/* eslint-disable-next-line @next/next/no-img-element */}
+          <img className="hero-poster" src="/video/granalva-hero-poster-1280.webp" alt="" width={1280} height={800} fetchPriority="high" decoding="async" aria-hidden="true" />
           <div className="hero-scrim" aria-hidden="true" />
           <div className="hero-grid" aria-hidden="true" />
           <div className="hero-copy">

@@ -94,7 +94,7 @@ export default async function BlogPost({ params }: PageProps) {
         </header>
         {image?.url ? (
           <div className="blog-article__cover">
-            <Image src={image.url} alt={image.alt} fill priority sizes="(max-width: 900px) 100vw, 860px" style={{ objectPosition: focalOf(image) }} />
+            <Image src={image.url} alt={image.alt} fill loading="eager" fetchPriority="high" sizes="(max-width: 900px) 100vw, 860px" style={{ objectPosition: focalOf(image) }} />
           </div>
         ) : null}
         <div className="blog-article__content">

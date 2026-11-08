@@ -10,7 +10,7 @@ export function Breadcrumbs({ crumbs, tone = "light" }: { crumbs: Crumb[]; tone?
           const isLast = index === crumbs.length - 1;
           return (
             <li key={crumb.path}>
-              {isLast ? <span aria-current="page">{crumb.name}</span> : <Link href={crumb.path}>{crumb.name}</Link>}
+              {isLast ? <span aria-current="page">{crumb.name}</span> : <Link href={crumb.path} prefetch={crumb.path === "/" ? false : undefined}>{crumb.name}</Link>}
             </li>
           );
         })}

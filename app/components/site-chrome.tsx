@@ -35,8 +35,9 @@ export async function SiteHeader() {
     <div className="fixed-navigation">
       <RibbonLoop items={chrome.ribbon ?? ribbonItems} />
       <header className="site-header">
-        <Link className="brand" href="/">
-          <Image src="/granalva-logo.jpg" alt="" width={800} height={800} sizes="64px" priority />
+        {/* Sin precarga automática: la precarga de la portada descargaría su póster en cada página. */}
+        <Link className="brand" href="/" prefetch={false}>
+          <Image src="/granalva-logo.jpg" alt="" width={800} height={800} sizes="64px" loading="eager" />
           <span>
             <strong>GRANALVA</strong>
             <small>SERVICIO DE LIMPIEZA Y LAVANDERÍA PROFESIONAL</small>
