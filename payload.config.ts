@@ -6,6 +6,7 @@ import { nodemailerAdapter } from "@payloadcms/email-nodemailer";
 import { lexicalEditor } from "@payloadcms/richtext-lexical";
 import { es } from "@payloadcms/translations/languages/es";
 import { buildConfig } from "payload";
+import { s3Storage } from "@payloadcms/storage-s3";
 import { vercelBlobStorage } from "@payloadcms/storage-vercel-blob";
 import sharp from "sharp";
 import { Campaigns } from "./cms/collections/Campaigns";
@@ -62,11 +63,24 @@ export default buildConfig({
   globals: [HomePage, SiteSettings, Navigation],
   // Subidas: máximo 15 MB por archivo (los tipos MIME se limitan en cada colección).
   upload: { limits: { fileSize: 15 * 1024 * 1024 } },
-  // Medios persistentes: en producción y preproducción, Vercel Blob (BLOB_READ_WRITE_TOKEN).
-  // Sin el token (desarrollo local) se usa el disco local, que NO es persistente en Vercel.
+  // Medios persistentes (nunca el disco efímero del servidor):
+  //  - Cloudflare R2 o cualquier S3 compatible si existe S3_BUCKET (opción de coste cero);
+  //  - Vercel Blob si existe BLOB_READ_WRITE_TOKEN.
+  // Sin ninguno (desarrollo local) se usa el disco local.
   plugins: [
+    s3Storage({
+      enabled: Boolean(process.env.S3_BUCKET),
+      collections: { media: true },
+      bucket: process.env.S3_BUCKET || "",
+      config: {
+        endpoint: process.env.S3_ENDPOINT || undefined,
+        region: process.env.S3_REGION || "auto",
+        forcePathStyle: true,
+        credentials: { accessKeyId: process.env.S3_ACCESS_KEY_ID || "", secretAccessKey: process.env.S3_SECRET_ACCESS_KEY || "" },
+      },
+    }),
     vercelBlobStorage({
-      enabled: Boolean(process.env.BLOB_READ_WRITE_TOKEN),
+      enabled: !process.env.S3_BUCKET && Boolean(process.env.BLOB_READ_WRITE_TOKEN),
       collections: { media: true },
       token: process.env.BLOB_READ_WRITE_TOKEN || "",
     }),
