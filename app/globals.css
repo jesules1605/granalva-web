@@ -884,3 +884,7 @@ html.nav-open,html.nav-open body{overflow:hidden}
 .services-hub__grid .card-link:focus-visible{outline:none}
 .services-hub__grid article:has(.card-link:focus-visible){outline:3px solid var(--blue);outline-offset:3px}
 .services-hub__grid .text-link{position:relative;z-index:2}
+
+/* === Producción: vídeo del hero === */
+/* Fondo de respaldo azul (nunca negro) mientras llega el póster o si el vídeo falla. */
+.hero--business,.hero-video{background-color:#0b2d6c}

@@ -9,7 +9,9 @@ export function HeroVideo({ children }: { children: ReactNode }) {
   const videoRef = useRef<HTMLVideoElement>(null);
 
   // El vídeo no compite con el contenido principal: empieza a descargarse cuando la
-  // página ha terminado de cargar (720 px en móvil ≈0,6 MB; 1280 px ≈1,3 MB). Mientras
+  // página ha terminado de cargar (720 px en móvil ≈0,7 MB; 1280 px ≈1,9 MB; 1440 px,
+  // resolución nativa del máster, ≈2,3 MB en pantallas anchas). 25 fps constantes:
+  // el máster tenía cadencia irregular y producía vibración (docs/VIDEO-HERO.md). Mientras
   // tanto se ve el póster, que es su primer fotograma (sin salto al empezar). No se
   // reproduce solo con movimiento reducido, ahorro de datos o conexiones 2G; el usuario
   // puede iniciarlo con los capítulos. Fuera de pantalla se pausa.
@@ -81,7 +83,8 @@ export function HeroVideo({ children }: { children: ReactNode }) {
         aria-hidden="true"
       >
         <source src="/video/granalva-hero-720.mp4" type="video/mp4" media="(max-width: 760px)" />
-        <source src="/video/granalva-hero-1280.mp4" type="video/mp4" />
+        <source src="/video/granalva-hero-1280.mp4" type="video/mp4" media="(max-width: 1280px)" />
+        <source src="/video/granalva-hero-1440.mp4" type="video/mp4" />
       </video>
       {children}
       <div className="hero-chapters" aria-label="Servicios principales de Granalva">
