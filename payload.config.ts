@@ -45,7 +45,9 @@ const email = process.env.SMTP_HOST
 
 export default buildConfig({
   secret: process.env.PAYLOAD_SECRET || "",
-  serverURL: process.env.NEXT_PUBLIC_SITE_URL || "",
+  // Dirección del panel en los enlaces de correo (recuperar contraseña, avisos).
+  // En preproducción, PAYLOAD_SERVER_URL apunta a Netlify; al publicar se elimina.
+  serverURL: process.env.PAYLOAD_SERVER_URL || process.env.NEXT_PUBLIC_SITE_URL || "",
   admin: {
     user: Users.slug,
     meta: { titleSuffix: " · Granalva", icons: [{ rel: "icon", url: "/favicon.svg" }] },

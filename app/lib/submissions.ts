@@ -73,7 +73,7 @@ export async function storeSubmission(data: ContactSubmission, submissionKey?: s
         data.frecuencia && `Frecuencia: ${data.frecuencia}`,
         data.inicio && `Inicio: ${data.inicio}`,
         data.mensaje && `\n${data.mensaje}`,
-        `\nVer en el panel: ${SITE_URL}/admin/collections/contact-submissions/${doc.id}`,
+        `\nVer en el panel: ${process.env.PAYLOAD_SERVER_URL || SITE_URL}/admin/collections/contact-submissions/${doc.id}`,
       ].filter(Boolean).join("\n"),
     });
     await payload.update({ collection: "contact-submissions", id: doc.id, overrideAccess: true, data: { emailStatus: "enviado" } });
