@@ -20,7 +20,8 @@
     "seo:map": "node scripts/seo-map.mjs",
     "seo:matrix": "node scripts/seo-matrix.mjs",
     "test:e2e:cms": "node tests/e2e/cms.e2e.mjs",
-    "test:e2e:panel": "node tests/e2e/panel.e2e.mjs"
+    "test:e2e:panel": "node tests/e2e/panel.e2e.mjs",
+    "vercel-build": "node scripts/vercel-build.mjs"
   },
   "dependencies": {
     "@payloadcms/db-postgres": "3.93.0",

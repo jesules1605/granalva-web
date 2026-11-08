@@ -9,6 +9,7 @@ const base = process.argv[2] ?? "http://localhost:3000";
 const email = process.env.E2E_ADMIN_EMAIL ?? "e2e-propietario@example.com";
 const password = process.env.E2E_ADMIN_PASSWORD ?? "E2e-Granalva-solo-local-2026!";
 const cleanup = [];
+const cleanupPatch = [];
 const sleep = (ms) => new Promise((resolve) => setTimeout(resolve, ms));
 const ok = (message) => console.log(`ok - ${message}`);
 
@@ -85,9 +86,18 @@ try {
 
   // 5. Ajustes de servicio publicados → la página se regenera con ellos.
   const description = "Renting textil para hoteles y apartamentos en Granada: sábanas y toallas con lavandería, recogida y entrega incluidas. Prueba E2E.";
-  const service = await api("/api/services", { method: "POST", token, body: { slug: "renting-textil-granada", metaDescription: description, _status: "published" } });
-  assert.equal(service.status, 201, service.text);
-  cleanup.push(`/api/services/${service.json.doc.id}`);
+  const existing = (await api("/api/services?where[slug][equals]=renting-textil-granada&depth=0", { token })).json.docs[0];
+  let serviceId;
+  if (existing) {
+    serviceId = existing.id;
+    const previousDescription = existing.metaDescription ?? null;
+    assert.equal((await api(`/api/services/${serviceId}`, { method: "PATCH", token, body: { metaDescription: description, _status: "published" } })).status, 200);
+    cleanupPatch.push([`/api/services/${serviceId}`, { metaDescription: previousDescription, _status: "published" }]);
+  } else {
+    const service = await api("/api/services", { method: "POST", token, body: { slug: "renting-textil-granada", metaDescription: description, _status: "published" } });
+    assert.equal(service.status, 201, service.text);
+    cleanup.push(`/api/services/${service.json.doc.id}`);
+  }
   await fetch(`${base}/servicios/renting-textil-granada`);
   await sleep(1500);
   const page = await (await fetch(`${base}/servicios/renting-textil-granada`)).text();
@@ -101,7 +111,7 @@ try {
   cleanup.push(`/api/posts/${post.json.doc.id}`);
   const slug = post.json.doc.slug;
   assert.equal(slug, "articulo-de-prueba-e2e");
-  await sleep(1000);
+  await sleep(61_000); // caché de artículos publicados del proxy
   const article = await fetch(`${base}/blog/${slug}`);
   assert.equal(article.status, 200);
   const articleHtml = await article.text();
@@ -119,6 +129,7 @@ try {
   assert.equal((await api("/api/client-logos")).json.docs.length, 0, "API pública sin logotipos no autorizados");
   ok("logotipos de clientes solo con autorización");
 } finally {
+  for (const [path, body] of cleanupPatch) await api(path, { method: "PATCH", token, body });
   for (const path of cleanup.reverse()) await api(path, { method: "DELETE", token });
   await fetch(`${base}/servicios/renting-textil-granada`);
 }
