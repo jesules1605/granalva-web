@@ -49,7 +49,7 @@ Desde el 7 de noviembre de 2026 el objetivo prioritario es el máximo posicionam
 - Cada solicitud se guarda en Payload (`contact-submissions`) con estado, responsable, notas, versión del consentimiento y atribución (página, entrada, referrer y UTM).
 - Aviso por SMTP solo si existe `SMTP_HOST`. **Nunca se envían respuestas comerciales automáticas al cliente.**
 - Las solicitudes solo las ven el propietario y los administradores. La API pública no permite crearlas ni leerlas.
-- Cambios de esquema: `npm run db:migrate:create <nombre>` y después `npm run db:migrate`. En desarrollo, `docker compose up -d` levanta PostgreSQL y `.env.local` (que no se sube a git) contiene `DATABASE_URL` y `PAYLOAD_SECRET`.
+- Cambios de esquema: `npm run db:migrate:create <nombre>` y después `npm run db:migrate`. El script activa el adaptador S3/R2 para que el esquema incluya su columna `_objectkey` (si no, una migración local la borraría en producción). En desarrollo, `docker compose up -d` levanta PostgreSQL y `.env.local` (que no se sube a git) contiene `DATABASE_URL` y `PAYLOAD_SECRET`.
 
 ## Objetivo comercial vigente
 

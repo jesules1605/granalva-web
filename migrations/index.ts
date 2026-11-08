@@ -3,6 +3,7 @@ import * as migration_20261107_214942_servicio_select from './20261107_214942_se
 import * as migration_20261108_112507_contenido_cms from './20261108_112507_contenido_cms';
 import * as migration_20261108_160318_paginas_portada_secciones from './20261108_160318_paginas_portada_secciones';
 import * as migration_20261108_171656_campanas_categorias_ajustes from './20261108_171656_campanas_categorias_ajustes';
+import * as migration_20261108_212453_medios_r2_prefijo from './20261108_212453_medios_r2_prefijo';
 
 export const migrations = [
   {
@@ -28,6 +29,11 @@ export const migrations = [
   {
     up: migration_20261108_171656_campanas_categorias_ajustes.up,
     down: migration_20261108_171656_campanas_categorias_ajustes.down,
-    name: '20261108_171656_campanas_categorias_ajustes'
+    name: '20261108_171656_campanas_categorias_ajustes',
+  },
+  {
+    up: migration_20261108_212453_medios_r2_prefijo.up,
+    down: migration_20261108_212453_medios_r2_prefijo.down,
+    name: '20261108_212453_medios_r2_prefijo'
   },
 ];

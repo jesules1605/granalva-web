@@ -514,6 +514,7 @@ export interface Media {
       )
     | null;
   realPhoto?: boolean | null;
+  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -1299,6 +1300,7 @@ export interface MediaSelect<T extends boolean = true> {
   credit?: T;
   category?: T;
   realPhoto?: T;
+  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;

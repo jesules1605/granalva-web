@@ -14,7 +14,7 @@
     "test:visual": "node tests/visual/capture.mjs",
     "test:e2e": "node tests/e2e/contact-form.e2e.mjs",
     "db:migrate": "payload migrate",
-    "db:migrate:create": "payload migrate:create",
+    "db:migrate:create": "S3_BUCKET=${S3_BUCKET:-esquema} PAYLOAD_DB_PUSH=false payload migrate:create",
     "payload:types": "payload generate:types",
     "payload:importmap": "payload generate:importmap",
     "seo:map": "node scripts/seo-map.mjs",
