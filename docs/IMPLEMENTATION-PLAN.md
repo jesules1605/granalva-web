@@ -178,3 +178,7 @@ Se sigue `docs/PRODUCTION-CHECKLIST.md`, sección 8. **WordPress sigue en produc
 - **Fase 9:** repositorio privado de Granalva y GitHub conectado a Claude.
 - **Fase 9:** cuentas de Vercel, de base de datos y de correo a nombre de Granalva.
 - Datos y material: ver la lista de `START-HERE-CLAUDE.md`.
+
+## Fase de producción (8 nov 2026): completada hasta el punto de autorización
+
+Informe completo: `docs/INFORME-PRODUCCION-2026-11-08.md`. Incluye el vídeo a 25 fps, ServiceHero, la portada reordenada, el panel completo, los textos legales, las cookies, la seguridad, la migración de WordPress y las pruebas. Pendiente: credenciales (base de datos, Blob, SMTP), fotografías reales, accesos DNS, hosting y Search Console, y la autorización «AUTORIZO PUBLICACIÓN».
