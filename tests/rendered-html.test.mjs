@@ -3,6 +3,7 @@
 // El mapa de títulos y H1 es el acordado con el propietario (docs/seo-strategy.md):
 // si cambia el contenido, actualiza ambos a la vez.
 import assert from "node:assert/strict";
+import { readFileSync } from "node:fs";
 import { spawn } from "node:child_process";
 import { request as httpRequest } from "node:http";
 import { after, before, test } from "node:test";
@@ -251,6 +252,31 @@ test("las URLs antiguas y con barra final redirigen con un único 301", async ()
     const final = await fetch(location, { redirect: "manual" });
     assert.equal(final.status, 200, `${from}: el destino debe responder 200 sin otra redirección`);
   }
+});
+
+test("el CSV de migración de WordPress se cumple: 301 de un salto, 410 y 404 según lo documentado", async () => {
+  const rows = readFileSync(new URL("../docs/redirecciones-wordpress.csv", import.meta.url), "utf8").trim().split("\n").slice(1).map((line) => line.split(";"));
+  let checked = 0;
+  for (const [from, to, code] of rows) {
+    const source = new URL(from);
+    if (source.protocol === "http:") continue; // HTTPS lo fuerza la plataforma, no la aplicación.
+    const response = await new Promise((resolve, reject) => {
+      const req = httpRequest({ host: "127.0.0.1", port: PORT, path: source.pathname, headers: { host: source.host } }, resolve);
+      req.on("error", reject);
+      req.end();
+    });
+    response.resume();
+    assert.equal(String(response.statusCode), code, from);
+    if (code === "301") {
+      const location = new URL(response.headers.location, `https://${source.host}`);
+      const expected = new URL(to);
+      assert.equal(`${location.host}${location.pathname}`, `${expected.host}${expected.pathname}`, `${from}: destino`);
+      const final = await fetch(`${BASE}${location.pathname}`, { redirect: "manual" });
+      assert.equal(final.status, 200, `${from}: el destino responde 200 sin otra redirección`);
+    }
+    checked++;
+  }
+  assert.ok(checked >= 16, "filas comprobadas");
 });
 
 test("el host con www redirige con 301 al dominio canónico sin www", async () => {

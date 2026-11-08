@@ -1,0 +1,19 @@
+url_antigua;url_nueva;codigo;justificacion
+https://limpiezasgranalva.com/;https://limpiezasgranalva.com/;200;Portada: misma URL canónica (sin barra extra).
+https://limpiezasgranalva.com/servicios-de-limpieza-granada/;https://limpiezasgranalva.com/servicios;301;Página de servicios de WordPress → índice de servicios equivalente.
+https://limpiezasgranalva.com/servicios-de-limpieza-granada;https://limpiezasgranalva.com/servicios;301;Variante sin barra final, un único salto.
+https://limpiezasgranalva.com/sobre-nosotros/;https://limpiezasgranalva.com/sobre-nosotros;301;Mismo contenido; WordPress usaba barra final.
+https://limpiezasgranalva.com/contacto/;https://limpiezasgranalva.com/contacto;301;Mismo contenido; WordPress usaba barra final.
+https://limpiezasgranalva.com/aviso-legal/;https://limpiezasgranalva.com/aviso-legal;301;Mismo contenido legal actualizado; barra final.
+https://limpiezasgranalva.com/politica-de-privacidad/;https://limpiezasgranalva.com/politica-de-privacidad;301;Mismo contenido legal actualizado; barra final.
+https://limpiezasgranalva.com/politica-de-cookies/;https://limpiezasgranalva.com/politica-de-cookies;301;Mismo contenido legal actualizado; barra final.
+https://limpiezasgranalva.com/declaracion-de-accesibilidad/;https://limpiezasgranalva.com/declaracion-de-accesibilidad;301;Mismo contenido actualizado; barra final.
+https://limpiezasgranalva.com/inicio/;https://limpiezasgranalva.com/;301;WordPress ya la redirigía a la portada (alias de la portada, no contenido distinto).
+https://limpiezasgranalva.com/servicios/;https://limpiezasgranalva.com/servicios;301;En WordPress redirigía a la página de servicios; ahora es el índice de servicios.
+https://www.limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;Consolidación de host: WordPress servía www con 200 (contenido duplicado).
+https://www.limpiezasgranalva.com/contacto/;https://limpiezasgranalva.com/contacto;301;Host y barra final en un único salto.
+https://limpiezasgranalva.com/hello-world/;;410;Entrada de ejemplo de WordPress sin contenido real: se retira (no se redirige a portada).
+https://limpiezasgranalva.com/feed/;;410;Feed de WordPress sin entradas reales.
+https://limpiezasgranalva.com/comments/feed/;;410;Feed de comentarios sin contenido.
+https://limpiezasgranalva.com/referencias/;;410;Ya respondía 404 en WordPress (página retirada); 410 directo, sin redirecciones. Las reseñas reales están en la portada.
+http://limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;HTTP → HTTPS lo aplica la plataforma (Vercel) antes de la web; comprobar tras el cambio de DNS.

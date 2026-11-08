@@ -1,12 +1,13 @@
 import { NextResponse, type NextRequest } from "next/server";
-import { legacyRedirects } from "./app/lib/redirects";
+import { goneUrls, legacyRedirects } from "./app/lib/redirects";
 
 // Redirecciones permanentes en un solo salto (301), antes de renderizar:
 //  1. www → dominio canónico sin www;
 //  2. URLs antiguas de WordPress → su página equivalente;
 //  3. barra final → sin barra final (WordPress usaba barra final).
 // `skipTrailingSlashRedirect` (next.config.ts) evita que Next encadene su propio 308.
-//  4. redirecciones creadas en el panel (colección `redirects`), con caché de 60 s.
+//  4. restos de WordPress sin valor (entrada de ejemplo, feeds) → 410 Gone;
+//  5. redirecciones creadas en el panel (colección `redirects`), con caché de 60 s.
 // Si un destino es a su vez origen de otra regla, se resuelve hasta el final:
 // el visitante recibe siempre un único 301/308, sin cadenas ni bucles.
 const CANONICAL_HOST = new URL(process.env.NEXT_PUBLIC_SITE_URL || "https://limpiezasgranalva.com").host;
@@ -55,6 +56,12 @@ export async function proxy(request: NextRequest) {
   const { pathname, search } = request.nextUrl;
   const host = request.headers.get("host") ?? "";
   const path = pathname.length > 1 ? pathname.replace(/\/+$/, "") : pathname;
+  if (goneUrls.has(path)) {
+    return new NextResponse('<!doctype html><html lang="es"><meta charset="utf-8"><meta name="robots" content="noindex"><title>Contenido retirado · Granalva</title><p>Este contenido ya no existe. <a href="/">Ir a Limpiezas Granalva</a>.</p></html>', {
+      status: 410,
+      headers: { "content-type": "text/html; charset=utf-8", "x-robots-tag": "noindex" },
+    });
+  }
   await loadCmsRules(request.nextUrl.origin);
   const { target, status } = resolve(path);
 
