@@ -2,6 +2,7 @@ import Link from "next/link";
 import { Accordion, type AccordionItem } from "./accordion";
 import { ContactForm } from "./contact-form";
 import { ServiceHero } from "./service-hero";
+import { photoSize } from "../lib/photos";
 import { SiteFooter, SiteHeader } from "./site-chrome";
 import type { Crumb } from "../lib/seo";
 import { serviceBySlug, type ServicePage } from "../lib/services";
@@ -75,6 +76,9 @@ export function CompactServicePage({ service, crumbs }: { service: ServicePage; 
         image={service.image}
         imageAlt={service.imageAlt}
         focal={service.imageFocal}
+        imageSize={service.imageSize ?? photoSize(service.image)}
+        mobile={service.imageMobile}
+        overlay={service.heroOverlay}
         cta={{ href: ctaHref, label: service.ctaLabel }}
         secondary={<a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>}
       />

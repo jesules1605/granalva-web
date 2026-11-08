@@ -11,6 +11,7 @@ import sharp from "sharp";
 import { ClientLogos } from "./cms/collections/ClientLogos";
 import { ContactSubmissions } from "./cms/collections/ContactSubmissions";
 import { Media } from "./cms/collections/Media";
+import { Pages } from "./cms/collections/Pages";
 import { Posts } from "./cms/collections/Posts";
 import { Redirects } from "./cms/collections/Redirects";
 import { Reviews } from "./cms/collections/Reviews";
@@ -55,7 +56,7 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
   },
   i18n: { fallbackLanguage: "es", supportedLanguages: { es } },
-  collections: [ContactSubmissions, Services, Posts, Media, Team, Reviews, ClientLogos, Redirects, Users],
+  collections: [ContactSubmissions, Pages, Services, Posts, Media, Team, Reviews, ClientLogos, Redirects, Users],
   globals: [HomePage, SiteSettings, Navigation],
   // Subidas: máximo 15 MB por archivo (los tipos MIME se limitan en cada colección).
   upload: { limits: { fileSize: 15 * 1024 * 1024 } },

@@ -2,7 +2,9 @@ import "server-only";
 import config from "@payload-config";
 import { cache } from "react";
 import { getPayload, type Payload } from "payload";
-import type { Media, Post } from "../../payload-types";
+import type { Media, Page, Post } from "../../payload-types";
+import { HOME_SECTIONS } from "../../cms/globals/HomePage";
+import { BUSINESS } from "./site";
 import { PHOTOS } from "./photos";
 import { clientLogos as defaultClientLogos, team as defaultTeam, verifiedReviews, type Review } from "./home-content";
 import { serviceBySlug, type ServicePage } from "./services";
@@ -86,14 +88,15 @@ export const getClientLogos = cache(() =>
 );
 
 /** Servicio con los ajustes publicados en el panel aplicados sobre el contenido base. */
-export const getService = cache((slug: string) =>
+export const getService = cache((slug: string, draft = false) =>
   safe<ServicePage | undefined>(serviceBySlug[slug], async (payload) => {
     const base = serviceBySlug[slug];
     if (!base) return base;
-    const result = await payload.find({ collection: "services", where: { slug: { equals: slug } }, limit: 1, depth: 1, draft: false });
+    const result = await payload.find({ collection: "services", where: draft ? { slug: { equals: slug } } : { and: [{ slug: { equals: slug } }, { _status: { equals: "published" } }] }, limit: 1, depth: 1, draft, overrideAccess: draft });
     const doc = result.docs[0];
     if (!doc) return base;
     const hero = mediaOf(doc.heroImage);
+    const heroMobile = mediaOf(doc.heroImageMobile);
     return {
       ...base,
       eyebrow: doc.eyebrow || base.eyebrow,
@@ -103,7 +106,9 @@ export const getService = cache((slug: string) =>
       metaDescription: doc.metaDescription || base.metaDescription,
       summary: doc.summary || base.summary,
       faqs: doc.faqs && doc.faqs.length > 0 ? doc.faqs.map((faq) => ({ question: faq.question, answer: faq.answer })) : base.faqs,
-      ...(hero?.url ? { image: hero.url, imageAlt: hero.alt, imageFocal: focalOf(hero) ?? base.imageFocal } : {}),
+      ...(hero?.url ? { image: hero.url, imageSize: hero.width && hero.height ? { width: hero.width, height: hero.height } : undefined, imageAlt: doc.heroAlt || hero.alt, imageFocal: focalOf(hero) ?? base.imageFocal } : doc.heroAlt ? { imageAlt: doc.heroAlt } : {}),
+      ...(heroMobile?.url && heroMobile.width && heroMobile.height ? { imageMobile: { src: heroMobile.url, width: heroMobile.width, height: heroMobile.height, focal: focalOf(heroMobile) } } : {}),
+      heroOverlay: typeof doc.heroOverlay === "number" ? doc.heroOverlay : base.heroOverlay,
       updatedAt: doc.updatedAt > base.updatedAt ? doc.updatedAt.slice(0, 10) : base.updatedAt,
     };
   }),
@@ -216,6 +221,85 @@ export const getHomeHero = cache((draft = false) =>
       subtitle: doc.subtitle || d.subtitle,
       primary: { label: doc.primaryLabel || d.primary.label, href: doc.primaryHref || d.primary.href },
       secondary: { label: doc.secondaryLabel || d.secondary.label, href: doc.secondaryHref || d.secondary.href },
+    };
+  }),
+);
+
+/** Página del panel por slug (solo publicadas; borradores únicamente en vista previa). */
+export const getPage = cache((slug: string, draft = false) =>
+  safe<Page | null>(null, async (payload) => {
+    const result = await payload.find({
+      collection: "pages",
+      where: draft ? { slug: { equals: slug } } : { and: [{ slug: { equals: slug } }, { _status: { equals: "published" } }] },
+      limit: 1,
+      depth: 2,
+      draft,
+      overrideAccess: draft,
+    });
+    return result.docs[0] ?? null;
+  }),
+);
+
+/** Páginas publicadas para el sitemap y la generación estática. */
+export const getPublishedPages = cache(() =>
+  safe<Pick<Page, "slug" | "updatedAt" | "showInSitemap" | "seo">[]>([], async (payload) => {
+    const result = await payload.find({ collection: "pages", where: { _status: { equals: "published" } }, limit: 200, depth: 0, select: { slug: true, updatedAt: true, showInSitemap: true, seo: true } });
+    return result.docs;
+  }),
+);
+
+export type SiteSettingsData = {
+  phoneDisplay: string;
+  phoneE164: string;
+  email: string;
+  areaServedLabel: string;
+  footerTagline: string | null;
+  years: number | null;
+  figures: { value: string; label: string }[];
+};
+
+/** Datos de contacto y autoridad del panel sobre los del código (solo cifras verificadas). */
+export const getSiteSettings = cache(() =>
+  safe<SiteSettingsData>(
+    { phoneDisplay: BUSINESS.phoneDisplay, phoneE164: BUSINESS.phoneE164, email: BUSINESS.email, areaServedLabel: BUSINESS.areaServedLabel, footerTagline: null, years: null, figures: [] },
+    async (payload) => {
+      const s = await payload.findGlobal({ slug: "site-settings", depth: 0 });
+      return {
+        phoneDisplay: s.phoneDisplay || BUSINESS.phoneDisplay,
+        phoneE164: s.phoneE164 || BUSINESS.phoneE164,
+        email: s.email || BUSINESS.email,
+        areaServedLabel: s.areaServedLabel || BUSINESS.areaServedLabel,
+        footerTagline: s.footerTagline || null,
+        years: s.yearsVerified && s.yearsExperience && s.yearsSource ? s.yearsExperience : null,
+        figures: (s.figures ?? []).filter((f) => f.verified && f.source).map((f) => ({ value: f.value, label: f.label })),
+      };
+    },
+  ),
+);
+
+export type HomeSectionKey = (typeof HOME_SECTIONS)[number]["value"];
+export type HomeConfig = {
+  sections: { key: HomeSectionKey; heading?: string }[];
+  seo: { metaTitle?: string; metaDescription?: string; ogImage?: string; noindex: boolean };
+};
+
+/** Orden, visibilidad y titulares de las secciones de la portada, y su SEO. */
+export const getHomeConfig = cache((draft = false) =>
+  safe<HomeConfig>({ sections: HOME_SECTIONS.map((s) => ({ key: s.value })), seo: { noindex: false } }, async (payload) => {
+    const doc = await payload.findGlobal({ slug: "home-page", depth: 1, draft });
+    const rows = doc.sections ?? [];
+    const sections = rows.length
+      ? rows.filter((row) => !row.hidden).map((row) => ({ key: row.section as HomeSectionKey, heading: row.heading || undefined }))
+      : HOME_SECTIONS.map((s) => ({ key: s.value }));
+    const og = mediaOf(doc.seo?.ogImage);
+    return {
+      sections,
+      seo: {
+        metaTitle: doc.seo?.metaTitle || undefined,
+        metaDescription: doc.seo?.metaDescription || undefined,
+        ogImage: og?.url || undefined,
+        noindex: Boolean(doc.seo?.noindex && doc.seo?.noindexConfirm),
+      },
     };
   }),
 );

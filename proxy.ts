@@ -38,6 +38,45 @@ async function loadCmsRules(origin: string) {
   await cmsLoading;
 }
 
+// Páginas y artículos publicados en el panel (caché de 60 s). Un slug desconocido se
+// reescribe a una ruta inexistente para que responda la 404 diseñada (global-not-found):
+// un notFound() lanzado dentro de la página produciría una 404 sin contenido.
+const STATIC_ROUTES = new Set(["/", "/servicios", "/contacto", "/sobre-nosotros", "/referencias", "/blog", "/aviso-legal", "/politica-de-privacidad", "/politica-de-cookies", "/declaracion-de-accesibilidad"]);
+let published = { pages: new Set<string>(), posts: new Set<string>() };
+let publishedAt = 0;
+let publishedLoading: Promise<void> | null = null;
+
+async function loadPublished(origin: string) {
+  if (!process.env.DATABASE_URL || Date.now() - publishedAt < 60_000) return;
+  publishedLoading ??= (async () => {
+    try {
+      const get = async (collection: string) => {
+        const response = await fetch(new URL(`/api/${collection}?limit=1000&depth=0&pagination=false&select[slug]=true&where[_status][equals]=published`, origin), { signal: AbortSignal.timeout(1500) });
+        const data = (await response.json()) as { docs?: { slug?: string }[] };
+        return new Set((data.docs ?? []).map((doc) => doc.slug ?? "").filter(Boolean));
+      };
+      const [pages, posts] = await Promise.all([get("pages"), get("posts")]);
+      published = { pages, posts };
+    } catch {
+      // Panel no disponible: se mantiene la última lista.
+    } finally {
+      publishedAt = Date.now();
+      publishedLoading = null;
+    }
+  })();
+  await publishedLoading;
+}
+
+/** ¿La ruta corresponde a una página del panel o a un artículo inexistente? */
+function isUnknownPanelRoute(path: string, preview: boolean) {
+  if (preview || STATIC_ROUTES.has(path)) return false;
+  const single = path.match(/^\/([a-z0-9-]+)$/);
+  if (single) return !published.pages.has(single[1]);
+  const post = path.match(/^\/blog\/([a-z0-9-]+)$/);
+  if (post) return !published.posts.has(post[1]);
+  return false;
+}
+
 /** Resuelve el destino final (máx. 5 saltos internos) para emitir una sola redirección. */
 function resolve(path: string): { target: string; status: 301 | 308 } {
   let target = path;
@@ -66,7 +105,13 @@ export async function proxy(request: NextRequest) {
   const { target, status } = resolve(path);
 
   const wrongHost = host === `www.${CANONICAL_HOST}`;
-  if (target === pathname && !wrongHost) return NextResponse.next();
+  if (target === pathname && !wrongHost) {
+    await loadPublished(request.nextUrl.origin);
+    if (isUnknownPanelRoute(path, request.cookies.has("__prerender_bypass"))) {
+      return NextResponse.rewrite(new URL(`/_no-existe${path}`, request.url));
+    }
+    return NextResponse.next();
+  }
 
   // URL estándar: NextURL conservaría la barra final del original.
   const destination = new URL(target.startsWith("https://") ? target : `${target}${search}`, wrongHost ? `https://${CANONICAL_HOST}` : request.url);

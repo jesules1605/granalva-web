@@ -20,4 +20,4 @@ export const legacyRedirects: LegacyRedirect[] = [
  * Restos de WordPress sin equivalente ni valor (entrada de ejemplo, feeds vacíos):
  * responden 410 Gone para que los buscadores los retiren, en lugar de redirigirlos a portada.
  */
-export const goneUrls = new Set(["/hello-world", "/feed", "/comments/feed", "/hello-world/feed", "/referencias"]);
+export const goneUrls = new Set(["/hello-world", "/feed", "/comments/feed", "/hello-world/feed"]);

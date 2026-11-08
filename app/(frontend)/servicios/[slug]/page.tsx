@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { draftMode } from "next/headers";
 import { notFound } from "next/navigation";
 import { CompactServicePage } from "../../../components/compact-service-page";
 import { ServicePageView } from "../../../components/service-page";
@@ -24,7 +25,7 @@ const crumbsFor = (slug: string): Crumb[] => [
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = await getService(slug);
+  const service = await getService(slug, (await draftMode()).isEnabled);
   if (!service) return {};
   const url = absoluteUrl(`/servicios/${service.slug}`);
 
@@ -48,7 +49,7 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
   // Contenido base revisado + ajustes publicados en el panel (si hay base de datos).
-  const service = await getService(slug);
+  const service = await getService(slug, (await draftMode()).isEnabled);
   if (!service) notFound();
   const crumbs = crumbsFor(slug);
 

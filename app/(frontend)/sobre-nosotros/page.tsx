@@ -1,3 +1,6 @@
+import { draftMode } from "next/headers";
+import { CmsPage, cmsPageMetadata } from "../../components/cms-page";
+import { getPage } from "../../lib/cms";
 import type { Metadata } from "next";
 import Image from "next/image";
 import Link from "next/link";
@@ -20,7 +23,7 @@ const crumbs: Crumb[] = [
   { name: "Sobre nosotros", path: "/sobre-nosotros" },
 ];
 
-export const metadata: Metadata = {
+const defaultMetadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: { canonical: URL },
@@ -60,7 +63,7 @@ const principles = [
   { title: "Limpieza y lavandería coordinadas", text: "Un mismo equipo puede encargarse del espacio y de sus textiles." },
 ];
 
-export default function AboutPage() {
+function AboutPageDefault() {
   return (
     <main className="site-shell services-hub about-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(structuredData) }} />
@@ -140,4 +143,17 @@ export default function AboutPage() {
       <SiteFooter />
     </main>
   );
+}
+
+// Si existe una página publicada «sobre-nosotros» en el panel, sustituye a este contenido.
+const SLUG = "sobre-nosotros";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? cmsPageMetadata(page) : defaultMetadata;
+}
+
+export default async function AboutPage() {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? <CmsPage page={page} /> : <AboutPageDefault />;
 }

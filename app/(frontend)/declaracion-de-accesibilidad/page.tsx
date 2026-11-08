@@ -1,10 +1,14 @@
+import { draftMode } from "next/headers";
+import { CmsPage, cmsPageMetadata } from "../../components/cms-page";
+import { getPage } from "../../lib/cms";
+import type { Metadata } from "next";
 import { LegalPage } from "../../components/legal-page";
 import { LEGAL_UPDATED, legalCrumbs, legalMetadata } from "../../lib/legal";
 import { BUSINESS } from "../../lib/site";
 
-export const metadata = legalMetadata("/declaracion-de-accesibilidad", "Declaración de accesibilidad", "Compromiso de accesibilidad de la web de Limpiezas Granalva, nivel de conformidad con WCAG 2.2 y cómo comunicar cualquier barrera.");
+const defaultMetadata = legalMetadata("/declaracion-de-accesibilidad", "Declaración de accesibilidad", "Compromiso de accesibilidad de la web de Limpiezas Granalva, nivel de conformidad con WCAG 2.2 y cómo comunicar cualquier barrera.");
 
-export default function DeclaracionAccesibilidad() {
+function DeclaracionAccesibilidadDefault() {
   return (
     <LegalPage title="Declaración de accesibilidad" crumbs={legalCrumbs("/declaracion-de-accesibilidad", "Accesibilidad")} updatedAt={LEGAL_UPDATED}>
       <p>{BUSINESS.name} quiere que cualquier persona pueda informarse y pedir presupuesto en esta web, con independencia de sus capacidades o del dispositivo que use.</p>
@@ -22,4 +26,17 @@ export default function DeclaracionAccesibilidad() {
       <p>Si encuentras algún problema para acceder a un contenido, escríbenos a <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a> o llámanos al <a href={`tel:${BUSINESS.phoneE164}`}>{BUSINESS.phoneDisplay}</a>. Te daremos la información por otro medio y corregiremos el problema.</p>
     </LegalPage>
   );
+}
+
+// Si existe una página publicada «declaracion-de-accesibilidad» en el panel, sustituye a este contenido.
+const SLUG = "declaracion-de-accesibilidad";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? cmsPageMetadata(page) : defaultMetadata;
+}
+
+export default async function DeclaracionAccesibilidad() {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? <CmsPage page={page} /> : <DeclaracionAccesibilidadDefault />;
 }

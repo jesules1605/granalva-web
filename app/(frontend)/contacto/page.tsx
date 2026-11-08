@@ -1,3 +1,6 @@
+import { draftMode } from "next/headers";
+import { CmsPage, cmsPageMetadata } from "../../components/cms-page";
+import { getPage } from "../../lib/cms";
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Breadcrumbs } from "../../components/breadcrumbs";
@@ -18,7 +21,7 @@ const crumbs: Crumb[] = [
   { name: "Contacto", path: "/contacto" },
 ];
 
-export const metadata: Metadata = {
+const defaultMetadata: Metadata = {
   title: { absolute: TITLE },
   description: DESCRIPTION,
   alternates: { canonical: URL },
@@ -57,7 +60,7 @@ const nextSteps = [
   { title: "Te enviamos la propuesta", text: "Una propuesta ajustada al servicio real, sin tarifas genéricas." },
 ];
 
-export default function ContactPage() {
+function ContactPageDefault() {
   return (
     <main className="site-shell services-hub contact-page">
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(structuredData) }} />
@@ -107,4 +110,17 @@ export default function ContactPage() {
       <SiteFooter />
     </main>
   );
+}
+
+// Si existe una página publicada «contacto» en el panel, sustituye a este contenido.
+const SLUG = "contacto";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? cmsPageMetadata(page) : defaultMetadata;
+}
+
+export default async function ContactPage() {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? <CmsPage page={page} /> : <ContactPageDefault />;
 }

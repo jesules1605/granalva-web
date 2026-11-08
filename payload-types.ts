@@ -68,6 +68,7 @@ export interface Config {
   blocks: {};
   collections: {
     'contact-submissions': ContactSubmission;
+    pages: Page;
     services: Service;
     posts: Post;
     media: Media;
@@ -85,6 +86,7 @@ export interface Config {
   collectionsJoins: {};
   collectionsSelect: {
     'contact-submissions': ContactSubmissionsSelect<false> | ContactSubmissionsSelect<true>;
+    pages: PagesSelect<false> | PagesSelect<true>;
     services: ServicesSelect<false> | ServicesSelect<true>;
     posts: PostsSelect<false> | PostsSelect<true>;
     media: MediaSelect<false> | MediaSelect<true>;
@@ -233,44 +235,240 @@ export interface User {
   collection: 'users';
 }
 /**
- * Ajustes por servicio. Los campos vacíos usan el texto revisado para SEO.
+ * Páginas y secciones de la web. Una página publicada con el slug de una página existente (p. ej. «sobre-nosotros») la sustituye.
  *
  * This interface was referenced by `Config`'s JSON-Schema
- * via the `definition` "services".
+ * via the `definition` "pages".
  */
-export interface Service {
+export interface Page {
   id: number;
-  slug:
-    | 'empresa-limpieza-granada'
-    | 'lavanderia-profesional-granada'
-    | 'lavanderia-hoteles-granada'
-    | 'lavanderia-apartamentos-turisticos-granada'
-    | 'lavanderia-sierra-nevada'
-    | 'limpieza-apartamentos-turisticos-granada'
-    | 'limpieza-oficinas-locales-granada'
-    | 'limpieza-fin-de-obra-granada'
-    | 'renting-textil-granada'
-    | 'lavanderia-domicilio-granada';
   /**
-   * Fotografía real y relacionada con el servicio. El punto focal se ajusta en el propio archivo.
+   * Es el único H1 de la página.
    */
-  heroImage?: (number | null) | Media;
-  eyebrow?: string | null;
-  tagline?: string | null;
-  ctaLabel?: string | null;
+  title: string;
   /**
-   * Una intención por página; no repitas el title de otro servicio.
+   * Minúsculas y guiones. Si la cambias tras publicar se crea una redirección 301 automáticamente.
    */
-  metaTitle?: string | null;
-  metaDescription?: string | null;
-  summary?: string | null;
-  faqs?:
-    | {
-        question: string;
-        answer: string;
-        id?: string | null;
-      }[]
+  slug: string;
+  showInSitemap?: boolean | null;
+  layout?:
+    | (
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            eyebrow?: string | null;
+            lead?: string | null;
+            tagline?: string | null;
+            image?: (number | null) | Media;
+            imageMobile?: (number | null) | Media;
+            overlay?: number | null;
+            primaryLabel?: string | null;
+            primaryHref?: string | null;
+            secondaryLabel?: string | null;
+            secondaryHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'hero';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            label?: string | null;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'text';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            content: {
+              root: {
+                type: string;
+                children: {
+                  type: any;
+                  version: number;
+                  [k: string]: unknown;
+                }[];
+                direction: ('ltr' | 'rtl') | null;
+                format: 'left' | 'start' | 'center' | 'right' | 'end' | 'justify' | '';
+                indent: number;
+                version: number;
+              };
+              [k: string]: unknown;
+            };
+            image: number | Media;
+            imagePosition?: ('right' | 'left') | null;
+            buttonLabel?: string | null;
+            buttonHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'imageText';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            columns?: ('2' | '3' | '4') | null;
+            items?:
+              | {
+                  title: string;
+                  text?: string | null;
+                  href?: string | null;
+                  image?: (number | null) | Media;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cards';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            steps?:
+              | {
+                  title: string;
+                  text?: string | null;
+                  id?: string | null;
+                }[]
+              | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'process';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            items?:
+              | {
+                  question: string;
+                  answer: string;
+                  id?: string | null;
+                }[]
+              | null;
+            schema?: boolean | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'faq';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            text?: string | null;
+            buttonLabel?: string | null;
+            buttonHref?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'cta';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            layout?: ('grid' | 'carousel') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'reviews';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'team';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'logos';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'sectors';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            services: (
+              | 'empresa-limpieza-granada'
+              | 'lavanderia-profesional-granada'
+              | 'lavanderia-hoteles-granada'
+              | 'lavanderia-apartamentos-turisticos-granada'
+              | 'lavanderia-sierra-nevada'
+              | 'limpieza-apartamentos-turisticos-granada'
+              | 'limpieza-oficinas-locales-granada'
+              | 'limpieza-fin-de-obra-granada'
+              | 'renting-textil-granada'
+              | 'lavanderia-domicilio-granada'
+            )[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'services';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            text?: string | null;
+            variant?: ('general' | 'sierra-nevada') | null;
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'contact';
+          }
+        | {
+            hidden?: boolean | null;
+            anchor?: string | null;
+            heading?: string | null;
+            files: (number | Media)[];
+            id?: string | null;
+            blockName?: string | null;
+            blockType: 'documents';
+          }
+      )[]
     | null;
+  /**
+   * Vacío = valores por defecto. Una intención de búsqueda por página; no copies el title de otra.
+   */
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    canonical?: string | null;
+    ogTitle?: string | null;
+    ogImage?: (number | null) | Media;
+    ogDescription?: string | null;
+    noindex?: boolean | null;
+    noindexConfirm?: boolean | null;
+    schemaType?: ('WebPage' | 'AboutPage' | 'ContactPage' | 'CollectionPage') | null;
+  };
   updatedAt: string;
   createdAt: string;
   _status?: ('draft' | 'published') | null;
@@ -291,6 +489,24 @@ export interface Media {
    * P. ej. «Fotografía propia de Granalva» o «Autor · licencia». Necesario para publicar con garantías.
    */
   credit: string;
+  /**
+   * Ayuda a encontrar cada foto en la biblioteca (filtro «Uso previsto»).
+   */
+  category?:
+    | (
+        | 'portada'
+        | 'sierra-nevada'
+        | 'limpieza-apartamentos'
+        | 'lavanderia'
+        | 'empresas'
+        | 'renting'
+        | 'equipo'
+        | 'blog'
+        | 'logotipo'
+        | 'documento'
+        | 'otro'
+      )
+    | null;
   realPhoto?: boolean | null;
   updatedAt: string;
   createdAt: string;
@@ -321,6 +537,55 @@ export interface Media {
       filename?: string | null;
     };
   };
+}
+/**
+ * Ajustes por servicio. Los campos vacíos usan el texto revisado para SEO.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "services".
+ */
+export interface Service {
+  id: number;
+  slug:
+    | 'empresa-limpieza-granada'
+    | 'lavanderia-profesional-granada'
+    | 'lavanderia-hoteles-granada'
+    | 'lavanderia-apartamentos-turisticos-granada'
+    | 'lavanderia-sierra-nevada'
+    | 'limpieza-apartamentos-turisticos-granada'
+    | 'limpieza-oficinas-locales-granada'
+    | 'limpieza-fin-de-obra-granada'
+    | 'renting-textil-granada'
+    | 'lavanderia-domicilio-granada';
+  /**
+   * Real y relacionada con el servicio (mín. 1920 px). Recorte y punto focal: en el propio archivo.
+   */
+  heroImage?: (number | null) | Media;
+  heroImageMobile?: (number | null) | Media;
+  heroAlt?: string | null;
+  /**
+   * Por debajo de 60 comprueba en la vista previa que el texto se lee bien.
+   */
+  heroOverlay?: number | null;
+  eyebrow?: string | null;
+  tagline?: string | null;
+  ctaLabel?: string | null;
+  /**
+   * Una intención por página; no repitas el title de otro servicio.
+   */
+  metaTitle?: string | null;
+  metaDescription?: string | null;
+  summary?: string | null;
+  faqs?:
+    | {
+        question: string;
+        answer: string;
+        id?: string | null;
+      }[]
+    | null;
+  updatedAt: string;
+  createdAt: string;
+  _status?: ('draft' | 'published') | null;
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
@@ -556,6 +821,10 @@ export interface PayloadLockedDocument {
         value: number | ContactSubmission;
       } | null)
     | ({
+        relationTo: 'pages';
+        value: number | Page;
+      } | null)
+    | ({
         relationTo: 'services';
         value: number | Service;
       } | null)
@@ -672,11 +941,218 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
 }
 /**
  * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "pages_select".
+ */
+export interface PagesSelect<T extends boolean = true> {
+  title?: T;
+  slug?: T;
+  showInSitemap?: T;
+  layout?:
+    | T
+    | {
+        hero?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              eyebrow?: T;
+              lead?: T;
+              tagline?: T;
+              image?: T;
+              imageMobile?: T;
+              overlay?: T;
+              primaryLabel?: T;
+              primaryHref?: T;
+              secondaryLabel?: T;
+              secondaryHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        text?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              label?: T;
+              content?: T;
+              id?: T;
+              blockName?: T;
+            };
+        imageText?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              content?: T;
+              image?: T;
+              imagePosition?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cards?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              columns?: T;
+              items?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    href?: T;
+                    image?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        process?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              steps?:
+                | T
+                | {
+                    title?: T;
+                    text?: T;
+                    id?: T;
+                  };
+              id?: T;
+              blockName?: T;
+            };
+        faq?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              items?:
+                | T
+                | {
+                    question?: T;
+                    answer?: T;
+                    id?: T;
+                  };
+              schema?: T;
+              id?: T;
+              blockName?: T;
+            };
+        cta?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              text?: T;
+              buttonLabel?: T;
+              buttonHref?: T;
+              id?: T;
+              blockName?: T;
+            };
+        reviews?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              layout?: T;
+              id?: T;
+              blockName?: T;
+            };
+        team?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        logos?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        sectors?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              id?: T;
+              blockName?: T;
+            };
+        services?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              services?: T;
+              id?: T;
+              blockName?: T;
+            };
+        contact?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              text?: T;
+              variant?: T;
+              id?: T;
+              blockName?: T;
+            };
+        documents?:
+          | T
+          | {
+              hidden?: T;
+              anchor?: T;
+              heading?: T;
+              files?: T;
+              id?: T;
+              blockName?: T;
+            };
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        canonical?: T;
+        ogTitle?: T;
+        ogImage?: T;
+        ogDescription?: T;
+        noindex?: T;
+        noindexConfirm?: T;
+        schemaType?: T;
+      };
+  updatedAt?: T;
+  createdAt?: T;
+  _status?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "services_select".
  */
 export interface ServicesSelect<T extends boolean = true> {
   slug?: T;
   heroImage?: T;
+  heroImageMobile?: T;
+  heroAlt?: T;
+  heroOverlay?: T;
   eyebrow?: T;
   tagline?: T;
   ctaLabel?: T;
@@ -721,6 +1197,7 @@ export interface PostsSelect<T extends boolean = true> {
 export interface MediaSelect<T extends boolean = true> {
   alt?: T;
   credit?: T;
+  category?: T;
   realPhoto?: T;
   updatedAt?: T;
   createdAt?: T;
@@ -933,6 +1410,42 @@ export interface HomePage {
   titleLine1?: string | null;
   titleLine2?: string | null;
   subtitle?: string | null;
+  /**
+   * Vacío = orden por defecto. Cada sección solo puede aparecer una vez.
+   */
+  sections?:
+    | {
+        section:
+          | 'propuesta'
+          | 'servicios'
+          | 'lavanderia'
+          | 'sierra'
+          | 'sectores'
+          | 'proceso'
+          | 'autoridad'
+          | 'empresas'
+          | 'resenas'
+          | 'equipo'
+          | 'cta'
+          | 'contacto';
+        hidden?: boolean | null;
+        /**
+         * Vacío = titular por defecto.
+         */
+        heading?: string | null;
+        id?: string | null;
+      }[]
+    | null;
+  seo?: {
+    metaTitle?: string | null;
+    metaDescription?: string | null;
+    ogImage?: (number | null) | Media;
+    /**
+     * Solo para emergencias. En producción hundiría el posicionamiento de toda la web.
+     */
+    noindex?: boolean | null;
+    noindexConfirm?: boolean | null;
+  };
   primaryLabel?: string | null;
   primaryHref?: string | null;
   secondaryLabel?: string | null;
@@ -947,6 +1460,12 @@ export interface HomePage {
  */
 export interface SiteSetting {
   id: number;
+  /**
+   * Vacío = 744 488 964. Debe coincidir con Google Business Profile.
+   */
+  phoneDisplay?: string | null;
+  phoneE164?: string | null;
+  email?: string | null;
   whatsapp?: string | null;
   areaServedLabel?: string | null;
   ribbon?:
@@ -956,6 +1475,18 @@ export interface SiteSetting {
       }[]
     | null;
   footerTagline?: string | null;
+  yearsExperience?: number | null;
+  yearsVerified?: boolean | null;
+  yearsSource?: string | null;
+  figures?:
+    | {
+        value: string;
+        label: string;
+        source: string;
+        verified?: boolean | null;
+        id?: string | null;
+      }[]
+    | null;
   updatedAt?: string | null;
   createdAt?: string | null;
 }
@@ -989,6 +1520,23 @@ export interface HomePageSelect<T extends boolean = true> {
   titleLine1?: T;
   titleLine2?: T;
   subtitle?: T;
+  sections?:
+    | T
+    | {
+        section?: T;
+        hidden?: T;
+        heading?: T;
+        id?: T;
+      };
+  seo?:
+    | T
+    | {
+        metaTitle?: T;
+        metaDescription?: T;
+        ogImage?: T;
+        noindex?: T;
+        noindexConfirm?: T;
+      };
   primaryLabel?: T;
   primaryHref?: T;
   secondaryLabel?: T;
@@ -1003,6 +1551,9 @@ export interface HomePageSelect<T extends boolean = true> {
  * via the `definition` "site-settings_select".
  */
 export interface SiteSettingsSelect<T extends boolean = true> {
+  phoneDisplay?: T;
+  phoneE164?: T;
+  email?: T;
   whatsapp?: T;
   areaServedLabel?: T;
   ribbon?:
@@ -1012,6 +1563,18 @@ export interface SiteSettingsSelect<T extends boolean = true> {
         id?: T;
       };
   footerTagline?: T;
+  yearsExperience?: T;
+  yearsVerified?: T;
+  yearsSource?: T;
+  figures?:
+    | T
+    | {
+        value?: T;
+        label?: T;
+        source?: T;
+        verified?: T;
+        id?: T;
+      };
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;
@@ -1051,6 +1614,10 @@ export interface TaskSchedulePublish {
     type?: ('publish' | 'unpublish') | null;
     locale?: string | null;
     doc?:
+      | ({
+          relationTo: 'pages';
+          value: number | Page;
+        } | null)
       | ({
           relationTo: 'services';
           value: number | Service;

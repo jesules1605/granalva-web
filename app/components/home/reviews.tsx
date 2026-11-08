@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useState } from "react";
 import type { Review } from "../../lib/home-content";
 
@@ -37,6 +38,7 @@ export function Reviews({ reviews }: { reviews: Review[] }) {
           ))}
         </div>
       </div>
+      <p className="reviews__more"><Link className="inline-link" href="/referencias">Ver todas las referencias y opiniones</Link></p>
     </section>
   );
 }

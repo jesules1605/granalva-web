@@ -14,6 +14,7 @@ const SITE_URL = (process.env.NEXT_PUBLIC_SITE_URL || "https://limpiezasgranalva
 
 const pages = [
   ["/", "Empresa de limpieza y lavandería en Granada | Granalva", "Empresa de limpieza y lavandería profesional en Granada"],
+  ["/referencias", "Referencias y opiniones de clientes en Granada | Granalva", "Referencias y opiniones de nuestros clientes"],
   ["/servicios", "Servicios de limpieza y lavandería en Granada | Granalva", "Servicios de limpieza y lavandería en Granada. Cada servicio, bien definido."],
   ["/servicios/empresa-limpieza-granada", "Empresa de limpieza profesional en Granada | Granalva", "Empresa de limpieza profesional en Granada"],
   ["/servicios/lavanderia-profesional-granada", "Lavandería profesional en Granada para empresas | Granalva", "Lavandería profesional para empresas en Granada"],
@@ -409,7 +410,8 @@ test("la portada sigue el orden acordado, enlaza sectores y muestra reseñas rea
   assert.equal(sectorLinks.length, 6, "6 sectores enlazados");
   for (const href of sectorLinks) assert.ok(html.has(href), `sector → ${href} existe`);
   // Reseñas: plataforma visible y sin valoraciones en JSON-LD.
-  assert.ok((text(home).match(/Reseña en Google/g) ?? []).length >= 8, "reseñas con plataforma");
+  assert.ok((text(home).match(/Reseña en Google/g) ?? []).length >= 4, "reseñas con plataforma");
+  assert.match(home, /href="\/referencias"/, "enlace a todas las referencias");
   assert.doesNotMatch(home, /"(aggregateRating|review)"/);
   // Sin logotipos autorizados no se muestra la sección de empresas colaboradoras.
   assert.doesNotMatch(home, /client-logos/);
@@ -420,12 +422,29 @@ test("la portada sigue el orden acordado, enlaza sectores y muestra reseñas rea
 test("todas las páginas de servicio usan la portada común ServiceHero con fotografía", () => {
   for (const path of servicePaths) {
     const page = html.get(path);
-    assert.match(page, /<section class="s-hero">/, `${path}: ServiceHero`);
-    assert.match(page, /class="s-hero__media"><img alt="[^"]{10,}"/, `${path}: imagen con alt`);
+    assert.match(page, /<section class="s-hero"/, `${path}: ServiceHero`);
+    assert.match(page, /<picture class="s-hero__media">(<source[^>]*>)?<img alt="[^"]{10,}"[^>]*fetchPriority="high"/, `${path}: imagen LCP con alt y prioridad`);
     assert.match(page, /class="s-hero__scrim" aria-hidden="true"/, `${path}: capa azul`);
   }
   const sierra = html.get("/servicios/lavanderia-sierra-nevada");
   for (const literal of ["SERVICIO DE TEMPORADA · SIERRA NEVADA", "Lavandería profesional en Sierra Nevada para hoteles y apartamentos", "La temporada se prepara antes de que empiece.", "Preparar mi temporada"]) {
     assert.ok(text(sierra).includes(literal), `Sierra: ${literal}`);
   }
+});
+
+test("sin vídeo en la portada, sin Kit Digital y con la foto principal como LCP", () => {
+  const home = html.get("/");
+  assert.doesNotMatch(home, /<video|\.mp4|hero-chapters/, "sin vídeo ni capítulos");
+  assert.match(home, /<picture class="hero-photo"><source media="\(max-width: 760px\)"[^>]*><img alt="[^"]{10,}"[^>]*fetchPriority="high"/, "foto principal con variante móvil y prioridad");
+  for (const [path, page] of html) {
+    assert.doesNotMatch(page, /Kit Digital|Acelera pyme|NextGeneration|Next Generation|Unión Europea|Red\.es/i, `${path}: sin menciones de subvenciones`);
+  }
+});
+
+test("/referencias conserva la URL antigua con reseñas verificadas y CTA", () => {
+  const page = html.get("/referencias");
+  assert.ok((text(page).match(/Reseña en Google/g) ?? []).length >= 8, "reseñas con plataforma");
+  assert.match(page, /href="\/contacto#formulario"/, "CTA de presupuesto");
+  assert.match(page, /"@type":"CollectionPage"/);
+  assert.doesNotMatch(page, /"(aggregateRating|review)"/);
 });

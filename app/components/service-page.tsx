@@ -3,6 +3,7 @@ import { ContactForm } from "./contact-form";
 import { LoadPicker } from "./home/load-picker";
 import { LogoSeal } from "./logo-seal";
 import { ServiceHero } from "./service-hero";
+import { photoSize } from "../lib/photos";
 import { SiteFooter, SiteHeader } from "./site-chrome";
 import type { Crumb } from "../lib/seo";
 import { serviceBySlug, type ServicePage } from "../lib/services";
@@ -30,6 +31,9 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
         image={service.image}
         imageAlt={service.imageAlt}
         focal={service.imageFocal}
+        imageSize={service.imageSize ?? photoSize(service.image)}
+        mobile={service.imageMobile}
+        overlay={service.heroOverlay}
         cta={{ href: ctaHref, label: service.ctaLabel }}
         secondary={<a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>}
       />

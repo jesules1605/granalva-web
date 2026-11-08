@@ -1,11 +1,15 @@
+import { draftMode } from "next/headers";
+import { CmsPage, cmsPageMetadata } from "../../components/cms-page";
+import { getPage } from "../../lib/cms";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "../../components/legal-page";
 import { LEGAL_UPDATED, legalCrumbs, legalMetadata } from "../../lib/legal";
 import { BUSINESS } from "../../lib/site";
 
-export const metadata = legalMetadata("/politica-de-privacidad", "Política de privacidad", "Cómo trata Limpiezas Granalva los datos de las solicitudes de presupuesto y contacto: responsable, finalidad, base legal, conservación y derechos.");
+const defaultMetadata = legalMetadata("/politica-de-privacidad", "Política de privacidad", "Cómo trata Limpiezas Granalva los datos de las solicitudes de presupuesto y contacto: responsable, finalidad, base legal, conservación y derechos.");
 
-export default function PoliticaPrivacidad() {
+function PoliticaPrivacidadDefault() {
   return (
     <LegalPage title="Política de privacidad" crumbs={legalCrumbs("/politica-de-privacidad", "Política de privacidad")} updatedAt={LEGAL_UPDATED}>
       <p>Esta política explica cómo tratamos los datos personales que nos facilitas a través de esta web, conforme al Reglamento (UE) 2016/679 (RGPD) y a la Ley Orgánica 3/2018 (LOPDGDD).</p>
@@ -78,4 +82,17 @@ export default function PoliticaPrivacidad() {
       <p>Podemos actualizar esta política para adaptarla a cambios legales o del servicio. La fecha de la última actualización figura al principio de la página.</p>
     </LegalPage>
   );
+}
+
+// Si existe una página publicada «politica-de-privacidad» en el panel, sustituye a este contenido.
+const SLUG = "politica-de-privacidad";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? cmsPageMetadata(page) : defaultMetadata;
+}
+
+export default async function PoliticaPrivacidad() {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? <CmsPage page={page} /> : <PoliticaPrivacidadDefault />;
 }

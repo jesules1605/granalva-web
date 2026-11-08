@@ -82,3 +82,9 @@ export const PHOTOS = {
     changes: "Recortada (sin personas) y redimensionada",
   }),
 } satisfies Record<string, Photo>;
+
+/** Dimensiones de una foto del registro por su ruta (para reservar espacio sin sobreescalar). */
+export const photoSize = (src: string) => {
+  const found = Object.values(PHOTOS).find((p) => p.src === src);
+  return found ? { width: found.width, height: found.height } : undefined;
+};

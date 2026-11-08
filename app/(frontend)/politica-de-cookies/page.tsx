@@ -1,12 +1,16 @@
+import { draftMode } from "next/headers";
+import { CmsPage, cmsPageMetadata } from "../../components/cms-page";
+import { getPage } from "../../lib/cms";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { CookieSettingsButton } from "../../components/cookie-consent";
 import { LegalPage } from "../../components/legal-page";
 import { LEGAL_UPDATED, legalCrumbs, legalMetadata } from "../../lib/legal";
 import { BUSINESS } from "../../lib/site";
 
-export const metadata = legalMetadata("/politica-de-cookies", "Política de cookies", "Qué cookies utiliza la web de Limpiezas Granalva, para qué sirven, cuánto duran y cómo aceptarlas, rechazarlas o cambiarlas.");
+const defaultMetadata = legalMetadata("/politica-de-cookies", "Política de cookies", "Qué cookies utiliza la web de Limpiezas Granalva, para qué sirven, cuánto duran y cómo aceptarlas, rechazarlas o cambiarlas.");
 
-export default function PoliticaCookies() {
+function PoliticaCookiesDefault() {
   return (
     <LegalPage title="Política de cookies" crumbs={legalCrumbs("/politica-de-cookies", "Política de cookies")} updatedAt={LEGAL_UPDATED}>
       <p>Las cookies son pequeños archivos que la web guarda en tu navegador. Esta web usa solo las cookies técnicas imprescindibles y, únicamente si las aceptas, cookies de analítica. No usamos cookies publicitarias ni de redes sociales.</p>
@@ -28,4 +32,17 @@ export default function PoliticaCookies() {
       <p>Google Analytics se configura con el modo de consentimiento: sin tu permiso no se carga, y la publicidad personalizada está siempre desactivada. Más información sobre el tratamiento de datos en la <Link href="/politica-de-privacidad">política de privacidad</Link>.</p>
     </LegalPage>
   );
+}
+
+// Si existe una página publicada «politica-de-cookies» en el panel, sustituye a este contenido.
+const SLUG = "politica-de-cookies";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? cmsPageMetadata(page) : defaultMetadata;
+}
+
+export default async function PoliticaCookies() {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? <CmsPage page={page} /> : <PoliticaCookiesDefault />;
 }

@@ -35,6 +35,12 @@ export type ServicePage = {
   imageAlt: string;
   /** Posición focal de la portada (CSS object-position). Por defecto, centrada. */
   imageFocal?: string;
+  /** Dimensiones reales de la imagen de portada (del panel o del registro de fotos). */
+  imageSize?: { width: number; height: number };
+  /** Variante móvil de la portada (desde el panel). */
+  imageMobile?: { src: string; width: number; height: number; focal?: string };
+  /** Oscurecimiento azul de la portada, 40-100 (por defecto 90). */
+  heroOverlay?: number;
   /** H2 de la introducción: contiene la palabra principal de forma natural. */
   introTitle: string;
   intro: string[];

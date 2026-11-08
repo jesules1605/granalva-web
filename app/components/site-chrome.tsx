@@ -4,7 +4,7 @@ import { CookieSettingsButton } from "./cookie-consent";
 import { MobileNav, type NavLink } from "./mobile-nav";
 import { RibbonLoop } from "./ribbon-loop";
 import { servicePages } from "../lib/services";
-import { getChrome } from "../lib/cms";
+import { getChrome, getSiteSettings } from "../lib/cms";
 import { BUSINESS } from "../lib/site";
 
 // Navegación principal por defecto. Se puede sustituir desde el panel
@@ -29,7 +29,7 @@ const ribbonItems = [
 const serviceLinks: NavLink[] = servicePages.map((service) => ({ href: `/servicios/${service.slug}`, label: service.navLabel }));
 
 export async function SiteHeader() {
-  const chrome = await getChrome();
+  const [chrome, settings] = await Promise.all([getChrome(), getSiteSettings()]);
   const links = chrome.navigation ?? mainLinks;
   return (
     <div className="fixed-navigation">
@@ -48,19 +48,20 @@ export async function SiteHeader() {
         </nav>
         <div className="header-actions">
           <Link className="button button--dark header-cta" href="/contacto#formulario">Solicitar presupuesto <span>↗</span></Link>
-          <MobileNav links={links} services={serviceLinks} phone={{ href: `tel:${BUSINESS.phoneE164}`, label: BUSINESS.phoneDisplay }} />
+          <MobileNav links={links} services={serviceLinks} phone={{ href: `tel:${settings.phoneE164}`, label: settings.phoneDisplay }} />
         </div>
       </header>
     </div>
   );
 }
 
-export function SiteFooter() {
+export async function SiteFooter() {
+  const settings = await getSiteSettings();
   return (
     <footer className="footer">
       <div className="footer-brand">
         <Image src="/granalva-logo.jpg" alt="Logotipo de Granalva" width={800} height={800} sizes="100px" />
-        <div><b>{BUSINESS.name.toUpperCase()}</b><span>Empresa de limpieza y lavandería profesional en Granada.</span></div>
+        <div><b>{BUSINESS.name.toUpperCase()}</b><span>{settings.footerTagline ?? "Empresa de limpieza y lavandería profesional en Granada."}</span></div>
       </div>
       <div>
         <b>Para empresas</b>
@@ -80,11 +81,12 @@ export function SiteFooter() {
       </div>
       <div>
         <b>Contacto</b>
-        <a href={`tel:${BUSINESS.phoneE164}`}>{BUSINESS.phoneDisplay}</a>
-        <a href={`mailto:${BUSINESS.email}`}>{BUSINESS.email}</a>
-        <span>{BUSINESS.areaServedLabel}</span>
+        <a href={`tel:${settings.phoneE164}`}>{settings.phoneDisplay}</a>
+        <a href={`mailto:${settings.email}`}>{settings.email}</a>
+        <span>{settings.areaServedLabel}</span>
         <Link href="/contacto">Contacto y presupuestos</Link>
         <Link href="/sobre-nosotros">Sobre nosotros</Link>
+        <Link href="/referencias">Referencias y opiniones</Link>
       </div>
       <div className="footer-bottom">
         <span>© {new Date().getFullYear()} {BUSINESS.name}</span>

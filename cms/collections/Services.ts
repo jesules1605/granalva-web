@@ -18,7 +18,7 @@ export const Services: CollectionConfig = {
     useAsTitle: "slug",
     defaultColumns: ["slug", "_status", "updatedAt"],
     description: "Ajustes por servicio. Los campos vacíos usan el texto revisado para SEO.",
-    preview: (doc) => `/servicios/${doc.slug as string}`,
+    preview: (doc) => `/api/preview?path=/servicios/${doc.slug as string}`,
   },
   access: { read: publishedOrEditor, create: isOwnerOrAdmin, update: isEditor, delete: isOwnerOrAdmin },
   versions: { drafts: { schedulePublish: true }, maxPerDoc: 30 },
@@ -29,7 +29,12 @@ export const Services: CollectionConfig = {
       type: "collapsible",
       label: "Portada (ServiceHero)",
       fields: [
-        { name: "heroImage", label: "Fotografía", type: "upload", relationTo: "media", admin: { description: "Fotografía real y relacionada con el servicio. El punto focal se ajusta en el propio archivo." } },
+        { type: "row", fields: [
+          { name: "heroImage", label: "Fotografía de escritorio", type: "upload", relationTo: "media", admin: { description: "Real y relacionada con el servicio (mín. 1920 px). Recorte y punto focal: en el propio archivo." } },
+          { name: "heroImageMobile", label: "Fotografía móvil (opcional, vertical)", type: "upload", relationTo: "media" },
+        ] },
+        { name: "heroAlt", label: "Texto alternativo (vacío = el del archivo)", type: "text", maxLength: 160 },
+        { name: "heroOverlay", label: "Oscurecimiento azul (%)", type: "number", min: 40, max: 100, defaultValue: 90, admin: { description: "Por debajo de 60 comprueba en la vista previa que el texto se lee bien." } },
         { name: "eyebrow", label: "Etiqueta superior", type: "text", maxLength: 60 },
         { name: "tagline", label: "Frase editorial", type: "text", maxLength: 80 },
         { name: "ctaLabel", label: "Texto del botón principal", type: "text", maxLength: 40 },

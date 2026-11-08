@@ -1,11 +1,15 @@
+import { draftMode } from "next/headers";
+import { CmsPage, cmsPageMetadata } from "../../components/cms-page";
+import { getPage } from "../../lib/cms";
+import type { Metadata } from "next";
 import Link from "next/link";
 import { LegalPage } from "../../components/legal-page";
 import { LEGAL_UPDATED, legalCrumbs, legalMetadata } from "../../lib/legal";
 import { BUSINESS, SITE_DOMAIN } from "../../lib/site";
 
-export const metadata = legalMetadata("/aviso-legal", "Aviso legal", "Aviso legal y condiciones de uso de la web de Limpiezas Granalva: titular, condiciones, responsabilidad y propiedad intelectual.");
+const defaultMetadata = legalMetadata("/aviso-legal", "Aviso legal", "Aviso legal y condiciones de uso de la web de Limpiezas Granalva: titular, condiciones, responsabilidad y propiedad intelectual.");
 
-export default function AvisoLegal() {
+function AvisoLegalDefault() {
   return (
     <LegalPage title="Aviso legal y condiciones de uso" crumbs={legalCrumbs("/aviso-legal", "Aviso legal")} updatedAt={LEGAL_UPDATED}>
       <h2>1. Información general</h2>
@@ -39,4 +43,17 @@ export default function AvisoLegal() {
       <p>Estas condiciones se rigen por la legislación española. Cualquier controversia se someterá a los juzgados y tribunales que correspondan conforme a derecho; cuando el usuario sea consumidor, los de su domicilio.</p>
     </LegalPage>
   );
+}
+
+// Si existe una página publicada «aviso-legal» en el panel, sustituye a este contenido.
+const SLUG = "aviso-legal";
+
+export async function generateMetadata(): Promise<Metadata> {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? cmsPageMetadata(page) : defaultMetadata;
+}
+
+export default async function AvisoLegal() {
+  const page = await getPage(SLUG, (await draftMode()).isEnabled);
+  return page ? <CmsPage page={page} /> : <AvisoLegalDefault />;
 }

@@ -15,5 +15,6 @@ https://www.limpiezasgranalva.com/contacto/;https://limpiezasgranalva.com/contac
 https://limpiezasgranalva.com/hello-world/;;410;Entrada de ejemplo de WordPress sin contenido real: se retira (no se redirige a portada).
 https://limpiezasgranalva.com/feed/;;410;Feed de WordPress sin entradas reales.
 https://limpiezasgranalva.com/comments/feed/;;410;Feed de comentarios sin contenido.
-https://limpiezasgranalva.com/referencias/;;410;Ya respondía 404 en WordPress (página retirada); 410 directo, sin redirecciones. Las reseñas reales están en la portada.
+https://limpiezasgranalva.com/referencias/;https://limpiezasgranalva.com/referencias;301;Se conserva la URL: nueva página de referencias con reseñas verificadas (WordPress la tenía en 404). Barra final en un salto.
+https://limpiezasgranalva.com/referencias;https://limpiezasgranalva.com/referencias;200;Página de referencias mejorada (opiniones, sectores, calidad, CTA).
 http://limpiezasgranalva.com/;https://limpiezasgranalva.com/;301;HTTP → HTTPS lo aplica la plataforma (Vercel) antes de la web; comprobar tras el cambio de DNS.
