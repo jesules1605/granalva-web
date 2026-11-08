@@ -6,11 +6,12 @@ Este repositorio contiene la versión íntegra, funcional y publicada de la web 
 
 ## Estado publicado
 
-- URL: `https://granalva-propuesta-visual.manueljesus1605.chatgpt.site`
+- Preproducción (noindex): `https://granalva-preproduccion.vercel.app`. Producción: `https://limpiezasgranalva.com` (WordPress hasta la autorización del cambio de DNS).
 - Audiencia: pública.
 - Idioma: español de España.
 - Stack: Next.js 16.4 estándar (App Router), React 19, TypeScript, CSS propio y **Payload CMS 3.93 + PostgreSQL** (panel en `/admin`). Vinext/Vite/Cloudflare se retiraron en la fase 1 (rama `feat/nextjs-payload`).
-- Calidad verificada: `npm run lint`, `npm test` (build + 15 pruebas SEO por HTTP) y `npm run test:e2e` (formulario de extremo a extremo con base de datos) superados.
+- Calidad verificada: `npm run lint`, `npm test` (build + 19 pruebas SEO y de migración por HTTP), `npm run test:e2e` (formulario y duplicados), `npm run test:e2e:cms` (panel completo), `tests/e2e/cookies.e2e.mjs` (con `NEXT_PUBLIC_GA_ID`) y `tests/visual/qa.mjs` (20 rutas × 8 tamaños).
+- **Build:** `turbopackFileSystemCacheForBuild` está desactivado a propósito: la caché persistente llegó a servir un CSS desfasado. No lo reactives. Si algo del CSS no aparece, compila tras `rm -rf .next`.
 - Estructura: sitio público en `app/(frontend)/`, panel en `app/(payload)/` y 404 global en `app/global-not-found.tsx`.
 - Plan de trabajo vigente y estado de cada fase: `docs/IMPLEMENTATION-PLAN.md`.
 
@@ -108,7 +109,8 @@ La tipografía Granaina se usa en titulares y momentos de identidad. No crear di
 - `app/lib/site.ts` / `app/lib/seo.ts` / `app/lib/redirects.ts`: NAP e indexación, JSON-LD y redirecciones 301.
 - `app/components/site-chrome.tsx` + `mobile-nav.tsx`: cabecera persistente, menú móvil accesible (portal en `<body>`) y pie con los 9 servicios.
 - `app/components/breadcrumbs.tsx`: ruta de navegación visible.
-- `app/components/service-page.tsx`: plantilla editorial común para cada servicio, sin duplicar contenido.
+- `app/components/service-hero.tsx`: portada común de todas las páginas de servicio (Sierra Nevada incluida): foto con next/image, foco, capa azul, migas y CTA.
+- `app/components/service-page.tsx` / `compact-service-page.tsx`: plantilla editorial y plantilla compacta (Sierra Nevada).
 - `app/not-found.tsx`: 404 diseñada (`noindex`).
 - `proxy.ts`: un único 301 para www, URLs de WordPress y barra final.
 - `app/servicios/page.tsx`: índice de servicios.
@@ -120,12 +122,14 @@ La tipografía Granaina se usa en titulares y momentos de identidad. No crear di
 - `public/`: logotipo, Granaina Font, vídeos e imágenes.
 - `docs/seo-strategy.md`: mapa de palabras clave y siguientes pasos SEO.
 
-No hay todavía autenticación ni base de datos (llegan con Payload en la fase 3). Variables que se usan:
+Panel Payload en `/admin` (código en `cms/`): solicitudes, servicios (ajustes SEO y portada), blog, medios (Vercel Blob), equipo, reseñas, empresas colaboradoras (con autorización), redirecciones, ajustes y menú. La web lee el panel con `app/lib/cms.ts` y, si no hay base de datos, usa los valores del código. Variables: `.env.example` y `docs/PRODUCTION-CHECKLIST.md`.
 
-- `NEXT_PUBLIC_SITE_URL`: canónico, por defecto `https://limpiezasgranalva.com`;
-- `NEXT_PUBLIC_NOINDEX=true`: obligatoria en preproducción;
-- `NEXT_PUBLIC_ORDER_URL`;
-- `GOOGLE_SITE_VERIFICATION`.
+Otras piezas:
+- páginas legales en `app/(frontend)/aviso-legal`, `politica-de-privacidad`, `politica-de-cookies` y `declaracion-de-accesibilidad`;
+- consentimiento de cookies en `app/components/cookie-consent.tsx`;
+- blog en `app/(frontend)/blog`;
+- migración de WordPress en `docs/MIGRACION-WORDPRESS.md` y `docs/redirecciones-wordpress.csv`;
+- vídeo del hero documentado en `docs/VIDEO-HERO.md`.
 
 Estado local usado en la página:
 
@@ -138,13 +142,11 @@ Estado local usado en la página:
 
 ## Formulario de contacto
 
-El formulario diferencia empresa/alojamiento/particular y servicio solicitado. Actualmente prepara la solicitud y abre el cliente de correo mediante `mailto:`. La interfaz avisa claramente de este comportamiento y no afirma almacenar o enviar datos desde el servidor.
-
-Si se solicita envío directo, implementar una ruta segura o un proveedor de formularios, añadir protección antispam, confirmación de envío y textos legales definitivos. No simular un envío exitoso.
+Envío real por server action a PostgreSQL (véase «Formulario y Payload»). Anti-duplicados por clave de formulario y por contenido (10 min). Enlaza a la política de privacidad y al aviso legal. Nunca simular un envío exitoso.
 
 ## Autoridad, reseñas y logotipos
 
-Las reseñas actuales proceden de la página pública de referencias de Granalva y se muestran como extractos breves. No modificar autores o textos sin fuente/autorización.
+Las reseñas son reseñas reales de Google (las que mostraba WordPress mediante Trustindex), copiadas literalmente, con plataforma y fecha. Se excluyeron dos posibles reseñas de personas vinculadas a la empresa hasta que el propietario lo confirme. Pasan a gestionarse en la colección `reviews`. Nunca se publican en JSON-LD.
 
 El carrusel de autoridad muestra sectores, no empresas ficticias. Para sustituirlo por logotipos reales:
 
@@ -162,9 +164,9 @@ La mención «Años de experiencia» es deliberadamente cualitativa porque no se
 - Un H1, título, descripción, canonical, Open Graph y Twitter Cards únicos por página.
 - Contenido sustancial y diferente por servicio: introducción, alcance, proceso, audiencias y FAQ.
 - JSON-LD de `Organization`/`ProfessionalService`/`WebSite` global y `Service`, `BreadcrumbList` y `FAQPage` por servicio.
-- `robots.txt` y `sitemap.xml` con las once URLs indexables.
+- `robots.txt` y `sitemap.xml` con portada, índice, 10 servicios, contacto, sobre nosotros y los artículos publicados del blog (legales: noindex).
 - Enlaces internos descriptivos desde cabecera, portada, páginas relacionadas y pie.
-- Pruebas automáticas (10): mapa exacto de title y H1, description, canonical, OG, breadcrumbs, JSON-LD veraz y FAQ visibles, alt, enlaces internos sin errores ni huérfanas, sitemap y robots, 404 diseñada, 301 sin cadenas y redirección de www.
+- Pruebas automáticas (19 en `npm test`): mapa exacto de title y H1, description, canonical, OG, breadcrumbs, JSON-LD veraz y FAQ visibles, alt, enlaces internos sin errores ni huérfanas, sitemap y robots, 404 diseñada, 301 sin cadenas y redirección de www.
 - Dominio canónico confirmado por el propietario: `https://limpiezasgranalva.com`, sin `www`. `SITE_URL` lee `NEXT_PUBLIC_SITE_URL`. La preproducción debe usar `NEXT_PUBLIC_NOINDEX=true`.
 
 Páginas actuales:
@@ -200,14 +202,14 @@ No usar repeticiones artificiales de palabras clave. La prioridad es contenido �
 2. Incorporar fotografías reales de Margarita, Jesús, equipo, instalaciones, vehículo y procesos.
 3. Conectar la URL real de la aplicación/pedido.
 4. Confirmar años exactos de experiencia y cifras demostrables.
-5. Implementar envío directo del formulario.
-6. Añadir aviso legal, privacidad, cookies y datos fiscales definitivos.
+5. Configurar SMTP para el aviso por correo de cada solicitud.
+6. Revisión jurídica de los textos legales (datos ya reales).
 7. Migrar al dominio final, cambiar `SITE_URL`, redirigir el dominio anterior y verificar Search Console.
 8. Crear casos de éxito autorizados y enlazarlos desde las páginas de servicio.
 
 ## Verificación de regresiones
 
-- `tests/visual/capture.mjs`: 11 rutas × 5 viewports (1920, 1440, 1024, 390, 360) con movimiento reducido.
+- `tests/visual/capture.mjs` y `tests/visual/qa.mjs`: rutas del sitemap, páginas legales, blog y 404 × 8 viewports, con consola, desbordamiento, imágenes y H1.
 - `tests/visual/seo-snapshot.mjs`: title, description, canonical, OG, H1, JSON-LD y enlaces por ruta.
 - Antes de dar por buena una fase, comparar capturas y SEO con la fase anterior.
 
