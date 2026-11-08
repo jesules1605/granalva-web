@@ -18,7 +18,7 @@ Search Console y la búsqueda `site:` no se han podido consultar desde el entorn
 | `/declaracion-de-accesibilidad/` | 200 | 301 → `/declaracion-de-accesibilidad` |
 | `/inicio/` | 301 → `/` | 301 → `/` |
 | `/servicios/` | 301 → servicios-de-limpieza | 301 → `/servicios` |
-| `/referencias/` | 404 | 410 (retirada) |
+| `/referencias/` | 404 | **Página nueva `/referencias`** (301 por la barra final) |
 | `/hello-world/` | **200** (entrada de ejemplo de WordPress, indexable) | 410 |
 | `/feed/`, `/comments/feed/` | 200 | 410 |
 | `/?p=1`, `/?s=…` | Parámetros de WordPress | Portada (200, canonical `/`) |
@@ -26,7 +26,7 @@ Search Console y la búsqueda `site:` no se han podido consultar desde el entorn
 | `https://www.limpiezasgranalva.com/*` | **200** (duplicado del dominio sin www) | 301 → mismo path sin www |
 | `http://…` | No comprobable desde aquí (puerto 80 bloqueado) | HTTPS forzado por Vercel |
 
-Medios de WordPress (`/wp-content/uploads/…`): no se migran. Son fotos de banco genéricas de origen no acreditado y los logotipos del Kit Digital, que se han copiado a `public/kit-digital/`. Quedarán en 404 cuando se retire WordPress, igual que en cualquier sustitución de tema.
+Medios de WordPress (`/wp-content/uploads/…`): no se migran. Son fotos de banco genéricas de origen no acreditado y los logotipos del Kit Digital; no se usan en la web nueva. Quedarán en 404 cuando se retire WordPress, igual que en cualquier sustitución de tema.
 
 ## Host canónico
 
@@ -42,7 +42,7 @@ Medios de WordPress (`/wp-content/uploads/…`): no se migran. Son fotos de banc
 2. `/hello-world/` (contenido de ejemplo) estaba publicado e indexable.
 3. Los feeds vacíos estaban expuestos.
 4. Los datos legales se mantienen. Titular: Margarita Alva Corral; NIF y domicilio publicados en el aviso legal vigente.
-5. La obligación de publicidad del Kit Digital (logotipos UE / Plan de Recuperación / Kit Digital) se conserva en el pie.
+5. Por decisión del propietario, la web nueva **no** incluye los logotipos ni las menciones del Kit Digital, Acelera Pyme ni NextGenerationEU.
 
 ## Copia de seguridad de WordPress (antes de cambiar DNS)
 

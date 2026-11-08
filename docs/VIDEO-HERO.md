@@ -1,3 +1,5 @@
+> **Obsoleto (8 nov 2026):** el propietario decidió retirar el vídeo; la portada usa una fotografía administrable. Se conserva como registro del diagnóstico.
+
 # Vídeo del hero: diagnóstico y corrección (8 nov 2026)
 
 ## Diagnóstico

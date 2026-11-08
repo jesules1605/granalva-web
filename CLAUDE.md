@@ -69,7 +69,7 @@ No inventes precios, número de clientes, años exactos, certificaciones, garant
 
 No debe existir una introducción separada, splash screen, vídeo previo, cuenta atrás, botón «Saltar» ni bloqueo del scroll. El usuario debe ver inmediatamente la navegación, la propuesta de valor y las llamadas a la acción.
 
-El vídeo pertenece al `hero`: se reproduce como fondo y no oculta el contenido. Conserva siempre `poster`, `muted`, `playsInline` y una experiencia comprensible si no carga o si el usuario prefiere movimiento reducido. Para no retrasar el LCP, empieza a descargarse tras el evento `load`. Con movimiento reducido o ahorro de datos se queda en el póster y solo se reproduce al pulsar un capítulo.
+**El vídeo de portada se retiró definitivamente (8 nov 2026, decisión del propietario).** El hero es una fotografía administrable (`app/components/home/home-hero.tsx`, global «Portada» del panel): `<picture>` con variante móvil, next/image, prioridad LCP y sin JavaScript. El zoom CSS opcional (1 → 1,03) viene desactivado por defecto. No reintroducir vídeo.
 
 ## Identidad y sistema visual
 
@@ -129,13 +129,16 @@ Otras piezas:
 - consentimiento de cookies en `app/components/cookie-consent.tsx`;
 - blog en `app/(frontend)/blog`;
 - migración de WordPress en `docs/MIGRACION-WORDPRESS.md` y `docs/redirecciones-wordpress.csv`;
-- vídeo del hero documentado en `docs/VIDEO-HERO.md`.
+- fotos provisionales con licencia: `app/lib/photos.ts` y `docs/FOTOGRAFIAS.md` (créditos en el aviso legal);
+- páginas y secciones del panel: `cms/collections/Pages.ts`, `cms/blocks.ts`, `app/components/cms-page.tsx` y `page-blocks.tsx`;
+- `/referencias` (reseñas, sectores, calidad y CTA) conserva la URL de WordPress;
+- manual del panel: `docs/MANUAL-PANEL.md`; activación de servicios: `docs/GUIA-ACTIVACION.md`.
+- **Sin Kit Digital, Acelera Pyme ni NextGeneration** en la web nueva (decisión del propietario).
 
 Estado local usado en la página:
 
 - selector de tamaño de colada;
 - servicio destacado;
-- capítulos del vídeo del hero;
 - recorrido automático/manual de la moto;
 - pausa de reseñas;
 - estado informativo del formulario.
@@ -187,7 +190,7 @@ No usar repeticiones artificiales de palabras clave. La prioridad es contenido �
 
 - Contenido visible desde el primer render.
 - Cabecera completa persistente, navegación multipágina y CTA de presupuesto.
-- Vídeo de hero con poster y fallback.
+- Foto principal de la portada administrable y sin CLS.
 - Selector accesible de colada.
 - Selector de servicios.
 - Recorrido manual y automático de la moto.
