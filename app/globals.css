@@ -1143,3 +1143,18 @@ html.nav-open,html.nav-open body{overflow:hidden}
 #servicios .services__more{margin-top:clamp(28px,3vw,44px)}
 .s-hero__tagline,.s-hero h1,.wide-title,.service-lead,.cms-head__lead{text-wrap:balance}
 .service-introduction .service-lead{margin-top:clamp(22px,2.4vw,34px)}
+
+/* === Migas de la portada de servicio: posición idéntica en todas las rutas ===
+   Medidas fijas en px (no dependen de la fuente, del H1, de la foto ni de la entradilla).
+   Una sola línea siempre; el último tramo se recorta con «…» (texto completo en el DOM y
+   en el JSON-LD BreadcrumbList). */
+:root{--s-hero-crumbs-h:20px;--s-hero-crumbs-gap:16px}
+.s-hero .breadcrumbs{display:block;height:var(--s-hero-crumbs-h);min-height:0;max-width:100%;margin:0;padding:0;overflow:hidden;background:none}
+.s-hero .breadcrumbs ol{display:flex;flex-wrap:nowrap;align-items:center;height:var(--s-hero-crumbs-h);margin:0;padding:0;gap:0;font-family:var(--sans);font-size:12px;font-weight:700;line-height:var(--s-hero-crumbs-h);letter-spacing:.04em;white-space:nowrap;color:var(--yellow)}
+.s-hero .breadcrumbs li{flex:none;display:flex;align-items:center;height:var(--s-hero-crumbs-h)}
+.s-hero .breadcrumbs li:last-child{flex:0 1 auto;min-width:0;overflow:hidden}
+.s-hero .breadcrumbs li+li:before{content:"/";margin:0 10px;opacity:.6}
+.s-hero .breadcrumbs a{color:var(--yellow);text-decoration:underline;text-decoration-thickness:1px;text-underline-offset:3px;text-decoration-color:rgba(240,233,220,.55);background:none}
+.s-hero .breadcrumbs a:hover{text-decoration-color:currentColor}
+.s-hero .breadcrumbs [aria-current]{display:block;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--white)}
+.s-hero__eyebrow{margin-top:var(--s-hero-crumbs-gap)}
