@@ -19,17 +19,36 @@ function newReference() {
  * registrada con `emailStatus` = error para reintentarla desde el panel.
  * No se envía ninguna respuesta automática al cliente.
  */
-export async function storeSubmission(data: ContactSubmission): Promise<{ reference: string; emailSent: boolean }> {
+export async function storeSubmission(data: ContactSubmission, submissionKey?: string): Promise<{ reference: string; emailSent: boolean; duplicate?: boolean }> {
   if (!process.env.DATABASE_URL || !process.env.PAYLOAD_SECRET) {
     throw new Error("Payload no está configurado (DATABASE_URL / PAYLOAD_SECRET).");
   }
   const payload = await getPayload({ config });
+
+  // Envíos duplicados: misma clave de formulario (doble clic, reenvío del navegador)
+  // o mismo correo, servicio y mensaje en los últimos 10 minutos. Se devuelve la
+  // solicitud ya registrada, sin crear otra ni repetir el aviso por correo.
+  const since = new Date(Date.now() - 10 * 60 * 1000).toISOString();
+  const existing = await payload.find({
+    collection: "contact-submissions",
+    overrideAccess: true,
+    limit: 1,
+    depth: 0,
+    where: {
+      or: [
+        ...(submissionKey ? [{ submissionKey: { equals: submissionKey } }] : []),
+        { and: [{ email: { equals: data.email } }, { servicio: { equals: data.servicio } }, { mensaje: { equals: data.mensaje } }, { createdAt: { greater_than: since } }] },
+      ],
+    },
+  });
+  if (existing.docs[0]) return { reference: existing.docs[0].reference, emailSent: existing.docs[0].emailStatus === "enviado", duplicate: true };
+
   const reference = newReference();
   const doc = await payload.create({
     collection: "contact-submissions",
     overrideAccess: true,
     // `servicio` ya está validado contra SERVICE_OPTIONS en parseSubmission().
-    data: { ...data, servicio: data.servicio as SubmissionDoc["servicio"], reference, status: "nueva", emailStatus: "pendiente" },
+    data: { ...data, servicio: data.servicio as SubmissionDoc["servicio"], reference, status: "nuevo", emailStatus: "pendiente", submissionKey },
   });
 
   if (!process.env.SMTP_HOST) return { reference, emailSent: false };

@@ -3,6 +3,7 @@ import { notFound } from "next/navigation";
 import { CompactServicePage } from "../../../components/compact-service-page";
 import { ServicePageView } from "../../../components/service-page";
 import { jsonLdString, servicePageJsonLd, type Crumb } from "../../../lib/seo";
+import { getService } from "../../../lib/cms";
 import { serviceBySlug, servicePages } from "../../../lib/services";
 import { absoluteUrl } from "../../../lib/site";
 
@@ -23,7 +24,7 @@ const crumbsFor = (slug: string): Crumb[] => [
 
 export async function generateMetadata({ params }: PageProps): Promise<Metadata> {
   const { slug } = await params;
-  const service = serviceBySlug[slug];
+  const service = await getService(slug);
   if (!service) return {};
   const url = absoluteUrl(`/servicios/${service.slug}`);
 
@@ -46,7 +47,8 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
 
 export default async function ServicePage({ params }: PageProps) {
   const { slug } = await params;
-  const service = serviceBySlug[slug];
+  // Contenido base revisado + ajustes publicados en el panel (si hay base de datos).
+  const service = await getService(slug);
   if (!service) notFound();
   const crumbs = crumbsFor(slug);
 

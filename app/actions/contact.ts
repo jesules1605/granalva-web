@@ -61,7 +61,8 @@ export async function submitContactRequest(_previous: ContactFormState, formData
   }
 
   try {
-    const { reference, emailSent } = await storeSubmission(parsed.value);
+    const key = String(formData.get("submissionKey") ?? "");
+    const { reference, emailSent } = await storeSubmission(parsed.value, /^[0-9a-f-]{36}$/i.test(key) ? key : undefined);
     return {
       status: "ok",
       reference,

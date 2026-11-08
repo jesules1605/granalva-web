@@ -1,6 +1,17 @@
 import type { CollectionConfig } from "payload";
 import { SERVICE_OPTIONS } from "../../app/lib/contact-schema";
 import { isOwner, isOwnerOrAdmin } from "../access";
+import { exportSubmissions } from "../endpoints/exportSubmissions";
+
+/** Embudo comercial de cada solicitud (más «spam» para descartar envíos basura). */
+export const SUBMISSION_STATUSES = [
+  { label: "Nuevo", value: "nuevo" },
+  { label: "Contactado", value: "contactado" },
+  { label: "Presupuesto enviado", value: "presupuesto-enviado" },
+  { label: "Ganado", value: "ganado" },
+  { label: "Perdido", value: "perdido" },
+  { label: "Spam", value: "spam" },
+] as const;
 
 // Solicitudes recibidas desde los formularios de la web.
 // Solo propietario y administradores pueden verlas. Nadie las crea desde la API
@@ -16,7 +27,9 @@ export const ContactSubmissions: CollectionConfig = {
     group: "Solicitudes",
     listSearchableFields: ["reference", "empresa", "contacto", "email", "telefono"],
     description: "Solicitudes de presupuesto y contacto recibidas en la web.",
+    components: { beforeListTable: ["/cms/components/ExportCsvButton#ExportCsvButton"] },
   },
+  endpoints: [{ path: "/export.csv", method: "get", handler: exportSubmissions }],
   access: {
     create: () => false,
     read: isOwnerOrAdmin,
@@ -34,15 +47,9 @@ export const ContactSubmissions: CollectionConfig = {
           label: "Estado",
           type: "select",
           required: true,
-          defaultValue: "nueva",
+          defaultValue: "nuevo",
           index: true,
-          options: [
-            { label: "Nueva", value: "nueva" },
-            { label: "En gestión", value: "en-gestion" },
-            { label: "Respondida", value: "respondida" },
-            { label: "Archivada", value: "archivada" },
-            { label: "Spam", value: "spam" },
-          ],
+          options: SUBMISSION_STATUSES.map((status) => ({ ...status })),
         },
         { name: "assignedTo", label: "Responsable", type: "relationship", relationTo: "users" },
       ],
@@ -115,6 +122,14 @@ export const ContactSubmissions: CollectionConfig = {
           admin: { readOnly: true },
         },
         { name: "emailError", label: "Detalle del error de correo", type: "text", admin: { readOnly: true } },
+        {
+          name: "submissionKey",
+          label: "Clave de envío (evita duplicados)",
+          type: "text",
+          unique: true,
+          index: true,
+          admin: { readOnly: true },
+        },
       ],
     },
   ],

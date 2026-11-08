@@ -27,6 +27,11 @@ export const BUSINESS = {
    * vigente de WordPress (persona física). Revisar con asesoría legal en la fase 7.
    */
   legalOwner: "Margarita Alva Corral",
+  /** Datos del aviso legal vigente (LSSI-CE art. 10), publicados en la web actual. */
+  legal: {
+    nif: "26253164K",
+    address: "Calle Lope de Vega, 6, 18151 Ogíjares (Granada)",
+  },
   /**
    * Perfiles oficiales (Google Business Profile, redes sociales). Solo URLs reales
    * y verificadas; se publican en `sameAs`. Vacío hasta que el propietario las facilite.
@@ -54,5 +59,8 @@ export const WHATSAPP_URL = process.env.NEXT_PUBLIC_WHATSAPP_NUMBER
  * NEXT_PUBLIC_NOINDEX=true, y las previsualizaciones de Vercel se excluyen siempre.
  */
 export const INDEXABLE = process.env.NEXT_PUBLIC_NOINDEX !== "true" && process.env.VERCEL_ENV !== "preview";
+
+/** Dominio sin protocolo (p. ej. limpiezasgranalva.com) para los textos legales. */
+export const SITE_DOMAIN = new URL(SITE_URL).host;
 
 export const absoluteUrl = (path = "/") => (path === "/" ? SITE_URL : `${SITE_URL}${path.startsWith("/") ? path : `/${path}`}`);

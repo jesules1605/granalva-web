@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import Script from "next/script";
 import { startTransition, useActionState, useEffect, useRef, type FormEvent } from "react";
 import { submitContactRequest } from "../actions/contact";
@@ -61,6 +62,8 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
     set("referrer", firstTouch.referrer ?? "");
     for (const key of UTM_KEYS) set(key, firstTouch[key] ?? params.get(key) ?? "");
     set("startedAt", String(Date.now()));
+    // Clave única por formulario: un doble clic o un reenvío devuelve la misma solicitud.
+    set("submissionKey", crypto.randomUUID());
   }, []);
 
   // Tras enviar, el foco va al mensaje de estado para lectores de pantalla.
@@ -162,6 +165,7 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
       </div>
       <input type="hidden" name="formulario" value={variant} />
       <input type="hidden" name="startedAt" />
+      <input type="hidden" name="submissionKey" />
       <input type="hidden" name="pagina" />
       <input type="hidden" name="paginaEntrada" />
       <input type="hidden" name="referrer" />
@@ -176,13 +180,14 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
 
       <label className="form-consent">
         <input type="checkbox" name="consentimiento" required aria-invalid={Boolean(state.fieldErrors?.consentimiento)} aria-describedby={describedBy("consentimiento")} />
-        <span>Acepto que Limpiezas Granalva trate estos datos para responder a mi solicitud y preparar el presupuesto.</span>
+        <span>He leído la <Link href="/politica-de-privacidad">política de privacidad</Link> y acepto que Limpiezas Granalva trate estos datos para responder a mi solicitud y preparar el presupuesto, según el <Link href="/aviso-legal">aviso legal</Link>.</span>
       </label>
       {error("consentimiento")}
       <p className="form-privacy" id={`${variant}-form-note`}>
         <b>Información básica sobre protección de datos.</b> Responsable: {BUSINESS.legalOwner} ({BUSINESS.name}). Finalidad: responder a tu solicitud.
         Legitimación: tu consentimiento. No se ceden datos a terceros salvo obligación legal. Puedes ejercer tus derechos escribiendo a
         {" "}<a href="mailto:info@limpiezasgranalva.com">info@limpiezasgranalva.com</a>. No enviamos comunicaciones comerciales automáticas.
+        {" "}<Link href="/politica-de-privacidad">Más información</Link>.
       </p>
 
       <button className="button button--dark form-submit" type="submit" disabled={pending}>

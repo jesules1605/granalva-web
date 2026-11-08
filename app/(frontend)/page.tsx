@@ -10,7 +10,8 @@ import { RouteProcess } from "../components/home/route-process";
 import { ServiceSelector } from "../components/home/service-selector";
 import { LogoSeal } from "../components/logo-seal";
 import { SiteFooter, SiteHeader } from "../components/site-chrome";
-import { clientLogos, journeys, sectors, serviceCategories, sierraNevadaBlock, team } from "../lib/home-content";
+import { getClientLogos, getReviews, getTeam } from "../lib/cms";
+import { journeys, sectors, serviceCategories, sierraNevadaBlock } from "../lib/home-content";
 import { jsonLdString, ORGANIZATION_ID, WEBSITE_ID } from "../lib/seo";
 import { SITE_URL } from "../lib/services";
 import { BUSINESS, WHATSAPP_URL } from "../lib/site";
@@ -69,7 +70,8 @@ const laundryLinks = [
   { label: "Lavandería a domicilio", text: "Para particulares: recogemos en tu puerta", href: "/servicios/lavanderia-domicilio-granada" },
 ];
 
-export default function Home() {
+export default async function Home() {
+  const [reviews, teamMembers, logos] = await Promise.all([getReviews(), getTeam(), getClientLogos()]);
   // Imagen de fondo del hero (elemento LCP): se solicita con prioridad alta.
   preload("/video/granalva-hero-poster-1280.webp", { as: "image", fetchPriority: "high" });
 
@@ -193,19 +195,23 @@ export default function Home() {
       </section>
 
       {/* 10. Empresas colaboradoras (solo con logotipos autorizados; vacío = no se muestra) */}
-      <ClientLogos logos={clientLogos} />
+      <ClientLogos logos={logos} />
 
       {/* 11. Reseñas reales de Google */}
-      <Reviews />
+      <Reviews reviews={reviews} />
 
       {/* 12. Equipo (composición provisional hasta tener fotografías reales) */}
       <section className="home-team" aria-labelledby="equipo-title">
         <span className="section-number">05 / EQUIPO GRANALVA</span>
         <h2 id="equipo-title" className="wide-title">Una empresa con procesos.{" "}<em>Un equipo con nombre.</em></h2>
         <ul className="home-team__list">
-          {team.map((member) => (
+          {teamMembers.map((member) => (
             <li key={member.name}>
-              <span className="home-team__mark" aria-hidden="true"><LogoSeal small /></span>
+              {member.photo ? (
+                <Image className="home-team__photo" src={member.photo.url} alt={member.photo.alt} width={112} height={112} sizes="56px" style={{ objectPosition: member.photo.focal }} />
+              ) : (
+                <span className="home-team__mark" aria-hidden="true"><LogoSeal small /></span>
+              )}
               <small>{member.role}</small>
               <strong>{member.name}</strong>
             </li>
