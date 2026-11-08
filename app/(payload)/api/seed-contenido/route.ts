@@ -7,8 +7,10 @@ import { PHOTOS, type Photo } from "../../../lib/photos";
 import { servicePages } from "../../../lib/services";
 import { BUSINESS } from "../../../lib/site";
 import type { Media } from "../../../../payload-types";
+import { hasSetupToken } from "../../../lib/setup-token";
 
-// Carga inicial del panel (idempotente, solo el propietario): POST /api/seed-contenido
+// Carga inicial del panel (idempotente): POST /api/seed-contenido, con sesión de propietario
+// o con la clave SETUP_TOKEN del alojamiento.
 // - Fotos provisionales con licencia en la biblioteca de medios (con autoría y licencia)
 //   y asignadas a la portada y a cada servicio, para poder sustituirlas desde el panel.
 // - Reseñas verificadas y equipo.
@@ -62,7 +64,8 @@ function htmlToMarkdown(html: string) {
 export async function POST(request: Request) {
   const payload = await getPayload({ config });
   const { user } = await payload.auth({ headers: await headers() });
-  if (!user || (user as { role?: string }).role !== "owner") return Response.json({ error: "Solo el propietario puede cargar el contenido inicial." }, { status: 403 });
+  const isOwner = (user as { role?: string } | null)?.role === "owner";
+  if (!isOwner && !hasSetupToken(request)) return Response.json({ error: "Solo el propietario puede cargar el contenido inicial." }, { status: 403 });
   log.length = 0;
   const origin = new URL(request.url).origin;
   const editorConfig = await editorConfigFactory.default({ config: payload.config });
