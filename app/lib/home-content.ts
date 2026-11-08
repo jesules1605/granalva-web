@@ -9,11 +9,23 @@ export const loads = [
   { id: "mucho", label: "Mucho", detail: "Hasta 12 kg", note: "Hogar, sábanas y más", scale: 1.1 },
 ];
 
-export const verifiedReviews: [string, string][] = [
-  ["Maravilloso trabajo. Se les nota el interés y la calidad.", "Noa Merlo"],
-  ["Sin duda, la mejor opción de Granada. Son detallistas.", "Pilar Gómez"],
-  ["Se nota la experiencia y dedicación de cada trabajador.", "Jesús Muñoz"],
-  ["Se nota que son especialistas en apartamentos turísticos.", "José García"],
+/**
+ * Reseñas reales publicadas en el perfil de Google de Granalva (mostradas en la web
+ * de WordPress mediante Trustindex, que verifica la fuente). Texto literal, sin editar.
+ * Excluidas a la espera de confirmación del propietario: posibles reseñas de personas
+ * vinculadas a la empresa. No se publican en JSON-LD (sin valoraciones agregadas).
+ * Pasarán a la colección «reviews» de Payload.
+ */
+export type Review = { quote: string; author: string; date: string; platform: "Google" };
+export const verifiedReviews: Review[] = [
+  { quote: "Muy profesionales. Encantada con el servicio, rápido y cuidando los detalles", author: "Lola Vílchez", date: "2025-07-23", platform: "Google" },
+  { quote: "La palabra que define a esta empresa es profesionalidad. Hacen un trabajo exquisito y además ayudan a tomar decisiones a los clientes por su amplia experiencia. Recomendada sin duda.", author: "Ignacio Gonzalez", date: "2024-03-11", platform: "Google" },
+  { quote: "Excelente empresa de limpieza. Dan un servicio personalizado y se adaptan a las necesidades del cliente. Son totalmente recomendables para una limpieza de 5 estrellas.", author: "Alberto Navarro Méndez", date: "2024-03-11", platform: "Google" },
+  { quote: "Increíble el servicio que ofrece. Lo deja todo impecable. Le confío la limpieza y desinfección de mi centro de entrenamiento y los clientes se encuentran siempre como en casa ❤️ Muy muy recomendable.", author: "Alvaro López Pérez", date: "2023-12-06", platform: "Google" },
+  { quote: "Muy profesionales en su trabajo, puntuales, responsables y muy educados. Tienen mucha experiencia en el sector y eso se refleja en los resultados.", author: "Lucía Gallego González", date: "2023-12-06", platform: "Google" },
+  { quote: "Gran profesionalidad y seriedad. Son muy responsables y hacen siempre un trabajo impecable. 100% recomendable", author: "Alejandra Gilabert", date: "2023-12-06", platform: "Google" },
+  { quote: "Muy profesionales!! Se nota la experiencia! Muy agradables y eficientes! Recomendable 100%", author: "Belen Linares Jiménez", date: "2023-12-06", platform: "Google" },
+  { quote: "Es una chica trabajadora, responsable y cuidadosa con todos los detalles. La recomiendo 100%", author: "Mari Tere Sanchez", date: "2023-12-06", platform: "Google" },
 ];
 
 export const videoChapters = [
@@ -67,13 +79,28 @@ export const team = [
   { initials: "GG", name: "Equipo Granalva", role: "Lavandería y limpieza", text: "Profesionales que convierten cada planificación en un resultado cuidado y constante." },
 ];
 
+/** Sectores atendidos. Cada tarjeta enlaza a la página real que trata ese sector. */
 export const sectors = [
-  "Apartamentos turísticos",
-  "Oficinas y despachos",
-  "Centros deportivos",
-  "Hoteles y alojamientos",
-  "Comercios y locales",
-  "Comunidades",
+  { label: "Apartamentos turísticos", href: "/servicios/limpieza-apartamentos-turisticos-granada" },
+  { label: "Oficinas y despachos", href: "/servicios/limpieza-oficinas-locales-granada" },
+  { label: "Centros deportivos", href: "/servicios/empresa-limpieza-granada" },
+  { label: "Hoteles y alojamientos", href: "/servicios/lavanderia-hoteles-granada" },
+  { label: "Comercios y locales", href: "/servicios/limpieza-oficinas-locales-granada" },
+  { label: "Comunidades", href: "/servicios/empresa-limpieza-granada" },
+];
+
+/**
+ * Logotipos de empresas colaboradoras. VACÍO a propósito: solo se añaden con el archivo
+ * oficial y la autorización por escrito de cada empresa. Sin logotipos, la sección no se muestra.
+ */
+export const clientLogos: { name: string; src: string; width: number; height: number }[] = [];
+
+/** Recorridos principales de la portada (tras la propuesta de valor). */
+export const journeys = [
+  { label: "Solicitar presupuesto", text: "Empresas, alojamientos y gestores", href: "#contacto" },
+  { label: "Hacer un pedido de lavandería", text: "Colada a domicilio de 4, 8 o 12 kg", href: "/servicios/lavanderia-domicilio-granada#colada" },
+  { label: "Servicios para empresas", text: "Limpieza, lavandería y renting textil", href: "/servicios/empresa-limpieza-granada" },
+  { label: "Servicios para particulares", text: "Recogida y entrega en tu puerta", href: "/servicios/lavanderia-domicilio-granada" },
 ];
 
 export const faqs = [

@@ -31,6 +31,8 @@ export type ServicePage = {
   summary: string;
   image: string;
   imageAlt: string;
+  /** Posición focal de la portada (CSS object-position). Por defecto, centrada. */
+  imageFocal?: string;
   /** H2 de la introducción: contiene la palabra principal de forma natural. */
   introTitle: string;
   intro: string[];

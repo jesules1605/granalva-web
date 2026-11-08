@@ -1,9 +1,7 @@
-import Image from "next/image";
 import Link from "next/link";
 import { Accordion, type AccordionItem } from "./accordion";
-import { Breadcrumbs } from "./breadcrumbs";
 import { ContactForm } from "./contact-form";
-import { LogoSeal } from "./logo-seal";
+import { ServiceHero } from "./service-hero";
 import { SiteFooter, SiteHeader } from "./site-chrome";
 import type { Crumb } from "../lib/seo";
 import { serviceBySlug, type ServicePage } from "../lib/services";
@@ -68,28 +66,24 @@ export function CompactServicePage({ service, crumbs }: { service: ServicePage; 
     <main className="site-shell service-site service-site--compact">
       <SiteHeader />
 
-      {/* 1. Presentación compacta */}
-      <section className="compact-hero">
-        <div className="compact-hero__copy">
-          <Breadcrumbs crumbs={crumbs} tone="dark" />
-          <p className="compact-hero__eyebrow"><LogoSeal small />{service.eyebrow}</p>
-          <h1>{service.h1}</h1>
-          <p className="compact-hero__lead">{service.summary}</p>
-          <div className="compact-hero__actions">
-            <Link className="button button--dark" href={ctaHref}>{service.ctaLabel} <span>→</span></Link>
-            <a className="text-link" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>
-          </div>
-          {service.tagline ? <p className="compact-hero__tagline">{service.tagline}</p> : null}
-        </div>
-        <div className="compact-hero__media">
-          <Image src={service.image} alt={service.imageAlt} fill priority sizes="(max-width: 900px) 100vw, 44vw" quality={70} />
-        </div>
-      </section>
+      {/* 1. Portada común de servicio: etiqueta, H1, frase editorial y CTA */}
+      <ServiceHero
+        crumbs={crumbs}
+        eyebrow={service.eyebrow}
+        title={service.h1}
+        tagline={service.tagline}
+        image={service.image}
+        imageAlt={service.imageAlt}
+        focal={service.imageFocal}
+        cta={{ href: ctaHref, label: service.ctaLabel }}
+        secondary={<a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>}
+      />
 
       {/* 2. Beneficios */}
       {service.highlights ? (
         <section className="compact-highlights" aria-labelledby="beneficios-title">
           <h2 id="beneficios-title" className="compact-section-title">Lo que resolvemos en la temporada</h2>
+          <p className="compact-lead">{service.summary}</p>
           <ul>
             {service.highlights.map((item, index) => (
               <li key={item.title}>
@@ -120,7 +114,6 @@ export function CompactServicePage({ service, crumbs }: { service: ServicePage; 
       <section className="compact-details" aria-labelledby="detalle-title">
         <div className="compact-details__intro">
           <h2 id="detalle-title" className="compact-section-title">Lavandería para hoteles, apartamentos y alojamientos de Sierra Nevada</h2>
-          <p>Todo lo que conviene saber antes de organizar la temporada: necesidades de cada tipo de alojamiento, rutas, textiles y zona de servicio.</p>
         </div>
         <Accordion items={details} />
       </section>
@@ -128,7 +121,6 @@ export function CompactServicePage({ service, crumbs }: { service: ServicePage; 
       <section className="compact-details compact-details--faq" aria-labelledby="faq-title">
         <div className="compact-details__intro">
           <h2 id="faq-title" className="compact-section-title">Preguntas frecuentes</h2>
-          <p>Dudas habituales de hoteles y gestores al preparar la temporada en Sierra Nevada.</p>
         </div>
         <div className="faq-list">
           {service.faqs.map((faq, index) => (

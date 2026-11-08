@@ -3,13 +3,14 @@ import Image from "next/image";
 import Link from "next/link";
 import { preload } from "react-dom";
 import { ContactForm } from "../components/contact-form";
+import { ClientLogos } from "../components/home/client-logos";
 import { HeroVideo } from "../components/home/hero-video";
 import { Reviews } from "../components/home/reviews";
 import { RouteProcess } from "../components/home/route-process";
 import { ServiceSelector } from "../components/home/service-selector";
 import { LogoSeal } from "../components/logo-seal";
 import { SiteFooter, SiteHeader } from "../components/site-chrome";
-import { sectors, serviceCategories, sierraNevadaBlock } from "../lib/home-content";
+import { clientLogos, journeys, sectors, serviceCategories, sierraNevadaBlock, team } from "../lib/home-content";
 import { jsonLdString, ORGANIZATION_ID, WEBSITE_ID } from "../lib/seo";
 import { SITE_URL } from "../lib/services";
 import { BUSINESS, WHATSAPP_URL } from "../lib/site";
@@ -55,6 +56,19 @@ const structuredData = {
   ],
 };
 
+// Servicios para empresas: limpieza primero; la lavandería tiene además su propio bloque.
+const businessOrder = ["limpieza", "lavanderia", "renting"];
+const businessCategories = serviceCategories
+  .filter((category) => category.audience === "empresas")
+  .sort((a, b) => businessOrder.indexOf(a.id) - businessOrder.indexOf(b.id));
+
+const laundryLinks = [
+  { label: "Lavandería para hoteles", text: "Ropa de cama y baño por habitaciones", href: "/servicios/lavanderia-hoteles-granada" },
+  { label: "Lavandería para apartamentos turísticos", text: "Juegos preparados para cada entrada", href: "/servicios/lavanderia-apartamentos-turisticos-granada" },
+  { label: "Lavandería en Sierra Nevada", text: "Rutas de temporada a la estación", href: "/servicios/lavanderia-sierra-nevada" },
+  { label: "Lavandería a domicilio", text: "Para particulares: recogemos en tu puerta", href: "/servicios/lavanderia-domicilio-granada" },
+];
+
 export default function Home() {
   // Imagen de fondo del hero (elemento LCP): se solicita con prioridad alta.
   preload("/video/granalva-hero-poster-1280.webp", { as: "image", fetchPriority: "high" });
@@ -90,62 +104,41 @@ export default function Home() {
         </HeroVideo>
       </section>
 
-      {/* 3. Prueba de autoridad (solo afirmaciones verificables; cifras cuando se confirmen) */}
-      <section className="authority-strip" aria-label="Razones para confiar en Granalva">
-        <article><strong>Años de experiencia</strong><span>Especialización real en limpieza turística y profesional.</span></article>
-        <article><strong>Equipo propio</strong><span>Coordinación directa, seguimiento y personas con nombre. <Link href="/sobre-nosotros">Conoce al equipo</Link></span></article>
-        <article><strong>Servicio integral</strong><span>Limpieza, lavandería, recogida, entrega y renting textil.</span></article>
-        <article><strong>Granada y Sierra Nevada</strong><span>Capital, área metropolitana y rutas de lavandería a la estación.</span></article>
+      {/* 3. Propuesta de valor y 4. recorridos principales */}
+      <section className="value-section" id="empresas" aria-labelledby="propuesta-title">
+        <span className="section-number">01 / DOS NECESIDADES, UN MISMO EQUIPO</span>
+        <h2 id="propuesta-title" className="wide-title">Tu empresa no puede parar.{" "}<br /><em>Tu hogar tampoco debería esperar.</em></h2>
+        <ul className="journeys" aria-label="Recorridos principales">
+          {journeys.map((journey, index) => (
+            <li key={journey.label} className={index === 0 ? "journey journey--primary" : "journey"}>
+              <Link href={journey.href}>
+                <strong>{journey.label}</strong>
+                <small>{journey.text}</small>
+                <span aria-hidden="true">→</span>
+              </Link>
+            </li>
+          ))}
+        </ul>
       </section>
 
-      {/* 4. Selector empresas / particulares (75 / 25) */}
-      <section className="audience-section" id="empresas">
-        <div className="audience-heading">
-          <span className="section-number">01 / DOS NECESIDADES, UN MISMO EQUIPO</span>
-          <h2>Tu empresa no puede parar.{" "}<br /><em>Tu hogar tampoco debería esperar.</em></h2>
-        </div>
-        <div className="audience-grid audience-grid--weighted">
-          <article className="audience-card audience-card--primary">
-            <span>PARA EMPRESAS Y ALOJAMIENTOS</span>
-            <h3>Un servicio que encaja en tu operativa.</h3>
-            <p>Planificamos frecuencias, horarios, recogidas y entregas para que la limpieza y los textiles dejen de ser una preocupación diaria.</p>
-            <ul>
-              <li><Link href="/servicios/lavanderia-hoteles-granada">Lavandería para hoteles</Link> y <Link href="/servicios/lavanderia-apartamentos-turisticos-granada">apartamentos turísticos</Link></li>
-              <li><Link href="/servicios/limpieza-apartamentos-turisticos-granada">Limpieza de apartamentos turísticos</Link></li>
-              <li><Link href="/servicios/limpieza-oficinas-locales-granada">Limpieza de oficinas, locales y centros</Link></li>
-              <li><Link href="/servicios/renting-textil-granada">Renting textil</Link> y atención directa</li>
-            </ul>
-            <a className="button button--yellow" href="#contacto">Solicitar presupuesto empresarial <span>→</span></a>
-          </article>
-          <article className="audience-card audience-card--secondary">
-            <span>PARA PARTICULARES</span>
-            <h3>Tu colada vuelve limpia, seca y doblada.</h3>
-            <p>Recogemos la ropa en tu puerta y te la devolvemos preparada para guardar.</p>
-            <Link className="button button--outline-dark" href="/servicios/lavanderia-domicilio-granada#colada">Hacer un pedido particular <span>→</span></Link>
-          </article>
-        </div>
+      {/* 5. Servicios para empresas */}
+      <section className="services" id="servicios" aria-labelledby="servicios-title">
+        <span className="section-number">02 / SERVICIOS PARA EMPRESAS</span>
+        <h2 id="servicios-title" className="wide-title">Una respuesta.{" "}<em>Todo coordinado.</em></h2>
+        <ServiceSelector categories={businessCategories} />
+        <p className="services__more">Limpieza, lavandería con recogida y entrega y renting textil con un solo interlocutor. <Link className="inline-link" href="/servicios">Ver todos los servicios</Link></p>
       </section>
 
-      {/* 5. Selector dinámico de servicios */}
-      <section className="services" id="servicios">
-        <div className="section-heading">
-          <div><span className="section-number">02 / SERVICIOS PROFESIONALES</span><h2>Una respuesta.<br /><em>Todo coordinado.</em></h2></div>
-          <p>Granalva reúne limpieza profesional, lavandería con recogida y entrega y renting textil para evitar proveedores dispersos, retrasos y tareas sin supervisión. <Link className="inline-link" href="/servicios">Ver todos los servicios</Link></p>
-        </div>
-        <ServiceSelector categories={serviceCategories} />
+      {/* 6. Lavandería: recorridos por tipo de cliente y campaña de Sierra Nevada */}
+      <section className="laundry-section" id="lavanderia" aria-labelledby="lavanderia-title">
+        <span className="section-number">03 / LAVANDERÍA CON RECOGIDA Y ENTREGA</span>
+        <h2 id="lavanderia-title" className="wide-title">Textiles listos{" "}<em>cuando los necesitas.</em></h2>
+        <ul className="laundry-links">
+          {laundryLinks.map((link) => (
+            <li key={link.href}><Link href={link.href}><strong>{link.label}</strong><small>{link.text}</small><span aria-hidden="true">→</span></Link></li>
+          ))}
+        </ul>
       </section>
-
-      {/* 6. Proceso resumido */}
-      <section className="process process--route" id="como-funciona">
-        <div className="process-intro">
-          <span className="section-number">03 / ASÍ FUNCIONA</span>
-          <h2>Nosotros hacemos el recorrido.<br /><em>Tú sigues con lo importante.</em></h2>
-          <p>Una operativa clara para empresas y particulares: solicitud, coordinación, cuidado y entrega.</p>
-        </div>
-        <RouteProcess />
-      </section>
-
-      {/* 7. Campaña estacional de Sierra Nevada */}
       <section className="sierra-block" id="sierra-nevada" aria-labelledby="sierra-title">
         <div className="sierra-block__head">
           <span className="sierra-block__label">{sierraNevadaBlock.label}</span>
@@ -167,28 +160,73 @@ export default function Home() {
         </ul>
       </section>
 
-      {/* 8. Sectores atendidos */}
+      {/* 7. Sectores atendidos (cada tarjeta enlaza a su página) */}
       <section className="sectors" id="clientes" aria-labelledby="sectores-title">
         <span className="section-number section-number--light">EXPERIENCIA MULTISECTORIAL</span>
         <h2 id="sectores-title" className="sectors__title">Preparados para espacios{" "}<br /><em>que tienen que estar siempre listos.</em></h2>
         <ul className="sectors__grid" aria-label="Sectores atendidos por Granalva">
           {sectors.map((sector, index) => (
-            <li className="sector-card" key={sector}>
+            <li className="sector-card" key={sector.label}>
               <span className="sector-card__number">{String(index + 1).padStart(2, "0")}</span>
-              <strong>{sector}</strong>
+              <Link className="sector-card__link" href={sector.href}>{sector.label}</Link>
               <LogoSeal small />
             </li>
           ))}
         </ul>
       </section>
 
-      {/* 9. Reseñas (logotipos de clientes y casos de éxito, cuando haya autorización) */}
+      {/* 8. Proceso de recogida y entrega */}
+      <section className="process process--route" id="como-funciona" aria-labelledby="proceso-title">
+        <div className="process-intro">
+          <span className="section-number">04 / ASÍ FUNCIONA</span>
+          <h2 id="proceso-title" className="wide-title">Nosotros hacemos el recorrido.{" "}<em>Tú sigues con lo importante.</em></h2>
+        </div>
+        <RouteProcess />
+      </section>
+
+      {/* 9. Autoridad y experiencia (solo afirmaciones verificables) */}
+      <section className="authority-strip" aria-label="Razones para confiar en Granalva">
+        <article><strong>Especialistas en alojamientos</strong><span>Limpieza turística y profesional con protocolos por espacio.</span></article>
+        <article><strong>Equipo propio</strong><span>Coordinación directa, seguimiento y personas con nombre. <Link href="/sobre-nosotros">Conoce al equipo</Link></span></article>
+        <article><strong>Servicio integral</strong><span>Limpieza, lavandería, recogida, entrega y renting textil.</span></article>
+        <article><strong>Granada y Sierra Nevada</strong><span>Capital, área metropolitana y rutas de lavandería a la estación.</span></article>
+      </section>
+
+      {/* 10. Empresas colaboradoras (solo con logotipos autorizados; vacío = no se muestra) */}
+      <ClientLogos logos={clientLogos} />
+
+      {/* 11. Reseñas reales de Google */}
       <Reviews />
 
-      {/* 10. CTA final y formulario empresarial */}
+      {/* 12. Equipo (composición provisional hasta tener fotografías reales) */}
+      <section className="home-team" aria-labelledby="equipo-title">
+        <span className="section-number">05 / EQUIPO GRANALVA</span>
+        <h2 id="equipo-title" className="wide-title">Una empresa con procesos.{" "}<em>Un equipo con nombre.</em></h2>
+        <ul className="home-team__list">
+          {team.map((member) => (
+            <li key={member.name}>
+              <span className="home-team__mark" aria-hidden="true"><LogoSeal small /></span>
+              <small>{member.role}</small>
+              <strong>{member.name}</strong>
+            </li>
+          ))}
+        </ul>
+        <Link className="text-link" href="/sobre-nosotros">Conoce cómo trabajamos <span>→</span></Link>
+      </section>
+
+      {/* 13. CTA final */}
+      <section className="home-final-cta" aria-labelledby="cta-final-title">
+        <h2 id="cta-final-title">¿Preparamos una propuesta para tu negocio?</h2>
+        <div>
+          <a className="button button--yellow" href="#contacto">Solicitar presupuesto empresarial <span>→</span></a>
+          <a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>
+        </div>
+      </section>
+
+      {/* 14. Contacto y formulario empresarial */}
       <section className="contact-section" id="contacto">
         <div className="contact-copy">
-          <span className="section-number section-number--light">04 / HABLEMOS</span>
+          <span className="section-number section-number--light">06 / HABLEMOS</span>
           <h2>Cuéntanos qué necesitas.<br /><em>Diseñamos la operativa.</em></h2>
           <p>Indícanos el tipo de negocio y el servicio. Si quieres, añade volumen, frecuencia y fecha de inicio: con esos datos preparamos una propuesta ajustada a tu operativa.</p>
           <div className="contact-direct">

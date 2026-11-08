@@ -127,11 +127,11 @@ test("la portada contiene en el HTML inicial la propuesta acordada", () => {
   // Bloque estacional de Sierra Nevada.
   assert.match(body, /TEMPORADA 2026\/27 · SIERRA NEVADA/);
   assert.match(body, /¿Estás preparando la temporada en Sierra Nevada\?/);
-  // Selector de servicios: los cuatro paneles están en el HTML inicial (no dependen de JavaScript).
-  for (const panel of ["lavanderia", "limpieza", "renting", "particulares"]) {
+  // Selector de servicios para empresas: sus paneles están en el HTML inicial (no dependen de JavaScript).
+  for (const panel of ["limpieza", "lavanderia", "renting"]) {
     assert.match(home, new RegExp(`id="servicio-panel-${panel}"`), `panel ${panel}`);
   }
-  assert.equal((home.match(/id="servicio-tab-[a-z]+"/g) ?? []).length, 4, "4 pestañas en el selector de servicios");
+  assert.equal((home.match(/id="servicio-tab-[a-z]+"/g) ?? []).length, 3, "3 pestañas en el selector de empresas");
   // La portada enlaza todos los servicios desde el contenido.
   for (const path of servicePaths) assert.match(home, new RegExp(`href="${escape(path)}"`), `portada → ${path}`);
 });
@@ -365,4 +365,41 @@ test("la marquesina es un bucle de dos grupos idénticos y la sección de sector
   assert.match(groups[1], /aria-hidden="true"/, "el segundo grupo no se lee dos veces");
   assert.doesNotMatch(text(home), /Trabajamos con negocios que dependen de una operación impecable/, "párrafo eliminado");
   assert.equal((home.match(/class="sector-card"/g) ?? []).length, 6, "seis sectores, sin duplicados de marquesina");
+});
+
+test("la portada sigue el orden acordado, enlaza sectores y muestra reseñas reales con plataforma", () => {
+  const home = html.get("/");
+  const order = ['id="inicio"', 'id="empresas"', 'id="servicios"', 'id="lavanderia"', 'id="clientes"', 'id="como-funciona"', 'class="authority-strip"', 'id="reviews-title"', 'id="equipo-title"', 'id="cta-final-title"', 'id="contacto"', '<footer class="footer"'];
+  let last = -1;
+  for (const marker of order) {
+    const at = home.indexOf(marker);
+    assert.ok(at > last, `orden de portada: ${marker}`);
+    last = at;
+  }
+  // Recorridos principales.
+  for (const label of ["Solicitar presupuesto", "Hacer un pedido de lavandería", "Servicios para empresas", "Servicios para particulares"]) assert.ok(text(home).includes(label), `recorrido ${label}`);
+  // Seis sectores, cada uno enlazado a una página real.
+  const sectorLinks = [...home.matchAll(/class="sector-card__link" href="([^"]+)"/g)].map((m) => m[1]);
+  assert.equal(sectorLinks.length, 6, "6 sectores enlazados");
+  for (const href of sectorLinks) assert.ok(html.has(href), `sector → ${href} existe`);
+  // Reseñas: plataforma visible y sin valoraciones en JSON-LD.
+  assert.ok((text(home).match(/Reseña en Google/g) ?? []).length >= 8, "reseñas con plataforma");
+  assert.doesNotMatch(home, /"(aggregateRating|review)"/);
+  // Sin logotipos autorizados no se muestra la sección de empresas colaboradoras.
+  assert.doesNotMatch(home, /client-logos/);
+  // Sin minipárrafos decorativos junto a los títulos de proceso y servicios.
+  assert.doesNotMatch(text(home), /Una operativa clara para empresas y particulares/);
+});
+
+test("todas las páginas de servicio usan la portada común ServiceHero con fotografía", () => {
+  for (const path of servicePaths) {
+    const page = html.get(path);
+    assert.match(page, /<section class="s-hero">/, `${path}: ServiceHero`);
+    assert.match(page, /class="s-hero__media"><img alt="[^"]{10,}"/, `${path}: imagen con alt`);
+    assert.match(page, /class="s-hero__scrim" aria-hidden="true"/, `${path}: capa azul`);
+  }
+  const sierra = html.get("/servicios/lavanderia-sierra-nevada");
+  for (const literal of ["SERVICIO DE TEMPORADA · SIERRA NEVADA", "Lavandería profesional en Sierra Nevada para hoteles y apartamentos", "La temporada se prepara antes de que empiece.", "Preparar mi temporada"]) {
+    assert.ok(text(sierra).includes(literal), `Sierra: ${literal}`);
+  }
 });

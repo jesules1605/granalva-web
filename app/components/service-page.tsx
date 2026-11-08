@@ -1,9 +1,8 @@
-import Image from "next/image";
 import Link from "next/link";
-import { Breadcrumbs } from "./breadcrumbs";
 import { ContactForm } from "./contact-form";
 import { LoadPicker } from "./home/load-picker";
 import { LogoSeal } from "./logo-seal";
+import { ServiceHero } from "./service-hero";
 import { SiteFooter, SiteHeader } from "./site-chrome";
 import type { Crumb } from "../lib/seo";
 import { serviceBySlug, type ServicePage } from "../lib/services";
@@ -23,23 +22,17 @@ export function ServicePageView({ service, crumbs }: { service: ServicePage; cru
     <main className="site-shell service-site">
       <SiteHeader />
 
-      <section className="service-hero">
-        <div className="service-hero__media">
-          <Image src={service.image} alt={service.imageAlt} fill priority sizes="100vw" quality={70} />
-          <div className="service-hero__scrim" />
-        </div>
-        <div className="service-hero__copy">
-          <Breadcrumbs crumbs={crumbs} />
-          <p className="eyebrow"><LogoSeal small />{service.eyebrow}</p>
-          <h1>{service.h1}</h1>
-          <p>{service.summary}</p>
-          <div className="hero-actions">
-            <Link className="button button--yellow" href={ctaHref}>{service.ctaLabel} <span>→</span></Link>
-            <a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>
-          </div>
-        </div>
-        <div className="service-hero__seal"><LogoSeal /></div>
-      </section>
+      <ServiceHero
+        crumbs={crumbs}
+        eyebrow={service.eyebrow}
+        title={service.h1}
+        lead={service.summary}
+        image={service.image}
+        imageAlt={service.imageAlt}
+        focal={service.imageFocal}
+        cta={{ href: ctaHref, label: service.ctaLabel }}
+        secondary={<a className="button button--glass" href={`tel:${BUSINESS.phoneE164}`}>Llamar al {BUSINESS.phoneDisplay}</a>}
+      />
 
       <div className="service-proof" aria-label="Ventajas del servicio">
         <span>GRANADA Y ÁREA METROPOLITANA</span>

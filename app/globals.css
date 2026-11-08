@@ -888,3 +888,96 @@ html.nav-open,html.nav-open body{overflow:hidden}
 /* === Producción: vídeo del hero === */
 /* Fondo de respaldo azul (nunca negro) mientras llega el póster o si el vídeo falla. */
 .hero--business,.hero-video{background-color:#0b2d6c}
+
+/* === Producción: portada común de servicio (ServiceHero) === */
+.s-hero{position:relative;display:flex;align-items:flex-end;min-height:clamp(460px,64vh,600px);color:var(--white);overflow:hidden;background:var(--navy-deep)}
+.s-hero__media{position:absolute;inset:0}
+.s-hero__media img{object-fit:cover;filter:saturate(.72) contrast(1.03)}
+.s-hero__scrim{position:absolute;inset:0;z-index:1;background:linear-gradient(90deg,rgba(5,31,78,.94) 0%,rgba(8,40,91,.8) 45%,rgba(7,35,83,.3) 80%,rgba(7,35,83,.18) 100%),linear-gradient(0deg,rgba(5,31,78,.6),transparent 55%)}
+.s-hero__copy{position:relative;z-index:2;width:100%;max-width:1440px;padding:clamp(96px,11vh,130px) 6vw clamp(44px,6vh,64px)}
+.s-hero__eyebrow{display:flex;align-items:center;gap:10px;margin:22px 0 0;font-size:11px;font-weight:900;letter-spacing:.14em;text-transform:uppercase;color:var(--sky)}
+.s-hero h1{margin:18px 0 0;max-width:22ch;font-family:var(--display);font-weight:400;font-size:clamp(46px,5.6vw,92px);line-height:.9;letter-spacing:.01em;text-wrap:balance}
+.s-hero__lead{margin:22px 0 0;max-width:62ch;font-family:var(--serif);font-size:clamp(16px,1.3vw,19px);line-height:1.55;color:#e5edf8}
+.s-hero__tagline{margin:22px 0 0;font-family:var(--display);font-size:clamp(24px,2.2vw,34px);line-height:1.05;color:var(--sky)}
+.s-hero__actions{display:flex;flex-wrap:wrap;align-items:center;gap:14px 18px;margin-top:28px}
+@media(max-width:680px){.s-hero{min-height:0}.s-hero__copy{padding:100px 20px 40px}.s-hero h1{font-size:clamp(38px,11vw,54px);max-width:none}.s-hero__actions .button{width:100%;justify-content:space-between}}
+.compact-lead{margin:0 0 26px;max-width:72ch;font-family:var(--serif);font-size:clamp(16px,1.2vw,18px);line-height:1.55;color:var(--ink)}
+
+/* === Producción: títulos extendidos (sin minipárrafos laterales) === */
+.wide-title{margin:14px 0 0;max-width:none;font-family:var(--display);font-weight:400;font-size:clamp(42px,5.4vw,92px);line-height:.92;letter-spacing:.01em;color:var(--navy);text-wrap:balance}
+.wide-title em{font-style:normal;color:var(--cobalt)}
+.process-intro{display:block;margin-bottom:40px}
+.service-introduction{display:block;padding:clamp(64px,7vw,96px) 7vw}
+.service-introduction h2{max-width:none;text-wrap:balance}
+.service-introduction__copy{margin-top:34px;columns:2 34ch;column-gap:5vw}
+.service-introduction__copy>p{break-inside:avoid}
+.service-introduction blockquote{column-span:all;margin-top:18px}
+.services__more{margin:34px 0 0;font-family:var(--serif);font-size:18px;color:var(--ink)}
+
+/* === Producción: propuesta de valor y recorridos === */
+.value-section{padding:clamp(64px,7vw,104px) 6vw;background:var(--paper)}
+.journeys{list-style:none;margin:40px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+.journey a{position:relative;display:grid;gap:6px;height:100%;padding:22px 52px 22px 22px;border:1px solid rgba(21,54,111,.35);background:var(--white);color:var(--ink);box-shadow:5px 5px 0 rgba(18,61,146,.18);transition:transform .2s,box-shadow .2s}
+.journey a:hover,.journey a:focus-visible{transform:translate(-2px,-2px);box-shadow:7px 7px 0 rgba(18,61,146,.35)}
+.journey strong{font-family:var(--display);font-weight:400;font-size:clamp(22px,1.8vw,28px);line-height:1;color:var(--navy)}
+.journey small{font-size:14px;line-height:1.4}
+.journey a>span{position:absolute;right:20px;top:22px;font-size:20px;color:var(--cobalt)}
+.journey--primary a{background:var(--navy);border-color:var(--navy);color:var(--sky)}
+.journey--primary strong,.journey--primary a>span{color:var(--white)}
+@media(max-width:1000px){.journeys{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.journeys{grid-template-columns:1fr}}
+
+/* === Producción: lavandería === */
+.laundry-section{padding:clamp(64px,7vw,100px) 6vw clamp(40px,4vw,56px);background:var(--mist)}
+.laundry-links{list-style:none;margin:36px 0 0;padding:0;display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px}
+.laundry-links a{position:relative;display:grid;gap:6px;height:100%;padding:20px 48px 20px 20px;background:var(--paper);border:1px solid rgba(21,54,111,.3);color:var(--ink)}
+.laundry-links strong{font-size:16px;line-height:1.25;color:var(--navy)}
+.laundry-links small{font-size:14px;line-height:1.4}
+.laundry-links a>span{position:absolute;right:18px;top:20px;color:var(--cobalt)}
+.laundry-links a:hover strong,.laundry-links a:focus-visible strong{text-decoration:underline}
+@media(max-width:1000px){.laundry-links{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media(max-width:560px){.laundry-links{grid-template-columns:1fr}}
+
+/* === Producción: sectores enlazados === */
+.sector-card{position:relative}
+.sector-card__link{font-weight:800;line-height:1.2;color:inherit}
+.sector-card__link:after{content:"";position:absolute;inset:0}
+.sector-card:hover,.sector-card:focus-within{background:rgba(255,253,248,.14);border-color:rgba(200,221,242,.8)}
+.sector-card__link:focus-visible{outline:none}
+.sector-card:focus-within{outline:3px solid var(--sky);outline-offset:2px}
+
+/* === Producción: equipo y CTA final de portada === */
+.home-team{padding:clamp(64px,7vw,100px) 6vw;background:var(--paper)}
+.home-team__list{list-style:none;margin:34px 0 30px;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.home-team__list li{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:14px;align-items:center;padding:18px;border:1px solid rgba(21,54,111,.25);background:var(--white)}
+.home-team__mark{grid-row:1/3}
+.home-team__list small{font-size:11px;font-weight:900;letter-spacing:.12em;text-transform:uppercase;color:var(--cobalt)}
+.home-team__list strong{font-family:var(--display);font-weight:400;font-size:28px;line-height:1;color:var(--navy)}
+@media(max-width:760px){.home-team__list{grid-template-columns:1fr}}
+.home-final-cta{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:24px 40px;padding:clamp(48px,5vw,72px) 6vw;background:linear-gradient(135deg,var(--navy-deep),var(--navy));color:var(--white)}
+.home-final-cta h2{margin:0;max-width:24ch;font-family:var(--display);font-weight:400;font-size:clamp(34px,3.6vw,60px);line-height:.95;text-wrap:balance}
+.home-final-cta>div{display:flex;flex-wrap:wrap;gap:14px}
+@media(max-width:560px){.home-final-cta>div,.home-final-cta .button{width:100%}.home-final-cta .button{justify-content:space-between}}
+
+/* === Producción: empresas colaboradoras === */
+.client-logos{padding:clamp(56px,6vw,84px) 0;background:var(--paper);overflow:hidden}
+.client-logos__head{display:flex;flex-wrap:wrap;align-items:end;justify-content:space-between;gap:16px;padding:0 6vw;margin-bottom:30px}
+.client-logos__title{margin:0;font-family:var(--display);font-weight:400;font-size:clamp(34px,3.4vw,56px);color:var(--navy)}
+.client-logos__viewport{overflow:hidden}
+.client-logos__track{display:flex;width:max-content;animation:client-logos-move 40s linear infinite}
+.client-logos__track:hover,.client-logos__track.is-paused{animation-play-state:paused}
+.client-logos__group{display:flex;align-items:center;gap:72px;min-width:100vw;margin:0;padding:0 36px;list-style:none;justify-content:space-around}
+.client-logos__group img{height:56px;width:auto;max-width:180px;object-fit:contain;filter:grayscale(1) contrast(1.1);opacity:.85}
+@keyframes client-logos-move{to{transform:translateX(-50%)}}
+@media(prefers-reduced-motion:reduce){.client-logos__track{animation:none;flex-wrap:wrap;width:auto}.client-logos__group[aria-hidden]{display:none}.client-logos__group{flex-wrap:wrap;min-width:0}}
+
+/* === Producción: reseñas con plataforma === */
+.review-card blockquote{margin:14px 0 18px}
+.review-card blockquote p{margin:0;font-size:clamp(17px,1.3vw,19px);line-height:1.4}
+.review-card figcaption{display:grid;gap:4px;border-top:1px solid rgba(21,54,111,.25);padding-top:14px}
+.review-card figcaption b{font-size:12px;font-weight:900;letter-spacing:.08em;text-transform:uppercase}
+.review-card figcaption small{font-size:13px;color:var(--cobalt)}
+.process--route .process-intro{display:block;margin:0 0 40px}
+.reviews .review-heading{display:grid;grid-template-columns:minmax(0,1fr) auto;align-items:end;gap:14px 24px}
+.reviews .review-heading h2{text-align:left;margin:0}
+.review-card figcaption small{color:inherit;opacity:.85}
