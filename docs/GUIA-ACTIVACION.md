@@ -1,76 +1,95 @@
 # Guía de activación de servicios (paso a paso)
 
-Regla general: **ninguna contraseña ni clave se escribe en el chat**. Las claves se pegan directamente en Vercel (Settings → Environment Variables) o se conectan mediante integraciones.
+**Ruta elegida: coste inicial cero y uso comercial.**
 
-**Proyectos de Vercel:**
+- Repositorio privado en GitHub.
+- **Netlify Free** para la web y el panel.
+- **Neon Free** para PostgreSQL.
+- **Cloudflare R2** para fotos y documentos.
+- El correo actual de `info@limpiezasgranalva.com`.
 
-- `granalva-preproduccion`: ya existe, en noindex.
-- `granalva`: se creará para producción, con su propia base de datos, almacenamiento y variables.
+No se contrata nada de pago sin tu autorización. La preproducción de Vercel (`granalva-preproduccion.vercel.app`) sigue disponible para revisar el diseño mientras tanto.
+
+**Verificación técnica de Netlify:**
+
+- Next.js 16 + Payload compilan sin errores con su adaptador oficial (v5.16.6).
+- La función del servidor ocupa 81 MB, por debajo del límite de 250 MB.
+- La publicación programada usa una función diaria (`netlify/functions/payload-jobs.mts`).
+- Queda por confirmar en el primer despliegue real la función perimetral de redirecciones (`proxy.ts`). Netlify la empaqueta con Deno, que no se puede descargar desde este entorno de trabajo.
+- **Alternativa si fallara:** mover las redirecciones a `netlify.toml` (estáticas) o pasar a Vercel Pro, con tu autorización.
+
+Regla general: **ninguna contraseña ni clave se escribe en el chat**. Se pegan en el panel del servicio (Netlify → Site configuration → Environment variables) o mediante el formulario seguro de credenciales de esta sesión.
+
+## Paso A. Repositorio privado en GitHub
+
+1. **Qué abrir:** https://github.com/new (tu cuenta personal).
+2. **Qué seleccionar:** nombre `granalva-web`, **Private**, sin README.
+3. **Variable:** ninguna.
+4. **Dónde:** dime el nombre `usuario/granalva-web` y conecta GitHub a esta sesión cuando el sistema te lo pida. Yo subiré la rama `feat/nextjs-payload` con su historial y sin secretos.
+5. **Comprobación:** verás el código en GitHub; `.env*` no se sube.
+6. **Coste:** 0 €.
+7. **Alternativa:** GitLab o Bitbucket privados (Netlify también los admite).
+
+## Paso B. Netlify (alojamiento)
+
+1. **Qué abrir:** https://app.netlify.com/signup → «Sign up with GitHub» → plan **Free**.
+2. **Qué seleccionar:**
+   - «Add new project» → «Import an existing project» → GitHub → `granalva-web`;
+   - rama `main` (producción).
+3. **Variables** (en Site configuration → Environment variables):
+   - `NEXT_PUBLIC_SITE_URL=https://limpiezasgranalva.com`;
+   - `PAYLOAD_SECRET` y `CRON_SECRET` (las genero yo con el formulario seguro);
+   - `NEXT_PUBLIC_NOINDEX=true` **solo** en «Deploy Previews» y «Branch deploys»;
+   - más las de los pasos C, D y E.
+4. **Dónde:** en Netlify. Para que yo configure el resto, crea un token en User settings → Applications → «Personal access tokens» y guárdalo con el formulario seguro que te mostraré (host `api.netlify.com`).
+5. **Comprobación:** despliegue de prueba en `*.netlify.app`. Comprobaré redirecciones, `noindex` y que el panel carga.
+6. **Coste:** 0 € en el plan Free (límites mensuales de ancho de banda y minutos de compilación suficientes para una web corporativa).
+7. **Alternativa:** Vercel Pro (unos 20 $/mes) o un Hostinger con Node.js si ya lo tienes contratado.
+
+## Paso C. Neon (PostgreSQL)
+
+1. **Qué abrir:** https://console.neon.tech → registrarse (Free).
+2. **Qué seleccionar:**
+   - «Create project» → nombre `granalva` → región **AWS Europe (Frankfurt)**;
+   - después, Branches → «Create branch» `preproduccion`.
+3. **Variables:** `DATABASE_URL`. Usa la cadena **pooled** (host con `-pooler`, `sslmode=require`), una por rama:
+   - `main` para producción;
+   - `preproduccion` para Deploy Previews.
+4. **Dónde:** en Netlify → Environment variables → `DATABASE_URL` con valores distintos por contexto (Production / Deploy Previews).
+5. **Comprobación:**
+   - el build aplica las migraciones (`scripts/vercel-build.mjs`);
+   - `/admin` mostrará «Crear primer usuario»;
+   - ejecutaré la carga inicial y las pruebas del panel.
+6. **Coste:** 0 € (plan Free: 0,5 GB y restauración a un punto reciente). La copia diaria adicional se documenta en `docs/MANUAL-PANEL.md`.
+7. **Alternativa:** Supabase Free.
+
+## Paso D. Cloudflare R2 (fotos y documentos)
+
+1. **Qué abrir:** https://dash.cloudflare.com → registrarse → R2.
+2. **Qué seleccionar:**
+   - «Create bucket» `granalva-medios` (y `granalva-medios-pre` para preproducción);
+   - después, «Manage R2 API Tokens» → «Create API token» → permiso **Object Read & Write** limitado a esos buckets.
+3. **Variables:** `S3_BUCKET`, `S3_ENDPOINT` (`https://<account-id>.r2.cloudflarestorage.com`), `S3_REGION=auto`, `S3_ACCESS_KEY_ID` y `S3_SECRET_ACCESS_KEY`.
+4. **Dónde:** en Netlify → Environment variables, con un bucket distinto por contexto.
+5. **Comprobación:** subiré, sustituiré y restauraré una foto en `/admin` y comprobaré que sobrevive a un redespliegue.
+6. **Coste:** 0 € hasta 10 GB y sin coste de descarga. Una web así usa menos de 1 GB.
+7. **Alternativa:** Vercel Blob (de pago fuera de Hobby) o Amazon S3.
+
+## Paso E. Correo (SMTP del buzón actual)
+
+1. **Qué abrir:** el panel del proveedor del buzón `info@limpiezasgranalva.com` → configuración de cliente de correo.
+2. **Qué anotar:** servidor SMTP, puerto (465 o 587) y usuario. Si el proveedor lo permite, crea una contraseña de aplicación.
+3. **Variables:** `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`, `EMAIL_FROM` y `CONTACT_TO_EMAIL`.
+4. **Dónde:** en Netlify → Environment variables, con `SMTP_PASS` marcada como secreta.
+5. **Comprobación:**
+   - solicitud de prueba con «Aviso por correo: Enviado» y recepción en tu buzón;
+   - «¿Olvidaste tu contraseña?».
+6. **Coste:** 0 €.
+7. **Alternativa:** Brevo Free. Requiere **añadir** registros DNS nuevos, sin tocar MX, SPF, DKIM ni DMARC.
 
 ---
 
-## Paso 1. Plan de Vercel
-
-1. **Qué abrir:** https://vercel.com → equipo **JESUS** → Settings → Billing.
-2. **Qué seleccionar:** «Upgrade to Pro».
-3. **Variable:** ninguna.
-4. **Dónde:** no aplica.
-5. **Comprobación:** consultaré el plan del equipo con el token que ya tengo.
-6. **Coste:** unos 20 $/mes por miembro (precio de Vercel, confírmalo en su web). El plan Hobby actual solo admite uso personal y no comercial según las condiciones de Vercel.
-7. **Alternativa:** otro alojamiento compatible con Next.js (Netlify, Railway o un VPS). Requiere rehacer la configuración de despliegue.
-
-## Paso 2. Base de datos PostgreSQL (Neon)
-
-1. **Qué abrir:** Vercel → proyecto `granalva-preproduccion` → pestaña **Storage** → «Create Database» → **Neon** (Serverless Postgres).
-2. **Qué seleccionar:**
-   - región **Frankfurt (eu-central-1)**;
-   - plan Free para preproducción;
-   - nombre `granalva-preproduccion`;
-   - «Connect Project» → `granalva-preproduccion`, entornos *Production* y *Preview*.
-3. **Variable:** `DATABASE_URL`. La integración la crea sola: conexión con *pooling* (host `-pooler`) y `sslmode=require`, adecuada para Vercel.
-4. **Dónde:** no hay que copiar nada; la integración la añade al proyecto.
-5. **Comprobación:**
-   - redesplegaré;
-   - el build aplicará las migraciones (`scripts/vercel-build.mjs`);
-   - `/api/users/init` responderá y `/admin` mostrará «Crear primer usuario».
-6. **Coste:** Free (0,5 GB y copia de restauración de corto plazo). Para producción se recomienda el plan de pago de Neon (unos 19 $/mes) por su historial de restauración más amplio. Confirma los precios en neon.tech.
-7. **Alternativas:** Supabase o Vercel Postgres de otros proveedores del Marketplace.
-
-**Producción:** se repite el mismo paso con el proyecto `granalva` y otra base de datos llamada `granalva-produccion`. Nunca se comparten datos ni se usa la base local.
-
-## Paso 3. Almacenamiento de fotos y documentos (Vercel Blob)
-
-1. **Qué abrir:** Vercel → proyecto `granalva-preproduccion` → **Storage** → «Create» → **Blob**.
-2. **Qué seleccionar:** nombre `granalva-medios-preproduccion` → «Connect» al proyecto.
-3. **Variable:** `BLOB_READ_WRITE_TOKEN`, creada automáticamente.
-4. **Dónde:** no hay que copiar nada.
-5. **Comprobación:** subiré una imagen de prueba en `/admin` y comprobaré que se sirve desde `*.public.blob.vercel-storage.com` y que sobrevive a un redespliegue.
-6. **Coste:** el plan incluye una cuota mensual; el exceso se cobra por GB, céntimos en este volumen.
-7. **Alternativa:** Cloudflare R2 o Amazon S3, con el adaptador S3 de Payload.
-
-## Paso 4. Correo (aviso de solicitudes y recuperación de contraseña)
-
-1. **Qué abrir:** el panel del proveedor donde está el buzón `info@limpiezasgranalva.com` (el mismo hosting o el servicio de correo actual). Busca «Configuración del cliente de correo / SMTP».
-2. **Qué anotar:**
-   - servidor SMTP;
-   - puerto (465 con SSL o 587 con STARTTLS);
-   - usuario: normalmente `info@limpiezasgranalva.com`;
-   - la contraseña del buzón o, mejor, una contraseña de aplicación.
-3. **Variables:**
-   - `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS`;
-   - `EMAIL_FROM=info@limpiezasgranalva.com`;
-   - `CONTACT_TO_EMAIL=info@limpiezasgranalva.com`.
-4. **Dónde:**
-   - Vercel → proyecto → Settings → Environment Variables → «Add»;
-   - marca `SMTP_PASS` como **Sensitive**;
-   - entornos Production y Preview.
-5. **Comprobación:**
-   - enviaré una solicitud de prueba: deberá quedar con «Aviso por correo: Enviado» y tú la recibirás;
-   - probaré «¿Olvidaste tu contraseña?».
-6. **Coste:** 0 € con el buzón actual.
-7. **Alternativa:** Resend o Brevo. Requieren **añadir** registros DNS de verificación, sin modificar MX, SPF, DKIM ni DMARC existentes; necesitarían tu autorización.
-
-**No se modifica ningún registro de correo** (MX, SPF, DKIM, DMARC).
+Los pasos siguientes (Search Console, copia de WordPress, zona DNS, fotografías y autorización final) no cambian:
 
 ## Paso 5. Search Console (obligatorio antes de publicar)
 
