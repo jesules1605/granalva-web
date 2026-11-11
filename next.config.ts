@@ -38,6 +38,11 @@ const nextConfig: NextConfig = {
   },
   // Las redirecciones (www, WordPress y barra final) se resuelven en proxy.ts con un único 301.
   skipTrailingSlashRedirect: true,
+  // Sitemaps antiguos de WordPress (Yoast/núcleo) que Search Console aún conoce: 301 al índice nuevo.
+  // Van aquí porque proxy.ts no procesa rutas .xml.
+  async redirects() {
+    return ["/page-sitemap.xml", "/post-sitemap.xml", "/sitemap_index.xml", "/wp-sitemap.xml", "/category-sitemap.xml", "/author-sitemap.xml"].map((source) => ({ source, destination: "/sitemap.xml", statusCode: 301 }));
+  },
   async headers() {
     return [
       {
