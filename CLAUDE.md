@@ -6,7 +6,7 @@ Este repositorio contiene la versión íntegra, funcional y publicada de la web 
 
 ## Estado publicado
 
-- Preproducción (noindex): `https://granalva.netlify.app` (Netlify Free + Neon + Cloudflare R2; panel en `/admin`). La antigua de Vercel queda solo como referencia de diseño. `PAYLOAD_SERVER_URL` (solo preproducción) hace que los enlaces de correo del panel apunten a Netlify: se elimina al publicar. Producción: `https://limpiezasgranalva.com` (WordPress hasta la autorización del cambio de DNS).
+- Preproducción (noindex): `https://granalva.netlify.app` (Netlify Free + Neon + Cloudflare R2; panel en `/admin`). La antigua de Vercel queda solo como referencia de diseño. Producción: `https://limpiezasgranalva.com` en Netlify, **publicada el 10 nov 2026** con autorización del propietario (A `@` → 75.2.60.5; CNAME `www` → granalva.netlify.app). Zona DNS anterior y reversión: `docs/DNS-ANTES-DE-PUBLICAR.md`. WordPress sigue intacto en 144.76.199.3. `NEXT_PUBLIC_NOINDEX=false` solo en el contexto production.
 - Audiencia: pública.
 - Idioma: español de España.
 - Stack: Next.js 16.4 estándar (App Router), React 19, TypeScript, CSS propio y **Payload CMS 3.93 + PostgreSQL** (panel en `/admin`). Vinext/Vite/Cloudflare se retiraron en la fase 1 (rama `feat/nextjs-payload`).
