@@ -3,7 +3,7 @@ import { getPayload } from "payload";
 import { hasSetupToken } from "../../../lib/setup-token";
 
 // Cuenta temporal para las pruebas automáticas en la preproducción real (rol admin,
-// nunca propietario). Solo con SETUP_TOKEN. POST crea o actualiza; DELETE la borra.
+// nunca propietario). Solo con SETUP_TOKEN. POST crea o actualiza; DELETE la borra junto con las solicitudes de prueba.
 // La contraseña la genera quien ejecuta las pruebas y no se guarda en ningún archivo.
 const EMAIL = "pruebas-automaticas@limpiezasgranalva.com";
 
@@ -25,5 +25,7 @@ export async function DELETE(request: Request) {
   if (!hasSetupToken(request)) return Response.json({ error: "No autorizado" }, { status: 403 });
   const payload = await getPayload({ config });
   const result = await payload.delete({ collection: "users", where: { email: { like: "pruebas-" } }, overrideAccess: true });
-  return Response.json({ ok: true, borradas: result.docs.map((doc) => doc.email) });
+  // Solicitudes generadas por las pruebas de extremo a extremo (correo ficticio reservado).
+  const submissions = await payload.delete({ collection: "contact-submissions", where: { email: { equals: "e2e@example.com" } }, overrideAccess: true });
+  return Response.json({ ok: true, borradas: result.docs.map((doc) => doc.email), solicitudesDePrueba: submissions.docs.length });
 }
