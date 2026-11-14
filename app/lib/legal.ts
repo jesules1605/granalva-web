@@ -3,7 +3,7 @@ import type { Crumb } from "./seo";
 import { absoluteUrl } from "./site";
 
 /** Fecha de la última revisión de los textos legales de la nueva web. */
-export const LEGAL_UPDATED = "2026-11-08";
+export const LEGAL_UPDATED = "2026-11-14";
 
 /** Metadatos de las páginas legales: canónicas, accesibles, sin indexar (no aportan búsqueda). */
 export const legalMetadata = (path: string, title: string, description: string): Metadata => ({

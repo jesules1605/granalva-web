@@ -6,6 +6,7 @@ import type { AdminViewServerProps } from "payload";
 import type { ReactNode } from "react";
 import { cloudflareStats, formErrorCount, ga4Stats, getAnalyticsSettings, googleConfigured, leadStats, period, searchConsoleStats } from "../../app/lib/analytics/server";
 import { SERVICE_OPTIONS } from "../../app/lib/contact-schema";
+import { UtmBuilder } from "../components/UtmBuilder";
 
 // «Analítica y rendimiento» (/admin/analitica). Solo propietario y administradores.
 // Cada bloque indica su fuente: las cifras de Cloudflare (todas las visitas, sin cookies),
@@ -258,6 +259,10 @@ export async function AnalyticsView({ initPageResult, params, searchParams }: Ad
             </Grid>
           </>
         )}
+      </Section>
+
+      <Section title="Generador de enlaces de campaña (UTM)" source="úsalo en correos, WhatsApp, redes, dossiers y códigos QR">
+        <UtmBuilder />
       </Section>
 
       <Section title="Herramientas y conexión" source="cuentas propiedad de Granalva">

@@ -10,7 +10,7 @@ Este repositorio contiene la versión íntegra, funcional y publicada de la web 
 - Audiencia: pública.
 - Idioma: español de España.
 - Stack: Next.js 16.4 estándar (App Router), React 19, TypeScript, CSS propio y **Payload CMS 3.93 + PostgreSQL** (panel en `/admin`). Vinext/Vite/Cloudflare se retiraron en la fase 1 (rama `feat/nextjs-payload`).
-- Calidad verificada: `npm run lint`, `npm test` (build + 19 pruebas SEO y de migración por HTTP), `npm run test:e2e` (formulario y duplicados), `npm run test:e2e:cms` (panel completo), `tests/e2e/cookies.e2e.mjs` (con `NEXT_PUBLIC_GA_ID`) y `tests/visual/qa.mjs` (20 rutas × 8 tamaños).
+- Calidad verificada: `npm run lint`, `npm test` (build + 19 pruebas SEO y de migración por HTTP), `npm run test:e2e` (formulario y duplicados), `npm run test:e2e:cms` (panel completo), `npm run test:e2e:analitica` (consentimiento, eventos y conversión única; con `NEXT_PUBLIC_GTM_ID` y `NEXT_PUBLIC_ANALYTICS_EXTRA_HOSTS=localhost`) y `tests/visual/qa.mjs` (20 rutas × 8 tamaños).
 - **Build:** `turbopackFileSystemCacheForBuild` está desactivado a propósito: la caché persistente llegó a servir un CSS desfasado. No lo reactives. Si algo del CSS no aparece, compila tras `rm -rf .next`.
 - Estructura: sitio público en `app/(frontend)/`, panel en `app/(payload)/` y 404 global en `app/global-not-found.tsx`.
 - Plan de trabajo vigente y estado de cada fase: `docs/IMPLEMENTATION-PLAN.md`.
@@ -42,6 +42,19 @@ Desde el 7 de noviembre de 2026 el objetivo prioritario es el máximo posicionam
   - listas de municipios o texto oculto.
 - **Acciones fuera de la web:** `docs/SEO-LOCAL-Y-AUTORIDAD.md`, `docs/CALENDARIO-EDITORIAL.md` y `docs/MEDICION-SEO.md`.
 - **Matriz y competencia:** `docs/SEO-MATRIX.md` (regenerar con `npm run seo:matrix -- http://localhost:3000 > docs/SEO-MATRIX.md`) y `docs/COMPETITOR-SEO-AUDIT.md`.
+
+## Analítica y conversiones
+
+Documentación completa: `docs/ANALITICA.md`. Panel: `/admin/analitica`.
+
+- **Diccionario único:** `app/lib/analytics/events.ts`. Lista blanca de parámetros; nunca datos personales en analítica.
+- **Capa de datos:** `track()` en `app/lib/analytics/client.ts`, solo con consentimiento y solo en el dominio definitivo.
+- **Escucha global:** `app/components/analytics/analytics-listener.tsx`. Clasifica los clics por `data-analytics-event`, `data-cta-location`, `data-service`, `data-audience` y `data-campaign`.
+- **Consentimiento v2:** `cookie-consent.tsx`. GTM y Clarity solo tras aceptar; registro de prueba en `consent-records`. Cloudflare Web Analytics va sin cookies (`CloudflareBeacon`).
+- **Conversión principal:** `quote_form_success`, solo cuando el servidor confirma la solicitud guardada; una vez por referencia, y los duplicados no cuentan.
+- **Contenedor GTM importable:** `docs/gtm/granalva-gtm-contenedor.json`, que se regenera con `node scripts/gtm-container.mjs`.
+- **Informes y alertas:** `netlify/functions/analytics-reports.mts`, que llama a `/api/analitica/informes`. Destinatarios en los «Ajustes de analítica».
+- **Al añadir un botón comercial:** usa un enlace a `/contacto`, `#contacto` o `?servicio=` (se detecta solo) o pon `data-analytics-event`. Si cambias el diccionario, actualiza la prueba `tests/e2e/analytics.e2e.mjs` y `docs/ANALITICA.md`.
 
 ## Formulario y Payload
 

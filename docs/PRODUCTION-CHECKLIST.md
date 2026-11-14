@@ -90,7 +90,7 @@ La implementación debe ser técnicamente excelente, pero nadie puede garantizar
 ### Hecho y verificado en local
 - Formulario real → PostgreSQL (Payload) con estados nuevo/contactado/presupuesto enviado/ganado/perdido, exportación CSV, anti-duplicados, campo trampa, tiempo mínimo, límite por IP y Turnstile opcional (`npm run test:e2e`).
 - Panel: servicios (SEO y portada con borradores, versiones y programación), blog con vista previa, medios en Vercel Blob, equipo, reseñas, empresas colaboradoras con autorización, redirecciones, ajustes y menú (`npm run test:e2e:cms`).
-- Textos legales con datos reales, aviso de cookies con Consent Mode v2 (`tests/e2e/cookies.e2e.mjs`), CSP, HSTS y Permissions-Policy.
+- Textos legales con datos reales, aviso de cookies con Consent Mode v2 (`tests/e2e/analytics.e2e.mjs`), CSP, HSTS y Permissions-Policy.
 - Mapa de redirecciones de WordPress verificado en `npm test` (`docs/redirecciones-wordpress.csv`).
 
 ### Variables por entorno (Vercel → Settings → Environment Variables)
@@ -103,7 +103,7 @@ La implementación debe ser técnicamente excelente, pero nadie puede garantizar
 | `BLOB_READ_WRITE_TOKEN` | almacén de preproducción | almacén de producción |
 | `SMTP_*`, `EMAIL_FROM`, `CONTACT_TO_EMAIL` | correo de pruebas | correo real |
 | `CRON_SECRET` | aleatoria | aleatoria |
-| `NEXT_PUBLIC_GA_ID`, Turnstile | opcional | cuando se faciliten |
+| `NEXT_PUBLIC_GTM_ID`, `NEXT_PUBLIC_CLARITY_ID`, `NEXT_PUBLIC_CF_BEACON_TOKEN`, OAuth de Google, `CF_API_TOKEN`, Turnstile | opcional | ver `docs/ANALITICA.md` |
 
 La canonical apunta siempre al dominio final, nunca a `*.vercel.app`; la preproducción se protege con `noindex` + `Disallow: /`.
 

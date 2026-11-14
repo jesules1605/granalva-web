@@ -46,9 +46,21 @@ function PoliticaPrivacidadDefault() {
           </tr>
           <tr>
             <td>Analítica web (solo si la aceptas)</td>
-            <td>Datos de navegación seudonimizados (cookies de Google Analytics)</td>
+            <td>Datos de navegación seudonimizados (Google Analytics y Microsoft Clarity): páginas vistas, clics, dispositivo, zona aproximada y origen de la visita. Nunca nombre, correo, teléfono ni el contenido de los formularios</td>
             <td>Conocer de forma agregada cómo se usa la web</td>
             <td>Tu consentimiento, revocable en <Link href="/politica-de-cookies">Configurar cookies</Link></td>
+          </tr>
+          <tr>
+            <td>Medición agregada sin cookies</td>
+            <td>Visitas y tiempos de carga sin identificadores (Cloudflare Web Analytics)</td>
+            <td>Conocer el volumen de visitas y la velocidad de la web</td>
+            <td>Interés legítimo en mantener y mejorar la web, sin acceso a tu dispositivo</td>
+          </tr>
+          <tr>
+            <td>Origen de tu solicitud</td>
+            <td>Página de entrada, página del formulario, web de procedencia y parámetros de campaña (utm), junto con tu solicitud</td>
+            <td>Saber qué páginas y campañas generan clientes</td>
+            <td>Interés legítimo; solo se usa dentro de {BUSINESS.name} y no se envía a ninguna plataforma de analítica</td>
           </tr>
         </tbody>
       </table>
@@ -60,11 +72,13 @@ function PoliticaPrivacidadDefault() {
       <h2>4. Destinatarios y encargados del tratamiento</h2>
       <p>No cedemos tus datos a terceros salvo obligación legal. Para que la web funcione, algunos proveedores tratan datos por cuenta de {BUSINESS.name} como encargados del tratamiento, con contrato y garantías adecuadas:</p>
       <ul>
-        <li>Alojamiento de la web y de los archivos: Vercel Inc.</li>
-        <li>Base de datos donde se registran las solicitudes: proveedor de base de datos en la nube contratado para la web.</li>
-        <li>Envío del aviso interno por correo electrónico: proveedor de correo de {BUSINESS.name}.</li>
+        <li>Alojamiento de la web: Netlify, Inc.</li>
+        <li>Base de datos donde se registran las solicitudes: Neon (Databricks, Inc.), servidores en Fráncfort (UE).</li>
+        <li>Almacenamiento de fotos y documentos de la web: Cloudflare, Inc. (R2).</li>
+        <li>Envío del aviso interno por correo electrónico: Google Ireland Limited (Google Workspace).</li>
         <li>Verificación antispam del formulario (cuando está activa): Cloudflare, Inc. (Turnstile).</li>
-        <li>Analítica, solo con tu consentimiento: Google Ireland Limited (Google Analytics).</li>
+        <li>Medición agregada sin cookies: Cloudflare, Inc. (Web Analytics).</li>
+        <li>Analítica, solo con tu consentimiento: Google Ireland Limited (Google Analytics y Google Tag Manager) y Microsoft Ireland Operations Limited (Microsoft Clarity).</li>
       </ul>
       <p>Algunos de estos proveedores pueden tratar datos fuera del Espacio Económico Europeo. En ese caso, la transferencia se ampara en el Marco de Privacidad de Datos UE-EE. UU. o en las cláusulas contractuales tipo de la Comisión Europea.</p>
 

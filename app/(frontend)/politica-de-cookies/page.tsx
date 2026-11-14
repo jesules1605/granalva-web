@@ -13,7 +13,7 @@ const defaultMetadata = legalMetadata("/politica-de-cookies", "Política de cook
 function PoliticaCookiesDefault() {
   return (
     <LegalPage title="Política de cookies" crumbs={legalCrumbs("/politica-de-cookies", "Política de cookies")} updatedAt={LEGAL_UPDATED}>
-      <p>Las cookies son pequeños archivos que la web guarda en tu navegador. Esta web usa solo las cookies técnicas imprescindibles y, únicamente si las aceptas, cookies de analítica. No usamos cookies publicitarias ni de redes sociales.</p>
+      <p>Las cookies son pequeños archivos que la web guarda en tu navegador. Esta web usa solo las cookies técnicas imprescindibles y, únicamente si las aceptas, cookies de analítica (Google Analytics y Microsoft Clarity). No usamos cookies publicitarias ni de redes sociales, ni hacemos publicidad personalizada.</p>
 
       <h2>Cambiar tu elección</h2>
       <p>Puedes aceptar, rechazar o cambiar tu elección cuando quieras: <CookieSettingsButton className="button button--outline-dark">Configurar cookies</CookieSettingsButton></p>
@@ -26,10 +26,16 @@ function PoliticaCookiesDefault() {
           <tr><td>granalva_consent</td><td>{BUSINESS.name}</td><td>Técnica. Guarda tu elección sobre las cookies.</td><td>12 meses</td></tr>
           <tr><td>payload-token</td><td>{BUSINESS.name}</td><td>Técnica. Solo para el personal que inicia sesión en el panel de gestión.</td><td>Sesión (máx. 8 horas)</td></tr>
           <tr><td>Verificación antispam (Turnstile)</td><td>Cloudflare, Inc.</td><td>Técnica de seguridad. Comprueba que el formulario lo envía una persona, cuando está activa.</td><td>Durante el envío</td></tr>
-          <tr><td>_ga, _ga_*</td><td>Google Ireland Limited</td><td>Analítica, <strong>solo con tu consentimiento</strong>. Distingue visitas de forma seudónima para medir el uso de la web.</td><td>Hasta 2 años</td></tr>
+          <tr><td>_ga, _ga_*</td><td>Google Ireland Limited</td><td>Analítica, <strong>solo con tu consentimiento</strong>. Distingue visitas de forma seudónima para medir el uso de la web (Google Analytics 4, a través de Google Tag Manager).</td><td>Hasta 2 años</td></tr>
+          <tr><td>_clck, _clsk, CLID, MUID</td><td>Microsoft Ireland Operations Limited</td><td>Analítica, <strong>solo con tu consentimiento</strong>. Microsoft Clarity: mapas de clics y de desplazamiento y grabaciones anónimas de la navegación para detectar problemas de uso. Los campos de los formularios se ocultan siempre y el panel de gestión no se graba.</td><td>De 1 día a 1 año</td></tr>
+          <tr><td>granalva-atribucion (almacenamiento de sesión)</td><td>{BUSINESS.name}</td><td>Analítica propia, <strong>solo con tu consentimiento</strong>. Recuerda durante la visita la página por la que entraste y la campaña de origen, para saber qué canales generan solicitudes. No sale de la web.</td><td>Hasta cerrar el navegador</td></tr>
         </tbody>
       </table>
-      <p>Google Analytics se configura con el modo de consentimiento: sin tu permiso no se carga, y la publicidad personalizada está siempre desactivada. Más información sobre el tratamiento de datos en la <Link href="/politica-de-privacidad">política de privacidad</Link>.</p>
+      <p>Google Analytics y Microsoft Clarity se cargan solo después de que aceptes la analítica (modo de consentimiento de Google en su versión básica). Si la rechazas o la retiras, no se cargan y se borran sus cookies. La publicidad personalizada está siempre desactivada.</p>
+      <h2>Medición sin cookies</h2>
+      <p>Además, usamos Cloudflare Web Analytics (Cloudflare, Inc.) para contar visitas de forma agregada y medir la velocidad de carga. No usa cookies ni almacena nada en tu navegador, no crea identificadores y no permite reconocerte entre visitas, por eso no requiere consentimiento. Más información en la <Link href="/politica-de-privacidad">política de privacidad</Link>.</p>
+      <h2>Prueba de tu elección</h2>
+      <p>Para poder demostrar tu decisión, guardamos un registro técnico con un identificador aleatorio (el mismo que contiene la cookie granalva_consent), la opción elegida, la versión del aviso, la página y la fecha. No incluye tu dirección IP ni ningún dato que te identifique. Se conserva 2 años.</p>
     </LegalPage>
   );
 }
