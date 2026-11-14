@@ -3,41 +3,44 @@
 import Link from "next/link";
 import Script from "next/script";
 import { useCallback, useEffect, useState, useSyncExternalStore } from "react";
+import { CONSENT_COOKIE, CONSENT_EVENT, CONSENT_VERSION, eventId, isProductionHost, readConsent, type ConsentChoice } from "../lib/analytics/client";
 
-// Consentimiento de cookies (RGPD, LSSI-CE art. 22.2 y guía de la AEPD):
-// - Sin elección, no se carga ninguna cookie opcional.
-// - «Aceptar» y «Rechazar» tienen el mismo peso; «Configurar» permite elegir.
-// - La elección se puede cambiar en cualquier momento (pie y política de cookies).
-// - Google Analytics solo se carga tras aceptar la analítica, con Consent Mode v2
-//   (anuncios siempre denegados). Al retirar el consentimiento se borran sus cookies.
-const COOKIE = "granalva_consent";
-const VERSION = 1;
+// Consentimiento de cookies (RGPD, LSSI-CE art. 22.2 y guía de la AEPD de 2023):
+// - Sin elección no se carga ninguna herramienta opcional (Consent Mode v2 en modo básico:
+//   Google Tag Manager, GA4 y Microsoft Clarity no existen en la página hasta aceptar).
+// - «Aceptar», «Rechazar» y «Configurar» en la primera capa, con el mismo peso visual.
+// - La elección se puede cambiar o retirar en cualquier momento (pie y política de cookies).
+// - Cada elección se registra como prueba técnica (identificador aleatorio, versión,
+//   fecha y decisión; sin IP ni datos personales) en /api/consentimiento.
+// - Publicidad: siempre denegada. Granalva no usa Google Ads ni remarketing.
+// - Cloudflare Web Analytics no usa cookies ni identificadores y va aparte (CloudflareBeacon).
 const OPEN_EVENT = "granalva:cookie-settings";
+const GTM_ID = process.env.NEXT_PUBLIC_GTM_ID ?? "";
+const CLARITY_ID = process.env.NEXT_PUBLIC_CLARITY_ID ?? "";
+const OPTIONAL_TOOLS = [GTM_ID ? "Google Analytics" : "", CLARITY_ID ? "Microsoft Clarity" : ""].filter(Boolean);
 
-type Choice = { v: number; analytics: boolean; date: string };
-
-function readChoice(): Choice | null {
-  const raw = document.cookie.split("; ").find((item) => item.startsWith(`${COOKIE}=`))?.slice(COOKIE.length + 1);
-  if (!raw) return null;
-  try {
-    const choice = JSON.parse(decodeURIComponent(raw)) as Choice;
-    return choice.v === VERSION ? choice : null;
-  } catch {
-    return null;
-  }
-}
-
-function saveChoice(analytics: boolean) {
-  const value = encodeURIComponent(JSON.stringify({ v: VERSION, analytics, date: new Date().toISOString() }));
+function saveChoice(analytics: boolean): ConsentChoice {
+  const choice: ConsentChoice = { v: CONSENT_VERSION, id: readConsent()?.id ?? eventId(), analytics, date: new Date().toISOString() };
   const secure = location.protocol === "https:" ? "; Secure" : "";
-  document.cookie = `${COOKIE}=${value}; Max-Age=${60 * 60 * 24 * 365}; Path=/; SameSite=Lax${secure}`;
+  document.cookie = `${CONSENT_COOKIE}=${encodeURIComponent(JSON.stringify(choice))}; Max-Age=${60 * 60 * 24 * 365}; Path=/; SameSite=Lax${secure}`;
+  // Prueba técnica del consentimiento (no bloquea la navegación).
+  const body = JSON.stringify({ id: choice.id, analytics, version: CONSENT_VERSION, path: location.pathname, tools: OPTIONAL_TOOLS });
+  try {
+    if (!navigator.sendBeacon?.("/api/consentimiento", new Blob([body], { type: "application/json" }))) {
+      void fetch("/api/consentimiento", { method: "POST", body, headers: { "content-type": "application/json" }, keepalive: true });
+    }
+  } catch {
+    /* sin red: la cookie sigue siendo válida */
+  }
+  return choice;
 }
 
+/** Borra las cookies de Google Analytics (_ga*) y Microsoft Clarity (_clck, _clsk, CLID). */
 function deleteAnalyticsCookies() {
   const host = location.hostname;
   const domains = ["", host, `.${host}`, `.${host.split(".").slice(-2).join(".")}`];
   for (const name of document.cookie.split("; ").map((item) => item.split("=")[0])) {
-    if (!name.startsWith("_ga")) continue;
+    if (!/^(_ga|_gid|_gat|_clck|_clsk|CLID)/.test(name)) continue;
     for (const domain of domains) document.cookie = `${name}=; Max-Age=0; Path=/${domain ? `; Domain=${domain}` : ""}`;
   }
 }
@@ -51,22 +54,24 @@ export function CookieSettingsButton({ className, children = "Configurar cookies
   return <button type="button" className={className ?? "link-button"} onClick={openCookieSettings}>{children}</button>;
 }
 
-type GtagWindow = Window & { gtag?: (...args: unknown[]) => void };
+type ToolWindow = Window & { gtag?: (...args: unknown[]) => void; clarity?: (...args: unknown[]) => void };
 
-export function CookieConsent({ gaId }: { gaId?: string }) {
+export function CookieConsent() {
   const hydrated = useSyncExternalStore(() => () => {}, () => true, () => false);
-  const [choice, setChoice] = useState<Choice | null | undefined>(undefined);
+  const [choice, setChoice] = useState<ConsentChoice | null | undefined>(undefined);
+  const [production, setProduction] = useState(false);
   const [panelOpen, setPanelOpen] = useState(false);
   const [analyticsDraft, setAnalyticsDraft] = useState(false);
 
   useEffect(() => {
-    const stored = readChoice();
-    // Lectura única de la cookie al montar (no hay suscripción externa que usar).
+    const stored = readConsent();
+    // Lectura única de la cookie y del dominio al montar.
     // eslint-disable-next-line react-hooks/set-state-in-effect
     setChoice(stored);
+    setProduction(isProductionHost());
     setAnalyticsDraft(Boolean(stored?.analytics));
     const open = () => {
-      setAnalyticsDraft(Boolean(readChoice()?.analytics));
+      setAnalyticsDraft(Boolean(readConsent()?.analytics));
       setPanelOpen(true);
     };
     window.addEventListener(OPEN_EVENT, open);
@@ -74,42 +79,54 @@ export function CookieConsent({ gaId }: { gaId?: string }) {
   }, []);
 
   const decide = useCallback((analytics: boolean) => {
-    saveChoice(analytics);
-    const gtag = (window as GtagWindow).gtag;
-    if (gtag) gtag("consent", "update", { analytics_storage: analytics ? "granted" : "denied" });
-    if (!analytics) deleteAnalyticsCookies();
-    setChoice({ v: VERSION, analytics, date: new Date().toISOString() });
+    const hadAnalytics = Boolean(readConsent()?.analytics);
+    const saved = saveChoice(analytics);
+    const w = window as ToolWindow;
+    if (!analytics) {
+      w.gtag?.("consent", "update", { analytics_storage: "denied" });
+      w.clarity?.("consentv2", { ad_Storage: "denied", analytics_Storage: "denied" });
+      deleteAnalyticsCookies();
+    }
+    setChoice(saved);
     setPanelOpen(false);
+    window.dispatchEvent(new Event(CONSENT_EVENT));
+    // Al retirar el consentimiento se recarga para descargar por completo GTM y Clarity.
+    if (hadAnalytics && !analytics) location.reload();
   }, []);
 
-  // Sin servicios opcionales no hay nada que consentir: no se muestra el aviso.
-  if (!gaId || !hydrated || choice === undefined) return null;
+  // Sin herramientas opcionales, o fuera del dominio definitivo, no hay nada que consentir.
+  if (!OPTIONAL_TOOLS.length || !hydrated || choice === undefined || !production) return null;
   const showBanner = choice === null || panelOpen;
+  const load = Boolean(choice?.analytics);
 
   return (
     <>
-      {choice?.analytics ? (
-        <>
-          <Script id="ga-consent" strategy="afterInteractive">
-            {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;
-gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted'});
-gtag('js',new Date());gtag('config','${gaId}',{anonymize_ip:true});`}
-          </Script>
-          <Script src={`https://www.googletagmanager.com/gtag/js?id=${gaId}`} strategy="afterInteractive" />
-        </>
+      {load && GTM_ID ? (
+        <Script id="gtm" strategy="afterInteractive">
+          {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;
+gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted',functionality_storage:'granted',security_storage:'granted'});
+gtag('set','ads_data_redaction',true);
+(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','${GTM_ID}');`}
+        </Script>
+      ) : null}
+      {load && CLARITY_ID ? (
+        <Script id="clarity" strategy="lazyOnload">
+          {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${CLARITY_ID}");
+window.clarity('consentv2',{ad_Storage:'denied',analytics_Storage:'granted'});`}
+        </Script>
       ) : null}
       {showBanner ? (
         <section className="cookie-banner" role="dialog" aria-modal="false" aria-labelledby="cookie-title" aria-describedby="cookie-text">
           <h2 id="cookie-title">Cookies en esta web</h2>
           <p id="cookie-text">
-            Usamos cookies técnicas necesarias y, solo si lo aceptas, cookies de analítica (Google Analytics) para saber de forma agregada cómo se usa la web.
+            Usamos cookies técnicas necesarias y, solo si lo aceptas, cookies de analítica ({OPTIONAL_TOOLS.join(" y ")}) para saber de forma agregada cómo se usa la web y mejorarla. No usamos publicidad.
             {" "}<Link href="/politica-de-cookies">Política de cookies</Link>.
           </p>
           {panelOpen ? (
             <fieldset className="cookie-banner__options">
               <legend className="visually-hidden">Preferencias de cookies</legend>
               <label><input type="checkbox" checked disabled /> Técnicas necesarias <small>(siempre activas)</small></label>
-              <label><input type="checkbox" checked={analyticsDraft} onChange={(event) => setAnalyticsDraft(event.target.checked)} /> Analítica (Google Analytics)</label>
+              <label><input type="checkbox" checked={analyticsDraft} onChange={(event) => setAnalyticsDraft(event.target.checked)} /> Analítica ({OPTIONAL_TOOLS.join(" y ")})</label>
             </fieldset>
           ) : null}
           <div className="cookie-banner__actions">
@@ -125,4 +142,19 @@ gtag('js',new Date());gtag('config','${gaId}',{anonymize_ip:true});`}
       ) : null}
     </>
   );
+}
+
+/**
+ * Cloudflare Web Analytics: medición agregada sin cookies ni identificadores
+ * (visitas, páginas, referentes, país, dispositivo y Core Web Vitals). Solo en el
+ * dominio definitivo. Funciona aunque el DNS no esté en Cloudflare (fragmento JS).
+ */
+export function CloudflareBeacon() {
+  const token = process.env.NEXT_PUBLIC_CF_BEACON_TOKEN;
+  const [production, setProduction] = useState(false);
+  // Comprobación única del dominio al montar.
+  // eslint-disable-next-line react-hooks/set-state-in-effect
+  useEffect(() => setProduction(isProductionHost()), []);
+  if (!token || !production) return null;
+  return <Script src="https://static.cloudflareinsights.com/beacon.min.js" strategy="afterInteractive" data-cf-beacon={JSON.stringify({ token, spa: true })} />;
 }

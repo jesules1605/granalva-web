@@ -12,6 +12,9 @@ import sharp from "sharp";
 import { Campaigns } from "./cms/collections/Campaigns";
 import { Categories } from "./cms/collections/Categories";
 import { ClientLogos } from "./cms/collections/ClientLogos";
+import { ConsentRecords } from "./cms/collections/ConsentRecords";
+import { SystemEvents } from "./cms/collections/SystemEvents";
+import { AnalyticsSettings } from "./cms/globals/AnalyticsSettings";
 import { ContactSubmissions } from "./cms/collections/ContactSubmissions";
 import { Media } from "./cms/collections/Media";
 import { Pages } from "./cms/collections/Pages";
@@ -62,8 +65,8 @@ export default buildConfig({
     importMap: { baseDir: path.resolve(dirname) },
   },
   i18n: { fallbackLanguage: "es", supportedLanguages: { es } },
-  collections: [ContactSubmissions, Pages, Campaigns, Services, Posts, Categories, Media, Team, Reviews, ClientLogos, Redirects, Users],
-  globals: [HomePage, SiteSettings, Navigation],
+  collections: [ContactSubmissions, Pages, Campaigns, Services, Posts, Categories, Media, Team, Reviews, ClientLogos, Redirects, ConsentRecords, SystemEvents, Users],
+  globals: [HomePage, SiteSettings, Navigation, AnalyticsSettings],
   // Subidas: máximo 15 MB por archivo (los tipos MIME se limitan en cada colección).
   upload: { limits: { fileSize: 15 * 1024 * 1024 } },
   // Medios persistentes (nunca el disco efímero del servidor):

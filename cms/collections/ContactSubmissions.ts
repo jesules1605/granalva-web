@@ -23,7 +23,7 @@ export const ContactSubmissions: CollectionConfig = {
   labels: { singular: "Solicitud", plural: "Solicitudes" },
   admin: {
     useAsTitle: "reference",
-    defaultColumns: ["reference", "createdAt", "status", "empresa", "contacto", "servicio", "formulario"],
+    defaultColumns: ["reference", "createdAt", "status", "empresa", "contacto", "servicio", "followUpDate", "estimatedAmount"],
     group: "Solicitudes",
     listSearchableFields: ["reference", "empresa", "contacto", "email", "telefono"],
     description: "Solicitudes de presupuesto y contacto recibidas en la web.",
@@ -37,6 +37,23 @@ export const ContactSubmissions: CollectionConfig = {
     delete: isOwner,
   },
   defaultSort: "-createdAt",
+  hooks: {
+    // Fechas del embudo comercial: se anotan la primera vez que la solicitud llega a cada estado.
+    beforeChange: [
+      ({ data, originalDoc }) => {
+        const now = new Date().toISOString();
+        const status = data.status ?? originalDoc?.status;
+        if (status === originalDoc?.status) return data;
+        if (status === "contactado" && !originalDoc?.contactedAt) data.contactedAt = now;
+        if (status === "presupuesto-enviado") {
+          if (!originalDoc?.contactedAt && !data.contactedAt) data.contactedAt = now;
+          if (!originalDoc?.quotedAt) data.quotedAt = now;
+        }
+        if ((status === "ganado" || status === "perdido") && !originalDoc?.closedAt) data.closedAt = now;
+        return data;
+      },
+    ],
+  },
   fields: [
     {
       type: "row",
@@ -54,7 +71,37 @@ export const ContactSubmissions: CollectionConfig = {
         { name: "assignedTo", label: "Responsable", type: "relationship", relationTo: "users" },
       ],
     },
+    {
+      type: "row",
+      fields: [
+        { name: "estimatedAmount", label: "Importe estimado (€ sin IVA)", type: "number", min: 0, admin: { description: "Opcional. Para saber qué canales generan facturación." } },
+        { name: "followUpDate", label: "Fecha de seguimiento", type: "date", admin: { date: { pickerAppearance: "dayOnly", displayFormat: "dd/MM/yyyy" } } },
+      ],
+    },
+    {
+      type: "row",
+      admin: { condition: (data) => data?.status === "perdido" },
+      fields: [
+        { name: "lostReason", label: "Motivo de pérdida", type: "select", options: [
+          { label: "Precio", value: "precio" },
+          { label: "Sin respuesta del cliente", value: "sin-respuesta" },
+          { label: "Servicio o zona que no prestamos", value: "fuera-de-servicio" },
+          { label: "Plazo o disponibilidad", value: "plazo" },
+          { label: "Eligió otra empresa", value: "competencia" },
+          { label: "Otro", value: "otro" },
+        ] },
+        { name: "lostReasonDetail", label: "Detalle del motivo", type: "text" },
+      ],
+    },
     { name: "notes", label: "Notas internas", type: "textarea" },
+    {
+      type: "row",
+      fields: [
+        { name: "contactedAt", label: "Contactada", type: "date", admin: { readOnly: true, description: "Fechas del embudo: se rellenan solas al cambiar el estado." } },
+        { name: "quotedAt", label: "Presupuesto enviado", type: "date", admin: { readOnly: true } },
+        { name: "closedAt", label: "Cerrada (ganada o perdida)", type: "date", admin: { readOnly: true } },
+      ],
+    },
     {
       type: "collapsible",
       label: "Datos de la solicitud",
@@ -90,6 +137,7 @@ export const ContactSubmissions: CollectionConfig = {
       admin: { initCollapsed: true },
       fields: [
         { name: "consentVersion", label: "Versión del texto de privacidad aceptado", type: "text", required: true },
+        { name: "analyticsConsent", label: "Cookies de analítica aceptadas al enviar", type: "checkbox", defaultValue: false, admin: { readOnly: true } },
         {
           name: "attribution",
           label: "Atribución",

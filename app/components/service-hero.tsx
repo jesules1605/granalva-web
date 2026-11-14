@@ -44,7 +44,7 @@ export function ServiceHero({ crumbs, eyebrow, title, tagline, image, imageAlt, 
   const style = { "--hero-overlay": String(overlay / 100), "--hero-focal": focal, "--hero-focal-mobile": mobile?.focal ?? focal } as CSSProperties;
 
   return (
-    <section className="s-hero" style={style}>
+    <section className="s-hero" style={style} data-cta-location="service_hero">
       <picture className="s-hero__media">
         {small ? <source media="(max-width: 760px)" srcSet={small.srcSet} sizes="100vw" /> : null}
         {/* eslint-disable-next-line jsx-a11y/alt-text -- props de getImageProps (incluye alt) */}

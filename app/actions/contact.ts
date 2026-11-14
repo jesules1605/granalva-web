@@ -3,6 +3,7 @@
 import { headers } from "next/headers";
 import { parseSubmission, type ContactFormState } from "../lib/contact-schema";
 import { storeSubmission } from "../lib/submissions";
+import { logSystemEvent } from "../lib/system-events";
 
 // Límite de frecuencia por IP: 5 envíos cada 10 minutos. En memoria del proceso:
 // en una plataforma con varias instancias es una protección básica, no absoluta
@@ -52,6 +53,7 @@ export async function submitContactRequest(_previous: ContactFormState, formData
   }
 
   if (!(await verifyTurnstile(String(formData.get("cf-turnstile-response") ?? ""), ip))) {
+    await logSystemEvent("form_verification", String(formData.get("pagina") ?? ""));
     return { status: "error", message: "No hemos podido verificar que no eres un robot. Vuelve a intentarlo." };
   }
 
@@ -62,16 +64,26 @@ export async function submitContactRequest(_previous: ContactFormState, formData
 
   try {
     const key = String(formData.get("submissionKey") ?? "");
-    const { reference, emailSent } = await storeSubmission(parsed.value, /^[0-9a-f-]{36}$/i.test(key) ? key : undefined);
+    // Estado de las cookies de analítica al enviar (solo para el registro interno).
+    const consentRaw = (requestHeaders.get("cookie") ?? "").split("; ").find((item) => item.startsWith("granalva_consent="))?.slice("granalva_consent=".length);
+    let analyticsConsent = false;
+    try {
+      analyticsConsent = Boolean(consentRaw && JSON.parse(decodeURIComponent(consentRaw)).analytics === true);
+    } catch {
+      analyticsConsent = false;
+    }
+    const { reference, emailSent, duplicate } = await storeSubmission({ ...parsed.value, analyticsConsent }, /^[0-9a-f-]{36}$/i.test(key) ? key : undefined);
     return {
       status: "ok",
       reference,
+      duplicate: Boolean(duplicate),
       message: emailSent
         ? `Hemos recibido tu solicitud (referencia ${reference}). El equipo de Granalva te contactará para estudiar tu caso.`
         : `Hemos registrado tu solicitud (referencia ${reference}). El equipo de Granalva te contactará para estudiar tu caso.`,
     };
   } catch (error) {
     console.error("[contacto] No se pudo registrar la solicitud", error instanceof Error ? error.message : error);
+    await logSystemEvent("form_error", String(formData.get("pagina") ?? ""), error instanceof Error ? error.message : "desconocido");
     return { status: "error", message: `No hemos podido registrar la solicitud por un problema técnico. ${FALLBACK}` };
   }
 }

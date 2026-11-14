@@ -37,6 +37,8 @@ export type ContactFormState = {
   status: "idle" | "ok" | "error";
   message: string;
   reference?: string;
+  /** La solicitud ya existía (doble envío): no cuenta como conversión nueva. */
+  duplicate?: boolean;
   fieldErrors?: Partial<Record<FieldName, string>>;
 };
 

@@ -143,7 +143,7 @@ export default async function Home() {
     ),
     sierra: (
       <>
-      <section className="sierra-block" id="sierra-nevada" aria-labelledby="sierra-title">
+      <section className="sierra-block" id="sierra-nevada" aria-labelledby="sierra-title" data-cta-location="home_sierra_nevada" data-service="lavanderia-sierra-nevada" data-audience="empresa" data-campaign={campaign?.key || undefined}>
               <div className="sierra-block__head">
                 <span className="sierra-block__label">{season.label}</span>
                 <h2 id="sierra-title">{h("sierra", <>{season.title}</>)}</h2>

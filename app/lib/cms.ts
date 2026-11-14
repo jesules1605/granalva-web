@@ -311,6 +311,8 @@ export const getHomeConfig = cache((draft = false) =>
 );
 
 export type CampaignBlock = {
+  /** Nombre técnico para analítica (campaign_name), derivado del título. */
+  key?: string;
   label: string;
   title: string;
   text: string;
@@ -333,6 +335,7 @@ export const getActiveCampaign = cache(() =>
     const c = result.docs[0];
     if (!c) return null;
     return {
+      key: c.title.normalize("NFD").replace(/[\u0300-\u036f]/g, "").toLowerCase().replace(/[^a-z0-9]+/g, "_").replace(/^_|_$/g, "").slice(0, 60),
       label: c.label,
       title: c.title,
       text: c.text,

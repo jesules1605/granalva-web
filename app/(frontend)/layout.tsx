@@ -1,7 +1,8 @@
 import type { Metadata, Viewport } from "next";
 import { preload } from "react-dom";
 import "../globals.css";
-import { CookieConsent } from "../components/cookie-consent";
+import { AnalyticsListener } from "../components/analytics/analytics-listener";
+import { CloudflareBeacon, CookieConsent } from "../components/cookie-consent";
 import { getBusinessExtras, getSiteSettings } from "../lib/cms";
 import { jsonLdString, organizationJsonLd, websiteJsonLd } from "../lib/seo";
 import { servicePages, SITE_URL } from "../lib/services";
@@ -61,7 +62,9 @@ export default async function RootLayout({ children }: Readonly<{ children: Reac
       <body className="antialiased">
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: jsonLdString(structuredData) }} />
         {children}
-        <CookieConsent gaId={process.env.NEXT_PUBLIC_GA_ID || undefined} />
+        <AnalyticsListener />
+        <CookieConsent />
+        <CloudflareBeacon />
       </body>
     </html>
   );

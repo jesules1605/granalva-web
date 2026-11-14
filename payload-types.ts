@@ -78,6 +78,8 @@ export interface Config {
     reviews: Review;
     'client-logos': ClientLogo;
     redirects: Redirect;
+    'consent-records': ConsentRecord;
+    'system-events': SystemEvent;
     users: User;
     'payload-kv': PayloadKv;
     'payload-jobs': PayloadJob;
@@ -98,6 +100,8 @@ export interface Config {
     reviews: ReviewsSelect<false> | ReviewsSelect<true>;
     'client-logos': ClientLogosSelect<false> | ClientLogosSelect<true>;
     redirects: RedirectsSelect<false> | RedirectsSelect<true>;
+    'consent-records': ConsentRecordsSelect<false> | ConsentRecordsSelect<true>;
+    'system-events': SystemEventsSelect<false> | SystemEventsSelect<true>;
     users: UsersSelect<false> | UsersSelect<true>;
     'payload-kv': PayloadKvSelect<false> | PayloadKvSelect<true>;
     'payload-jobs': PayloadJobsSelect<false> | PayloadJobsSelect<true>;
@@ -113,11 +117,13 @@ export interface Config {
     'home-page': HomePage;
     'site-settings': SiteSetting;
     navigation: Navigation;
+    'analytics-settings': AnalyticsSetting;
   };
   globalsSelect: {
     'home-page': HomePageSelect<false> | HomePageSelect<true>;
     'site-settings': SiteSettingsSelect<false> | SiteSettingsSelect<true>;
     navigation: NavigationSelect<false> | NavigationSelect<true>;
+    'analytics-settings': AnalyticsSettingsSelect<false> | AnalyticsSettingsSelect<true>;
   };
   locale: null;
   widgets: {
@@ -164,7 +170,17 @@ export interface ContactSubmission {
   reference: string;
   status: 'nuevo' | 'contactado' | 'presupuesto-enviado' | 'ganado' | 'perdido' | 'spam';
   assignedTo?: (number | null) | User;
+  /**
+   * Opcional. Para saber qué canales generan facturación.
+   */
+  estimatedAmount?: number | null;
+  followUpDate?: string | null;
+  lostReason?: ('precio' | 'sin-respuesta' | 'fuera-de-servicio' | 'plazo' | 'competencia' | 'otro') | null;
+  lostReasonDetail?: string | null;
   notes?: string | null;
+  contactedAt?: string | null;
+  quotedAt?: string | null;
+  closedAt?: string | null;
   tipoCliente: string;
   servicio:
     | 'empresa-limpieza-granada'
@@ -190,6 +206,7 @@ export interface ContactSubmission {
   inicio?: string | null;
   mensaje?: string | null;
   consentVersion: string;
+  analyticsConsent?: boolean | null;
   attribution?: {
     pagina?: string | null;
     paginaEntrada?: string | null;
@@ -514,7 +531,6 @@ export interface Media {
       )
     | null;
   realPhoto?: boolean | null;
-  _objectKey?: string | null;
   updatedAt: string;
   createdAt: string;
   url?: string | null;
@@ -752,6 +768,36 @@ export interface Redirect {
   createdAt: string;
 }
 /**
+ * Prueba técnica de las decisiones sobre cookies. Sin datos personales.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consent-records".
+ */
+export interface ConsentRecord {
+  id: number;
+  consentId: string;
+  analytics?: boolean | null;
+  version: number;
+  tools?: string | null;
+  path?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
+ * Errores técnicos registrados por la web (sin datos personales).
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "system-events".
+ */
+export interface SystemEvent {
+  id: number;
+  type: 'form_error' | 'form_verification' | 'email_error';
+  path?: string | null;
+  detail?: string | null;
+  updatedAt: string;
+  createdAt: string;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "payload-kv".
  */
@@ -912,6 +958,14 @@ export interface PayloadLockedDocument {
         value: number | Redirect;
       } | null)
     | ({
+        relationTo: 'consent-records';
+        value: number | ConsentRecord;
+      } | null)
+    | ({
+        relationTo: 'system-events';
+        value: number | SystemEvent;
+      } | null)
+    | ({
         relationTo: 'users';
         value: number | User;
       } | null);
@@ -965,7 +1019,14 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   reference?: T;
   status?: T;
   assignedTo?: T;
+  estimatedAmount?: T;
+  followUpDate?: T;
+  lostReason?: T;
+  lostReasonDetail?: T;
   notes?: T;
+  contactedAt?: T;
+  quotedAt?: T;
+  closedAt?: T;
   tipoCliente?: T;
   servicio?: T;
   formulario?: T;
@@ -980,6 +1041,7 @@ export interface ContactSubmissionsSelect<T extends boolean = true> {
   inicio?: T;
   mensaje?: T;
   consentVersion?: T;
+  analyticsConsent?: T;
   attribution?:
     | T
     | {
@@ -1300,7 +1362,6 @@ export interface MediaSelect<T extends boolean = true> {
   credit?: T;
   category?: T;
   realPhoto?: T;
-  _objectKey?: T;
   updatedAt?: T;
   createdAt?: T;
   url?: T;
@@ -1392,6 +1453,30 @@ export interface RedirectsSelect<T extends boolean = true> {
   to?: T;
   type?: T;
   note?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "consent-records_select".
+ */
+export interface ConsentRecordsSelect<T extends boolean = true> {
+  consentId?: T;
+  analytics?: T;
+  version?: T;
+  tools?: T;
+  path?: T;
+  updatedAt?: T;
+  createdAt?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "system-events_select".
+ */
+export interface SystemEventsSelect<T extends boolean = true> {
+  type?: T;
+  path?: T;
+  detail?: T;
   updatedAt?: T;
   createdAt?: T;
 }
@@ -1624,6 +1709,58 @@ export interface Navigation {
   createdAt?: string | null;
 }
 /**
+ * Identificadores de las cuentas de Granalva, destinatarios de informes y umbrales de alerta.
+ *
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-settings".
+ */
+export interface AnalyticsSetting {
+  id: number;
+  ga4MeasurementId?: string | null;
+  /**
+   * Administrar → Detalles de la propiedad. Necesario para el panel.
+   */
+  ga4PropertyId?: string | null;
+  gtmContainerId?: string | null;
+  clarityProjectId?: string | null;
+  /**
+   * Identificador del sitio (no es el token del fragmento).
+   */
+  cloudflareSiteTag?: string | null;
+  searchConsoleProperty?: string | null;
+  lookerStudioUrl?: string | null;
+  recipients?:
+    | {
+        email: string;
+        id?: string | null;
+      }[]
+    | null;
+  weeklyReport?: boolean | null;
+  monthlyReport?: boolean | null;
+  alerts?: boolean | null;
+  noLeadsDays?: number | null;
+  formErrorsPerDay?: number | null;
+  organicDropPercent?: number | null;
+  notFoundIncreasePercent?: number | null;
+  lcpThresholdMs?: number | null;
+  inpThresholdMs?: number | null;
+  clsThreshold?: number | null;
+  googleConnectedEmail?: string | null;
+  googleConnectedAt?: string | null;
+  googleRefreshToken?: string | null;
+  alertState?:
+    | {
+        [k: string]: unknown;
+      }
+    | unknown[]
+    | string
+    | number
+    | boolean
+    | null;
+  updatedAt?: string | null;
+  createdAt?: string | null;
+}
+/**
  * This interface was referenced by `Config`'s JSON-Schema
  * via the `definition` "home-page_select".
  */
@@ -1717,6 +1854,42 @@ export interface NavigationSelect<T extends boolean = true> {
         href?: T;
         id?: T;
       };
+  updatedAt?: T;
+  createdAt?: T;
+  globalType?: T;
+}
+/**
+ * This interface was referenced by `Config`'s JSON-Schema
+ * via the `definition` "analytics-settings_select".
+ */
+export interface AnalyticsSettingsSelect<T extends boolean = true> {
+  ga4MeasurementId?: T;
+  ga4PropertyId?: T;
+  gtmContainerId?: T;
+  clarityProjectId?: T;
+  cloudflareSiteTag?: T;
+  searchConsoleProperty?: T;
+  lookerStudioUrl?: T;
+  recipients?:
+    | T
+    | {
+        email?: T;
+        id?: T;
+      };
+  weeklyReport?: T;
+  monthlyReport?: T;
+  alerts?: T;
+  noLeadsDays?: T;
+  formErrorsPerDay?: T;
+  organicDropPercent?: T;
+  notFoundIncreasePercent?: T;
+  lcpThresholdMs?: T;
+  inpThresholdMs?: T;
+  clsThreshold?: T;
+  googleConnectedEmail?: T;
+  googleConnectedAt?: T;
+  googleRefreshToken?: T;
+  alertState?: T;
   updatedAt?: T;
   createdAt?: T;
   globalType?: T;

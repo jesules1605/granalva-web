@@ -16,7 +16,7 @@ export function Reviews({ reviews }: { reviews: Review[] }) {
       <div className="review-heading">
         <span className="section-number">RESEÑAS DE CLIENTES EN GOOGLE</span>
         <h2 id="reviews-title">La experiencia<br /><em>también se demuestra.</em></h2>
-        <button type="button" className="review-toggle" onClick={() => setReviewsPaused((paused) => !paused)} aria-pressed={reviewsPaused}>
+        <button type="button" className="review-toggle" data-analytics-event="review_interaction" data-analytics-id="reviews_pause" onClick={() => setReviewsPaused((paused) => !paused)} aria-pressed={reviewsPaused}>
           {reviewsPaused ? "Reanudar" : "Pausar"} <span aria-hidden="true">{reviewsPaused ? "▶" : "Ⅱ"}</span>
         </button>
       </div>

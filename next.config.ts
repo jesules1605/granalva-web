@@ -4,15 +4,16 @@ import type { NextConfig } from "next";
 // Política de seguridad de contenidos de la web pública. Las páginas son estáticas
 // (sin nonce), por eso los scripts en línea de Next se permiten con 'unsafe-inline';
 // los orígenes externos se limitan a los servicios realmente usados:
-// Google Analytics (solo tras consentimiento), Cloudflare Turnstile y Vercel Blob.
+// Google Tag Manager/GA4 y Microsoft Clarity (solo tras consentimiento), Cloudflare Web
+// Analytics (sin cookies), Cloudflare Turnstile y Vercel Blob.
 const CSP = [
   "default-src 'self'",
-  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com",
+  "script-src 'self' 'unsafe-inline' https://www.googletagmanager.com https://challenges.cloudflare.com https://www.clarity.ms https://*.clarity.ms https://static.cloudflareinsights.com",
   "style-src 'self' 'unsafe-inline'",
-  "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://*.google-analytics.com https://www.googletagmanager.com",
+  "img-src 'self' data: blob: https://*.public.blob.vercel-storage.com https://*.google-analytics.com https://www.googletagmanager.com https://*.clarity.ms https://c.bing.com",
   "media-src 'self' https://*.public.blob.vercel-storage.com",
   "font-src 'self'",
-  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://challenges.cloudflare.com",
+  "connect-src 'self' https://*.google-analytics.com https://*.analytics.google.com https://www.googletagmanager.com https://challenges.cloudflare.com https://*.clarity.ms https://cloudflareinsights.com",
   "frame-src https://challenges.cloudflare.com",
   "object-src 'none'",
   "base-uri 'self'",

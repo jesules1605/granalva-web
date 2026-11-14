@@ -47,7 +47,7 @@ export async function SiteHeader() {
           {links.map((link) => <Link key={link.href} href={link.href}>{link.label}</Link>)}
         </nav>
         <div className="header-actions">
-          <Link className="button button--dark header-cta" href="/contacto#formulario">Solicitar presupuesto <span>↗</span></Link>
+          <Link className="button button--dark header-cta" href="/contacto#formulario" data-analytics-id="header_quote" data-cta-location="header">Solicitar presupuesto <span>↗</span></Link>
           <MobileNav links={links} services={serviceLinks} phone={{ href: `tel:${settings.phoneE164}`, label: settings.phoneDisplay }} />
         </div>
       </header>
@@ -85,7 +85,7 @@ export async function SiteFooter() {
         <a href={`mailto:${settings.email}`}>{settings.email}</a>
         <span>{settings.areaServedLabel}</span>
         {extras.openingHours ? <span>{extras.openingHours}</span> : null}
-        {extras.orderUrl ? <a href={extras.orderUrl}>Hacer un pedido de lavandería</a> : null}
+        {extras.orderUrl ? <a href={extras.orderUrl} data-analytics-event="app_order_click" data-analytics-id="footer_app_order" data-audience="particular">Hacer un pedido de lavandería</a> : null}
         <Link href="/contacto">Contacto y presupuestos</Link>
         <Link href="/sobre-nosotros">Sobre nosotros</Link>
         <Link href="/referencias">Referencias y opiniones</Link>

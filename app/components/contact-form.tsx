@@ -4,6 +4,9 @@ import Link from "next/link";
 import Script from "next/script";
 import { startTransition, useActionState, useEffect, useRef, type FormEvent } from "react";
 import { submitContactRequest } from "../actions/contact";
+import { eventId, track } from "../lib/analytics/client";
+import { pageInfo } from "../lib/analytics/events";
+import { ATTRIBUTION_KEY } from "./analytics/analytics-listener";
 import { BUSINESS_TYPES, FREQUENCIES, SERVICE_OPTIONS, type ContactFormState, type FieldName } from "../lib/contact-schema";
 import { BUSINESS } from "../lib/site";
 
@@ -46,17 +49,15 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
     const sizes: Record<string, string> = { poco: "hasta 4 kg", diario: "hasta 8 kg", mucho: "hasta 12 kg" };
     if (colada && sizes[colada]) set("volumen", `Colada ${colada} (${sizes[colada]})`);
 
+    // Origen de la visita: lo guarda AnalyticsListener solo con consentimiento de analítica.
+    // Sin él, se usan la página y los parámetros UTM actuales, sin almacenar nada.
     let firstTouch: Record<string, string> = {};
     try {
-      firstTouch = JSON.parse(sessionStorage.getItem("granalva-atribucion") ?? "{}");
-      if (!firstTouch.paginaEntrada) {
-        firstTouch = { paginaEntrada: window.location.pathname, referrer: document.referrer };
-        for (const key of UTM_KEYS) if (params.get(key)) firstTouch[key] = params.get(key) ?? "";
-        sessionStorage.setItem("granalva-atribucion", JSON.stringify(firstTouch));
-      }
+      firstTouch = JSON.parse(sessionStorage.getItem(ATTRIBUTION_KEY) ?? "{}");
     } catch {
-      firstTouch = { paginaEntrada: window.location.pathname, referrer: document.referrer };
+      firstTouch = {};
     }
+    if (!firstTouch.paginaEntrada) firstTouch = { paginaEntrada: window.location.pathname, referrer: document.referrer.startsWith(window.location.origin) ? "" : document.referrer };
     set("pagina", window.location.pathname + window.location.search);
     set("paginaEntrada", firstTouch.paginaEntrada ?? "");
     set("referrer", firstTouch.referrer ?? "");
@@ -71,10 +72,62 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
     if (state.status !== "idle") statusRef.current?.focus();
   }, [state]);
 
+  // Analítica del formulario (sin datos personales: solo tipo de formulario, servicio y ubicación).
+  const started = useRef(false);
+  const reported = useRef<string | null>(null);
+  const lastParams = useRef<Record<string, unknown>>({});
+  const baseParams = () => {
+    const form = formRef.current;
+    const service = (form?.elements.namedItem("servicio") as HTMLSelectElement | null)?.value || defaultService || pageInfo(location.pathname).service_slug;
+    const client = (form?.elements.namedItem("tipoCliente") as HTMLSelectElement | null)?.value;
+    return { form_type: variant, service_slug: service, audience_type: client ? (client === "Particular" ? "particular" : "empresa") : pageInfo(location.pathname).audience_type, page_type: pageInfo(location.pathname).page_type };
+  };
+
+  // Vista del formulario: una vez, cuando entra en pantalla.
+  useEffect(() => {
+    const form = formRef.current;
+    if (!form) return;
+    const observer = new IntersectionObserver((entries) => {
+      if (entries.some((entry) => entry.isIntersecting) && track("quote_form_view", baseParams())) observer.disconnect();
+    }, { threshold: 0.3 });
+    observer.observe(form);
+    return () => observer.disconnect();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  // Resultado: conversión solo cuando el servidor confirma la solicitud guardada (una vez por referencia).
+  useEffect(() => {
+    if (state.status === "ok" && state.reference && !state.duplicate && reported.current !== state.reference) {
+      reported.current = state.reference;
+      let already = false;
+      try {
+        already = sessionStorage.getItem(`granalva-conversion-${state.reference}`) === "1";
+        sessionStorage.setItem(`granalva-conversion-${state.reference}`, "1");
+      } catch {
+        /* sin almacenamiento: basta con la protección en memoria */
+      }
+      if (!already) track("quote_form_success", { ...lastParams.current, conversion_type: "quote_form", event_id: eventId() });
+    } else if (state.status === "error") {
+      const fields = Object.keys(state.fieldErrors ?? {}).length;
+      track(fields ? "quote_form_validation_error" : "quote_form_error", { ...lastParams.current, form_field_count: fields || undefined, conversion_type: fields ? "server_validation" : "server_error" });
+    }
+  }, [state]);
+
+  const onFirstInteraction = () => {
+    if (started.current) return;
+    if (track("quote_form_start", baseParams())) started.current = true;
+  };
+  const onInvalid = () => {
+    // El navegador marca varios campos a la vez: se cuenta un único error por intento.
+    track("quote_form_validation_error", { ...baseParams(), conversion_type: "browser_validation" });
+  };
+
   // Con JavaScript, el envío se hace en una transición propia para que React no
   // vacíe el formulario (comportamiento por defecto de `action`) si hay errores.
   const onSubmit = (event: FormEvent<HTMLFormElement>) => {
     event.preventDefault();
+    lastParams.current = baseParams();
+    track("quote_form_submit", lastParams.current);
     const data = new FormData(event.currentTarget);
     startTransition(() => action(data));
   };
@@ -95,7 +148,7 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
   }
 
   return (
-    <form ref={formRef} className="contact-form" action={action} onSubmit={onSubmit} aria-describedby={`${variant}-form-note`}>
+    <form ref={formRef} className="contact-form" action={action} onSubmit={onSubmit} onFocus={onFirstInteraction} onInvalidCapture={onInvalid} aria-describedby={`${variant}-form-note`} data-clarity-mask="true" data-analytics-form={variant}>
       <div className="form-heading"><span>{copy.eyebrow}</span><b>GRANALVA</b></div>
       <Heading className="contact-form__title">{copy.title}</Heading>
 
@@ -131,7 +184,7 @@ export function ContactForm({ variant = "general", defaultService = "", headingL
         </label>
       </div>
 
-      <details className="form-more" open={variant === "sierra-nevada"}>
+      <details className="form-more" open={variant === "sierra-nevada"} onToggle={(event) => { if (event.currentTarget.open && variant !== "sierra-nevada") track("quote_form_step", { ...baseParams(), form_step: "datos_operativos" }); }}>
         <summary>Añadir datos operativos <small>(opcional, nos ayuda a preparar la propuesta)</small></summary>
         <div className="form-grid">
           <label>Ubicación

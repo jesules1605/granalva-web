@@ -22,7 +22,7 @@ export function HomeHero({ hero }: { hero: HomeHeroData }) {
   const style = { "--hero-overlay": String(hero.overlay / 100), "--hero-focal": hero.desktop.focal, "--hero-focal-mobile": hero.mobile.focal } as CSSProperties;
 
   return (
-    <section className={hero.zoom ? "hero hero--business hero--zoom" : "hero hero--business"} id="inicio" style={style}>
+    <section className={hero.zoom ? "hero hero--business hero--zoom" : "hero hero--business"} id="inicio" style={style} data-cta-location="home_hero">
       <picture className="hero-photo">
         <source media="(max-width: 760px)" srcSet={mobile.srcSet} sizes="100vw" />
         {/* eslint-disable-next-line jsx-a11y/alt-text -- props de getImageProps (incluye alt) */}

@@ -68,7 +68,7 @@ export function MobileNav({ links, services, phone }: { links: NavLink[]; servic
         <span aria-hidden="true" />
       </button>
       {mounted && createPortal(
-        <div ref={panelRef} id={panelId} className="mobile-nav__panel" hidden={!open}>
+        <div ref={panelRef} id={panelId} className="mobile-nav__panel" hidden={!open} data-mobile-nav data-cta-location="mobile_menu">
           <nav aria-label="Menú principal">
             <ul className="mobile-nav__main">
               {links.map((link) => (

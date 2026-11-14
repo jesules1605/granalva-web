@@ -5,6 +5,7 @@ import type { ContactSubmission as SubmissionDoc } from "../../payload-types";
 import type { ContactSubmission } from "./contact-schema";
 import { SERVICE_OPTIONS } from "./contact-schema";
 import { SITE_URL } from "./services";
+import { logSystemEvent } from "./system-events";
 
 /** Referencia legible para el cliente: GRN-AAAAMMDD-XXXX. */
 function newReference() {
@@ -19,7 +20,7 @@ function newReference() {
  * registrada con `emailStatus` = error para reintentarla desde el panel.
  * No se envía ninguna respuesta automática al cliente.
  */
-export async function storeSubmission(data: ContactSubmission, submissionKey?: string): Promise<{ reference: string; emailSent: boolean; duplicate?: boolean }> {
+export async function storeSubmission(data: ContactSubmission & { analyticsConsent?: boolean }, submissionKey?: string): Promise<{ reference: string; emailSent: boolean; duplicate?: boolean }> {
   if (!process.env.DATABASE_URL || !process.env.PAYLOAD_SECRET) {
     throw new Error("Payload no está configurado (DATABASE_URL / PAYLOAD_SECRET).");
   }
@@ -85,6 +86,7 @@ export async function storeSubmission(data: ContactSubmission, submissionKey?: s
       overrideAccess: true,
       data: { emailStatus: "error", emailError: error instanceof Error ? error.message.slice(0, 250) : "Error desconocido" },
     });
+    await logSystemEvent("email_error", data.attribution.pagina, error instanceof Error ? error.message : undefined);
     return { reference, emailSent: false };
   }
 }

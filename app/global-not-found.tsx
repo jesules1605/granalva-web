@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import { NotFoundView, notFoundMetadata } from "./components/not-found-view";
+import { AnalyticsListener } from "./components/analytics/analytics-listener";
+import { CloudflareBeacon, CookieConsent } from "./components/cookie-consent";
 
 // La app tiene dos layouts raíz (web pública y panel de Payload), así que las URLs
 // que no coinciden con ninguna ruta usan esta 404 global (documentación de Next:
@@ -12,6 +14,9 @@ export default function GlobalNotFound() {
     <html lang="es">
       <body className="antialiased">
         <NotFoundView />
+        <AnalyticsListener pageType="not_found" />
+        <CookieConsent />
+        <CloudflareBeacon />
       </body>
     </html>
   );
