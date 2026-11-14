@@ -83,8 +83,8 @@ export function CookieConsent() {
     const saved = saveChoice(analytics);
     const w = window as ToolWindow;
     if (!analytics) {
-      w.gtag?.("consent", "update", { analytics_storage: "denied" });
-      w.clarity?.("consentv2", { ad_Storage: "denied", analytics_Storage: "denied" });
+      if (typeof w.gtag === "function") w.gtag("consent", "update", { analytics_storage: "denied" });
+      if (typeof w.clarity === "function") w.clarity("consentv2", { ad_Storage: "denied", analytics_Storage: "denied" });
       deleteAnalyticsCookies();
     }
     setChoice(saved);
@@ -102,7 +102,7 @@ export function CookieConsent() {
   return (
     <>
       {load && GTM_ID ? (
-        <Script id="gtm" strategy="afterInteractive">
+        <Script id="gtm-init" strategy="afterInteractive">
           {`window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}window.gtag=gtag;
 gtag('consent','default',{ad_storage:'denied',ad_user_data:'denied',ad_personalization:'denied',analytics_storage:'granted',functionality_storage:'granted',security_storage:'granted'});
 gtag('set','ads_data_redaction',true);
@@ -110,7 +110,7 @@ gtag('set','ads_data_redaction',true);
         </Script>
       ) : null}
       {load && CLARITY_ID ? (
-        <Script id="clarity" strategy="lazyOnload">
+        <Script id="ms-clarity-init" strategy="lazyOnload">
           {`(function(c,l,a,r,i,t,y){c[a]=c[a]||function(){(c[a].q=c[a].q||[]).push(arguments)};t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);})(window,document,"clarity","script","${CLARITY_ID}");
 window.clarity('consentv2',{ad_Storage:'denied',analytics_Storage:'granted'});`}
         </Script>

@@ -25,6 +25,8 @@ import { ItalicFeatureClient as ItalicFeatureClient_e70f5e05f09f93e00b997edb1ef0
 import { SerpPreview as SerpPreview_196b93a4e6a8af041040318442c92afc } from '../../../cms/components/SerpPreview'
 import { AdminIcon as AdminIcon_7e1bdf2af3ff4a4898e85d00186b985d } from '../../../cms/components/AdminBrand'
 import { AdminLogo as AdminLogo_7e1bdf2af3ff4a4898e85d00186b985d } from '../../../cms/components/AdminBrand'
+import { AnalyticsNavLink as AnalyticsNavLink_58baff6ccc766fb9b2666de8f0d5e388 } from '../../../cms/components/AnalyticsNavLink'
+import { AnalyticsView as AnalyticsView_162867a0f5a782e3b6a8bf5bd83990c4 } from '../../../cms/views/AnalyticsView'
 import { CollectionCards as CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1 } from '@payloadcms/next/rsc'
 import { S3ClientUploadHandler as S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24 } from '@payloadcms/storage-s3/client'
 import { VercelBlobClientUploadHandler as VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e } from '@payloadcms/storage-vercel-blob/client'
@@ -58,6 +60,8 @@ export const importMap = {
   "/cms/components/SerpPreview#SerpPreview": SerpPreview_196b93a4e6a8af041040318442c92afc,
   "/cms/components/AdminBrand#AdminIcon": AdminIcon_7e1bdf2af3ff4a4898e85d00186b985d,
   "/cms/components/AdminBrand#AdminLogo": AdminLogo_7e1bdf2af3ff4a4898e85d00186b985d,
+  "/cms/components/AnalyticsNavLink#AnalyticsNavLink": AnalyticsNavLink_58baff6ccc766fb9b2666de8f0d5e388,
+  "/cms/views/AnalyticsView#AnalyticsView": AnalyticsView_162867a0f5a782e3b6a8bf5bd83990c4,
   "@payloadcms/next/rsc#CollectionCards": CollectionCards_f9c02e79a4aed9a3924487c0cd4cafb1,
   "@payloadcms/storage-s3/client#S3ClientUploadHandler": S3ClientUploadHandler_f97aa6c64367fa259c5bc0567239ef24,
   "@payloadcms/storage-vercel-blob/client#VercelBlobClientUploadHandler": VercelBlobClientUploadHandler_16c82c5e25f430251a3e3ba57219ff4e

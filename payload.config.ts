@@ -61,6 +61,10 @@ export default buildConfig({
         Logo: "/cms/components/AdminBrand#AdminLogo",
         Icon: "/cms/components/AdminBrand#AdminIcon",
       },
+      beforeNavLinks: ["/cms/components/AnalyticsNavLink#AnalyticsNavLink"],
+      views: {
+        analitica: { Component: "/cms/views/AnalyticsView#AnalyticsView", path: "/analitica", meta: { title: "Analítica y rendimiento" } },
+      },
     },
     importMap: { baseDir: path.resolve(dirname) },
   },

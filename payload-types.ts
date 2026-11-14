@@ -178,6 +178,9 @@ export interface ContactSubmission {
   lostReason?: ('precio' | 'sin-respuesta' | 'fuera-de-servicio' | 'plazo' | 'competencia' | 'otro') | null;
   lostReasonDetail?: string | null;
   notes?: string | null;
+  /**
+   * Fechas del embudo: se rellenan solas al cambiar el estado.
+   */
   contactedAt?: string | null;
   quotedAt?: string | null;
   closedAt?: string | null;
