@@ -15,6 +15,13 @@ Este repositorio contiene la versión íntegra, funcional y publicada de la web 
 - Estructura: sitio público en `app/(frontend)/`, panel en `app/(payload)/` y 404 global en `app/global-not-found.tsx`.
 - Plan de trabajo vigente y estado de cada fase: `docs/IMPLEMENTATION-PLAN.md`.
 
+## Despliegues y créditos de Netlify (importante)
+
+- **Plan:** Netlify Free, con 300 créditos al mes. Cada despliegue de producción gasta unos 15, y se despliega con cada push a `main`. El periodo se renueva el día 21 de cada mes.
+- **Noviembre de 2026:** los créditos se agotaron el día 15 y los despliegues quedan bloqueados hasta el 21. El propietario decidió esperar: **no hagas push a `main` hasta el 21 de noviembre**. Trabaja en `feat/nextjs-payload`, que no despliega.
+- **Pendiente para el primer despliegue tras el 21:** `NEXT_PUBLIC_GTM_ID=GTM-P5QTM8FC`, ya guardado en Netlify, y el código de analítica ya publicado (commit e4a7eb9).
+- **Norma:** agrupa los cambios y despliega pocas veces. Usa `git push origin feat/nextjs-payload:main` solo cuando haya un lote probado.
+
 ## Prioridad transversal: SEO orgánico y local
 
 Desde el 7 de noviembre de 2026 el objetivo prioritario es el máximo posicionamiento orgánico y local legítimo en Granada. El SEO forma parte de la arquitectura, el contenido, el diseño y el CMS, no es un añadido final. Antes de cambiar contenido, rutas o componentes, consulta `docs/seo-strategy.md`:
