@@ -33,7 +33,7 @@ Rellena la tabla al crear cada cuenta. Los identificadores públicos van tambié
 | Herramienta | Propiedad o proyecto | Identificador | Dónde va | Cuenta propietaria |
 |---|---|---|---|---|
 | Cloudflare Web Analytics | `limpiezasgranalva.com` | Token del fragmento: `NEXT_PUBLIC_CF_BEACON_TOKEN`<br>Site tag: en los ajustes del panel | Netlify y panel | Cuenta de Cloudflare de Granalva (la misma de R2) |
-| Google Analytics 4 | `Limpiezas Granalva – web` | ID de medición `G-…`<br>ID de propiedad (número) | Variable del contenedor GTM y panel | `info@limpiezasgranalva.com` |
+| Google Analytics 4 | `Limpiezas Granalva – web` | ID de medición **`G-58GYBDJG6T`**<br>ID de propiedad (número) | Variable del contenedor GTM y panel | `info@limpiezasgranalva.com` |
 | Google Tag Manager | Contenedor `limpiezasgranalva.com` (Web) | `GTM-…` → `NEXT_PUBLIC_GTM_ID` | Netlify | `info@limpiezasgranalva.com` |
 | Search Console | Propiedad de dominio `limpiezasgranalva.com` (verificada automáticamente con Google Workspace) | `sc-domain:limpiezasgranalva.com` | Panel | `info@limpiezasgranalva.com` |
 | Microsoft Clarity | `limpiezasgranalva.com` | ID del proyecto → `NEXT_PUBLIC_CLARITY_ID` | Netlify y panel | Cuenta Microsoft o Google de `info@` |
@@ -266,7 +266,7 @@ Usa el **generador del panel**: limpia tildes, mayúsculas y espacios para que u
 ## 12. Configuración en GA4 tras crear la propiedad
 
 1. **Importa el contenedor:** Tag Manager → Administrar → Importar contenedor → `docs/gtm/granalva-gtm-contenedor.json` → espacio «Default» → **Combinar**.
-2. Edita la variable **«GA4 - ID de medición»** y escribe el `G-…`. Después, **Publicar**.
+2. La variable **«GA4 - ID de medición»** ya contiene `G-58GYBDJG6T`. Después, **Publicar**.
 3. Para regenerar el contenedor tras cambiar el diccionario: `node scripts/gtm-container.mjs`.
 4. En GA4 → Administrar → **Definiciones personalizadas** → Crear dimensiones (ámbito «Evento»):
    - `page_type`, `service_slug`, `audience_type`, `cta_location`;

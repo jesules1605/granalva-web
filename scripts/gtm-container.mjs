@@ -1,7 +1,9 @@
 // Genera el contenedor de Google Tag Manager importable (docs/gtm/granalva-gtm-contenedor.json)
 // a partir del diccionario de eventos (app/lib/analytics/events.ts). Uso: node scripts/gtm-container.mjs
-// Tras importarlo solo hay que escribir el ID de medición de GA4 en la variable «GA4 - ID de medición».
+// ID de medición de GA4 de Granalva (público): se escribe ya en la variable «GA4 - ID de medición».
 import { readFileSync, writeFileSync } from "node:fs";
+
+const MEASUREMENT_ID = process.argv[2] ?? "G-58GYBDJG6T";
 
 const source = readFileSync(new URL("../app/lib/analytics/events.ts", import.meta.url), "utf8");
 const block = source.slice(source.indexOf("export const EVENTS = {"), source.indexOf("} as const;"));
@@ -11,7 +13,7 @@ const params = [...source.slice(source.indexOf("export const ALLOWED_PARAMS = ["
 const t = (key, value) => ({ type: "TEMPLATE", key, value });
 const ids = { account: "0", container: "0" };
 const variables = [
-  { variableId: "1", name: "GA4 - ID de medición", type: "c", parameter: [t("value", "G-XXXXXXXXXX")] },
+  { variableId: "1", name: "GA4 - ID de medición", type: "c", parameter: [t("value", MEASUREMENT_ID)] },
   ...params.map((name, i) => ({ variableId: String(10 + i), name: `DLV - ${name}`, type: "v", parameter: [{ type: "INTEGER", key: "dataLayerVersion", value: "2" }, { type: "BOOLEAN", key: "setDefaultValue", value: "false" }, t("name", name)] })),
 ].map((v) => ({ accountId: ids.account, containerId: ids.container, ...v }));
 
